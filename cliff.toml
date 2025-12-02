@@ -18,7 +18,7 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | upper_first }}
     {% for commit in commits %}
-        - {% if commit.breaking -%}<span class="breaking">[**breaking**]</span> {% endif -%}{{ commit.message | upper_first }} ([`{{ commit.id | truncate(length=7, end="") }}`]({{ commit.committer.name }}))
+        - {% if commit.breaking -%}<span class="breaking">[**breaking**]</span> {% endif -%}{{ commit.message | upper_first }} #{{ commit.id | truncate(length=7, end="") }}
     {% endfor %}
 {% endfor %}\n
 """
@@ -31,11 +31,11 @@ footer = """
 # postprocessors
 postprocessors = [
     { pattern = '<REPO>', replace = "https://github.com/storious/GES-GSP-Plus" }, 
+    { pattern = "#([a-f0-9]{7,})", replace = "[`${1}`](https://github.com/storious/GES-GSP-Plus/commit/${1})"}
 ]
 
 [git]
 repo_url = "https://github.com/storious/GES-GSP-Plus"
-link_commits = true
 # parse the commits based on https://www.conventionalcommits.org
 conventional_commits = true
 # filter out the commits that are not conventional
