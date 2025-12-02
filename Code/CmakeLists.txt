@@ -1,0 +1,44 @@
+cmake_minimum_required(VERSION 3.23)
+project(GESStitching LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(OpenCV REQUIRED CONFIG)
+find_package(Eigen3 REQUIRED CONFIG)
+
+file(GLOB SRC CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Debugger/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Feature/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Stitching/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Mesh/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Util/*.cpp")
+
+add_executable(ges_stitching ${SRC})
+
+if(MSVC)
+    target_compile_options(ges_stitching PRIVATE
+        $<$<CONFIG:Debug>:
+            /Zi        
+            /Od        
+            /FS        
+        >
+    )
+
+    target_link_options(ges_stitching PRIVATE
+        $<$<CONFIG:Debug>:
+            /DEBUG                                  
+            /PDB:${CMAKE_BINARY_DIR}/Debug/ges_stitching.pdb
+        >
+    )
+endif()
+
+target_include_directories(ges_stitching PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(ges_stitching PRIVATE
+    opencv::opencv
+    Eigen3::Eigen
+)

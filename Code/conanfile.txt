@@ -1,0 +1,12 @@
+[requires]
+eigen/3.4.0
+opencv/4.12.0
+libpng/1.6.50
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[options]
+opencv/4.12.0:contrib=True
+opencv/4.12.0:ximgproc=True
