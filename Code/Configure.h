@@ -75,7 +75,7 @@ const double LOCAL_HOMOGRAPHY_MAX_INLIERS_DIST = 3.;
 const int LOCAL_HOMOGRAPHY_MIN_FEATURES_COUNT = 40;
 
 /*** vlfeat sift ***/
-// INFO: use opencv implement and remove the vlfeat
+// INFO: use opencv implement SIFT and remove the vlfeat
 const int SIFT_FEATURE_COUNT = 1500; // the maximum of the number of feature
 const int SIFT_LEVEL_COUNT = 3;
 // const int SIFT_MINIMUM_OCTAVE_INDEX = 0; // don't need this parament
