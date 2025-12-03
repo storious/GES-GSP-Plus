@@ -15,7 +15,9 @@ build
 .vshistory
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+vcpkg_installed
+CMakeCache.txt
+CMakeUserPresets.json
 # Build results
 input-data/0_results
 input-data/1_debugs

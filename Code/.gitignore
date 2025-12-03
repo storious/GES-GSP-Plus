@@ -11,6 +11,7 @@
 *.sln.docstates
 ./**/.vshistory
 build
+CMakeFiles
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

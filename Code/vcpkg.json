@@ -1,0 +1,14 @@
+{
+  "name": "ges-gsp-plus",
+  "version": "0.1.0",
+  "description": "GES GEP Plus Project Dependencies",
+  "dependencies": [
+    {
+      "name": "opencv",
+      "features": [
+        "contrib"
+      ]
+    },
+    "eigen3"
+  ]
+}

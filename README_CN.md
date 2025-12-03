@@ -16,8 +16,9 @@
 请确保你的 Windows 11 机器上已安装以下工具：
 
 - **[CMake](https://cmake.org/)** (版本 >= 3.23)
-- **[Conan](https://conan.io/)** (版本 >= 2.0)
+- **[Vcpkg](https://vcpkg.io) or [Conan](https://conan.io/)** (版本 >= 2.0)
 - **MSBuild** (来自 Visual Studio 2022)
+> **💡 提示:** 如果你使用 Visual Studio 2026 那么请务必使用vcpkg (目前最新支持opencv4.11.0 不影响复现)
 - **IDE**: [VSCode](https://code.visualstudio.com/) (推荐)
 
 > **💡 提示:** 我们强烈推荐使用 [Scoop](https://scoop.sh/) 在 Windows 上轻松安装 CMake 和 Conan。
@@ -26,10 +27,40 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 # 使用 Scoop 安装工具
-scoop install cmake conan
+scoop install cmake conan # 如果不想使用 VS 自带的vcpkg, 也可以使用 scoop 单独安装一个 
 ```
 ### 🛠️ 构建与运行
+
 请按照以下步骤构建并运行项目：
+
+#### 对于使用 Vcpkg 的用户
+```powershell
+# 1. 克隆仓库
+git clone https://github.com/storious/GES-GSP-Plus.git
+
+# 2. 进入源代码目录
+cd Code
+
+# 3. 使用 CMake 预设配置项目
+cmake --preset vcpkg-debug
+
+# 4. 在 Debug 模式下构建项目
+cmake --build --preset vcpkg-debug
+
+# 如需 Release 构建，请使用: 
+# cmake --preset vcpkg-release
+# cmake --build --preset vcpkg-release
+
+# 7. 运行应用程序
+cd .. # 确保你位于项目根目录
+.\Code\build\Debug\ges_stitching.exe <input_data_name>
+# 示例: .\Code\build\Debug\ges_stitching.exe AANAP-01_skyline
+
+```
+
+#### 对于使用 Conan 的用户
+> **💡 提示:** 如果你使用 visual Studio 2026，下载编译opencv4.12.0 时会有问题，请改用 vcpkg
+
 ```powershell
 # 1. 克隆仓库
 git clone https://github.com/storious/GES-GSP-Plus.git
@@ -39,6 +70,7 @@ cd Code
 
 # 3. 初始化 Conan 配置
 conan profile detect --force
+# 这里有可能会检测不到系统编译环境，可以使用 `conan profile show default`查看是否正常
 
 # 4. 为 Debug 模式安装依赖
 conan install . --output-folder=build --build=missing -s build_type=Debug
@@ -62,9 +94,9 @@ cd .. # 确保你位于项目根目录
 ---
 
 ## ✨ 核心特性与改进
-- 🧹 **简化的工作流**: 无需再寻找 DLL。所有依赖均已静态链接，带来无忧体验。
-- 📦 **现代化依赖管理**: 使用 [Conan](https://conan.io/) 实现可靠且可复现的 C++ 依赖管理。
-- 🔄 **更新的核心库**: 基于最新版本的 [OpenCV](https://opencv.org/) 和 [Eigen](https://eigen.tuxfamily.org/) 构建。
+- 🧹 **简化的工作流**: 无需再寻找 DLL。所有依赖均由 CMake 控制生成，带来无忧体验。
+- 📦 **现代化依赖管理**: 使用 [Conan](https://conan.io/) / [Vcpkg](https://vcpkg.io) 实现可靠且可复现的 C++ 依赖管理。
+- 🔄 **更新的核心库**: 基于较新版本的 [OpenCV](https://opencv.org/) 和 [Eigen](https://eigen.tuxfamily.org/) 构建。
 - 🗑️ **移除 VLFeat**: SIFT 实现已完全迁移至 OpenCV，减少了外部依赖。
 - 🛠️ **CMake 预设**: 利用现代 CMake 预设功能，实现标准化且简单的构建配置。
 ---

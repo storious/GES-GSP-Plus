@@ -39,6 +39,14 @@ target_include_directories(ges_stitching PRIVATE
 )
 
 target_link_libraries(ges_stitching PRIVATE
-    opencv::opencv
+    opencv_core
+    opencv_dnn
+    opencv_features2d
+    opencv_imgproc
+    opencv_calib3d
+    opencv_stitching
+    opencv_highgui
+    opencv_imgproc
+    opencv_ximgproc
     Eigen3::Eigen
 )
