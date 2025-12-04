@@ -2,11 +2,10 @@
 // #define DP_NO_LOG
 #define ASSESSMENT
 
-#ifndef __UglyMan_Stitiching__Configure__
-#define __UglyMan_Stitiching__Configure__
+#ifndef __UglyMan_Stitching__Configure__
+#define __UglyMan_Stitching__Configure__
 
 #include "./Debugger/ErrorController.h"
-#include "./Debugger/TimeCalculator.h"
 
 #include <iostream>
 #include <fstream>
@@ -15,8 +14,6 @@
 #include <set>
 #ifdef _WIN32
 #include "Util/dirent_win.h"
-#else
-#include <dirent.h>
 #endif
 #include <algorithm>
 #include <direct.h>
@@ -43,65 +40,69 @@ using namespace cv::dnn;
 /******************************/
 enum TYPE
 {
-	GSP,
+	GSP = 0,
 	GES_GSP,
 };
 
-const int RUN_TYPE = TYPE::GES_GSP; // 0:GSP 1:GES-GSP
+constexpr int RUN_TYPE = TYPE::GES_GSP; // 0:GSP 1:GES-GSP
 
 const string TXT_NAME = "-STITCH-GRAPH.txt";
 
 /*** data setting ***/
-const int GRID_SIZE = 40;
-const int DOWN_SAMPLE_IMAGE_SIZE = 800 * 600;
+constexpr int GRID_SIZE = 40;
+constexpr int DOWN_SAMPLE_IMAGE_SIZE = 800 * 600;
 // Contour length/image shortest edge ratio
-const double CONTENT_LENGTH_THRESHOLD = 0.15;
+constexpr double CONTENT_LENGTH_THRESHOLD = 0.15;
 
 // HED threshold
-const double HED_THRESHOLD = 0.5;
-const int threshold_value = 120;
+constexpr double HED_THRESHOLD = 0.5;
+constexpr int threshold_value = 120;
+
+// HED path
+const string MODEL_CONFIG = R"(.\Code\model\deploy.prototxt)";
+const string MODEL_BIN = R"(.\Code\model\hed_pretrained_bsds.caffemodel)";
 
 /*** APAP ***/
-const double APAP_GAMMA = 0.0015;
-const double APAP_SIGMA = 8.5;
+constexpr double APAP_GAMMA = 0.0015;
+constexpr double APAP_SIGMA = 8.5;
 
 /*** matching method ***/
 const string FEATURE_RATIO_TEST_THRESHOLD_STRING = "15e-1"; // 15*10^-1=1.5
 const double FEATURE_RATIO_TEST_THRESHOLD = atof(FEATURE_RATIO_TEST_THRESHOLD_STRING.c_str());
 
 /*** homography based ***/
-const double GLOBAL_HOMOGRAPHY_MAX_INLIERS_DIST = 5.;
-const double LOCAL_HOMOGRAPHY_MAX_INLIERS_DIST = 3.;
-const int LOCAL_HOMOGRAPHY_MIN_FEATURES_COUNT = 40;
+constexpr double GLOBAL_HOMOGRAPHY_MAX_INLIERS_DIST = 5.;
+constexpr double LOCAL_HOMOGRAPHY_MAX_INLIERS_DIST = 3.;
+constexpr int LOCAL_HOMOGRAPHY_MIN_FEATURES_COUNT = 40;
 
-/*** vlfeat sift ***/
+/*** Deprecated vlfeat sift ***/
 // INFO: use opencv implement SIFT and remove the vlfeat
-const int SIFT_FEATURE_COUNT = 1500; // the maximum of the number of feature
-const int SIFT_LEVEL_COUNT = 3;
+constexpr int SIFT_FEATURE_COUNT = 1500; // the maximum of the number of feature
+constexpr int SIFT_LEVEL_COUNT = 3;
 // const int SIFT_MINIMUM_OCTAVE_INDEX = 0; // don't need this parament
-const double SIFT_PEAK_THRESH = 0.;
-const double SIFT_EDGE_THRESH = 20.;
+constexpr double SIFT_PEAK_THRESH = 0.;
+constexpr double SIFT_EDGE_THRESH = 20.;
 
 /*** init feature ***/
-const double INLIER_TOLERANT_STD_DISTANCE = 4.25; /* mean + 4.25 * std */
+constexpr double INLIER_TOLERANT_STD_DISTANCE = 4.25; /* mean + 4.25 * std */
 
 /*** sRANSAC ***/
-const double GLOBAL_TRUE_PROBABILITY = 0.225;
-const double LOCAL_TRUE_PROBABILITY = 0.2;
-const double OPENCV_DEFAULT_CONFIDENCE = 0.995;
+constexpr double GLOBAL_TRUE_PROBABILITY = 0.225;
+constexpr double LOCAL_TRUE_PROBABILITY = 0.2;
+constexpr double OPENCV_DEFAULT_CONFIDENCE = 0.995;
 
 /*** sparse linear system ***/
-const double STRONG_CONSTRAINT = 1e4;
+constexpr double STRONG_CONSTRAINT = 1e4;
 
 /*** bundle adjustment ***/
-const int CRITERIA_MAX_COUNT = 1000;
-const double CRITERIA_EPSILON = DBL_EPSILON;
+constexpr int CRITERIA_MAX_COUNT = 1000;
+constexpr double CRITERIA_EPSILON = DBL_EPSILON;
 
 /*** 2D Method ***/
-const double TOLERANT_ANGLE = 1.5;
+constexpr double TOLERANT_ANGLE = 1.5;
 
 /*** 3D Method ***/
-const double LAMBDA_GAMMA = 10;
+constexpr double LAMBDA_GAMMA = 10;
 
 /******************************/
 /******************************/
@@ -128,10 +129,10 @@ const string BLENDING_METHODS_NAME[BLEND_METHODS_SIZE] = {
 	"[BLEND_AVERAGE]", "[BLEND_LINEAR]"};
 
 /* type */
-typedef float FLOAT_TYPE;
-typedef Size_<FLOAT_TYPE> Size2;
-typedef Point_<FLOAT_TYPE> Point2;
-typedef Rect_<FLOAT_TYPE> Rect2;
+using FLOAT_TYPE = float;
+using Size2 = Size_<FLOAT_TYPE> ;
+using  Point2 = Point_<FLOAT_TYPE> ;
+using Rect2 = Rect_<FLOAT_TYPE> ;
 
 const int DIMENSION_2D = 2;
 const int HOMOGRAPHY_VARIABLES_COUNT = 9;
@@ -146,4 +147,4 @@ enum AUTO_STITCH_WAVE_CORRECTS
 const AUTO_STITCH_WAVE_CORRECTS WAVE_CORRECT = WAVE_H;
 const string AUTO_STITCH_WAVE_CORRECTS_NAME[] = {"", "[WAVE_H]", "[WAVE_V]"};
 
-#endif /* defined(__UglyMan_Stitiching__Configure__) */
+#endif /* defined(__UglyMan_Stitching__Configure__) */
