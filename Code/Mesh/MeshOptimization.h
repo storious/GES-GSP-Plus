@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__MeshOptimization__
-#define __UglyMan_Stitiching__MeshOptimization__
+#ifndef __UglyMan_Stitching__MeshOptimization__
+#define __UglyMan_Stitching__MeshOptimization__
 
-#include "../Feature/MultiImages.h"
-#include "../Util/Blending.h"
+#include "Feature/MultiImages.h"
+#include "Util/Blending.h"
 
 class MeshOptimization {
 public:
 	MeshOptimization(const MultiImages& _multi_images);
 
-	virtual Mat solve(const BLENDING_METHODS& _blend_method, vector<vector<Point2> >& original_vertices) = 0;
+	virtual Mat solve(const BLENDING_METHODS& _blend_method, std::vector<std::vector<Point2> >& original_vertices) = 0;
 protected:
 	void setWeightToAlignmentTerm(const double _weight);
 	void setWeightToLocalSimilarityTerm(const double _weight);
@@ -34,22 +34,22 @@ protected:
 	double getGlobalSimilarityTermWeightGamma() const;
 	enum GLOBAL_ROTATION_METHODS getGlobalRotationMethod() const;
 
-	void reserveData(vector<Triplet<double> >& _triplets,
-		vector<pair<int, double> >& _b_vector,
+	void reserveData(std::vector<Triplet<double> >& _triplets,
+		std::vector<std::pair<int, double> >& _b_vector,
 		const int _start_index);
 
-	void reserveData_content(vector<Triplet<double> >& _triplets,
-		vector<pair<int, double> >& _b_vector,
+	void reserveData_content(std::vector<Triplet<double> >& _triplets,
+		std::vector<std::pair<int, double> >& _b_vector,
 		const int _start_index);
 
-	void prepareAlignmentTerm(vector<Triplet<double> >& _triplets) const;
-	void prepareSimilarityTerm(vector<Triplet<double> >& _triplets,
-		vector<pair<int, double> >& _b_vector) const;
-	void prepareContentPreservingTerm(vector<Triplet<double> >& _triplets,
-		vector<pair<int, double> >& _b_vector) const;
+	void prepareAlignmentTerm(std::vector<Triplet<double> >& _triplets) const;
+	void prepareSimilarityTerm(std::vector<Triplet<double> >& _triplets,
+		std::vector<std::pair<int, double> >& _b_vector) const;
+	void prepareContentPreservingTerm(std::vector<Triplet<double> >& _triplets,
+		std::vector<std::pair<int, double> >& _b_vector) const;
 
-	vector<vector<Point2> > getImageVerticesBySolving(vector<Triplet<double> >& _triplets,
-		const vector<pair<int, double> >& _b_vector) const;
+	std::vector<std::vector<Point2> > getImageVerticesBySolving(std::vector<Triplet<double> >& _triplets,
+		const std::vector<std::pair<int, double> >& _b_vector) const;
 
 private:
 
@@ -67,11 +67,11 @@ private:
 	double global_similarity_weight_beta, global_similarity_weight_gamma;
 	double content_preserving_weight;
 
-	pair<int, int> alignment_equation; /* begin, count */
-	pair<int, int> local_similarity_equation;
-	pair<int, int> global_similarity_equation;
-	pair<int, int> content_preserving_equation;
+	std::pair<int, int> alignment_equation; /* begin, count */
+	std::pair<int, int> local_similarity_equation;
+	std::pair<int, int> global_similarity_equation;
+	std::pair<int, int> content_preserving_equation;
 	enum GLOBAL_ROTATION_METHODS global_rotation_method;
 };
 
-#endif /* defined(__UglyMan_Stitiching__MeshOptimization__) */
+#endif /* defined(__UglyMan_Stitching__MeshOptimization__) */

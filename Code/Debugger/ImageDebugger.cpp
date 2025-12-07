@@ -18,8 +18,8 @@
 /// <returns>画好的图像</returns>
 Mat getImageOfFeaturePairs(const Mat& img1,
 	const Mat& img2,
-	const vector<Point2>& f1,
-	const vector<Point2>& f2) {
+	const std::vector<Point2>& f1,
+	const std::vector<Point2>& f2) {
 	assert(f1.size() == f2.size());
 	assert(img1.type() == img2.type());
 

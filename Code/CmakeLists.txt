@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED CONFIG)
 find_package(Eigen3 REQUIRED CONFIG)
+find_package(Vlfeat REQUIRED CONFIG)
+find_package(TBB REQUIRED)
+find_package(OpenMP REQUIRED)
+
 
 file(GLOB SRC CONFIGURE_DEPENDS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -13,11 +17,31 @@ file(GLOB SRC CONFIGURE_DEPENDS
      "${CMAKE_CURRENT_SOURCE_DIR}/Feature/*.cpp"
      "${CMAKE_CURRENT_SOURCE_DIR}/Stitching/*.cpp"
      "${CMAKE_CURRENT_SOURCE_DIR}/Mesh/*.cpp"
-     "${CMAKE_CURRENT_SOURCE_DIR}/Util/*.cpp")
+     "${CMAKE_CURRENT_SOURCE_DIR}/Util/*.cpp"
+     )
+
+# file(GLOB VLFEAT_SOURCES 
+#      "${CMAKE_CURRENT_SOURCE_DIR}/Util/vl/*.c"
+# )
 
 add_executable(ges_stitching ${SRC})
 
+# set_source_files_properties(${VLFEAT_SOURCES} PROPERTIES LANGUAGE C)
+
+# target_compile_definitions(ges_stitching PRIVATE 
+#     VL_BUILD_DLL=1  
+#     __SSE2__=1    
+#     __AVX__=1     
+#     _OPENMP=1
+# )
+
+# target_compile_options(ges_stitching PRIVATE
+#     /arch:AVX
+#     /arch:SSE2
+# )
+
 if(MSVC)
+    add_compile_options(/openmp)
     target_compile_options(ges_stitching PRIVATE
         $<$<CONFIG:Debug>:
             /Zi        
@@ -49,4 +73,7 @@ target_link_libraries(ges_stitching PRIVATE
     opencv_imgproc
     opencv_ximgproc
     Eigen3::Eigen
+    OpenMP::OpenMP_CXX  # <-- 在这里添加！
+    TBB::tbb
+    unofficial::vlfeat::vl
 )

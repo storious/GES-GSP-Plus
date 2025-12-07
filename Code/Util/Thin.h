@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include "../Configure.h"
 #include "opencv2/opencv.hpp"
-#include "../Feature/ImageData.h"
+#include "Feature/ImageData.h"
+using namespace cv;
 
-
-void thin(Mat srcImage, Mat& dst, double kernalSizeTimes);
-void thinTest(Mat srcImage, Mat& dst, double kernalSizeTimes);
+void thin(cv::Mat srcImage, cv::Mat& dst, double kernalSizeTimes);
+void thinTest(cv::Mat srcImage, cv::Mat& dst, double kernalSizeTimes);

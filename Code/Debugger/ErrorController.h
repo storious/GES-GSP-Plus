@@ -7,14 +7,12 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__ErrorController__
-#define __UglyMan_Stitiching__ErrorController__
+#ifndef __UglyMan_Stitching__ErrorController__
+#define __UglyMan_Stitching__ErrorController__
 
 #include <iostream>
 #include <string>
 
-using namespace std;
+void printError(const std::string _error);
 
-void printError(const string _error);
-
-#endif /* defined(__UglyMan_Stitiching__ErrorController__) */
+#endif /* defined(__UglyMan_Stitching__ErrorController__) */

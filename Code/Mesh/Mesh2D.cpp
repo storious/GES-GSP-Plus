@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#include "./Mesh2D.h"
+#include "Mesh2D.h"
 
 
 Mesh2D::Mesh2D(const int _cols, const int _rows) {
@@ -23,12 +23,12 @@ Mesh2D::~Mesh2D() {
 // template int Mesh2D::getGridIndexOfPoint<double>(const Point_<double>& _p) const;
 
 
-const vector<Point2>& Mesh2D::getPolygonsCenter() const {
+const std::vector<Point2>& Mesh2D::getPolygonsCenter() const {
 	if (polygons_center.empty()) {
 
-		const vector<Point2>& vertices = getVertices();
+		const std::vector<Point2>& vertices = getVertices();
 
-		const vector<Indices>& polygons_indices = getPolygonsIndices();
+		const std::vector<Indices>& polygons_indices = getPolygonsIndices();
 		polygons_center.reserve(polygons_indices.size());
 
 		for (int i = 0; i < polygons_indices.size(); ++i) {

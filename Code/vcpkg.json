@@ -6,9 +6,15 @@
     {
       "name": "opencv",
       "features": [
-        "contrib"
+        "contrib",
+        "openmp",
+        "tbb"
       ]
     },
-    "eigen3"
+    {
+      "name": "eigen3"
+    },
+    "tbb",
+    "vlfeat"
   ]
 }

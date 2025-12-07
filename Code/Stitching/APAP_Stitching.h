@@ -6,20 +6,20 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__APAP_Stitching__
-#define __UglyMan_Stitiching__APAP_Stitching__
+#ifndef __UglyMan_Stitching__APAP_Stitching__
+#define __UglyMan_Stitching__APAP_Stitching__
 
 #include "../Configure.h"
-#include "../Util/Transform.h"
+#include "Util/Transform.h"
 
 class APAP_Stitching {
 public:
-	static void apap_project(const vector<Point2>& _p_src,
-		const vector<Point2>& _p_dst,
-		const vector<Point2>& _src,
-		vector<Point2>& _dst,
-		vector<Mat>& _homographies);
+	static void apap_project(const std::vector<Point2>& _p_src,
+		const std::vector<Point2>& _p_dst,
+		const std::vector<Point2>& _src,
+		std::vector<Point2>& _dst,
+		std::vector<Mat>& _homographies);
 private:
 };
 
-#endif /* defined(__UglyMan_Stitiching__APAP_Stitching__) */
+#endif /* defined(__UglyMan_Stitching__APAP_Stitching__) */

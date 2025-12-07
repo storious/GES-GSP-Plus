@@ -9,7 +9,7 @@
 #include "Transform.h"
 
 
-Mat getConditionerFromPts(const vector<Point2>& pts) {
+Mat getConditionerFromPts(const std::vector<Point2>& pts) {
 
 	Mat pts_ref(pts);
 
@@ -43,7 +43,7 @@ Mat getConditionerFromPts(const vector<Point2>& pts) {
 	return result;
 }
 
-Mat getNormalize2DPts(const vector<Point2>& pts, vector<Point2>& newpts) {
+Mat getNormalize2DPts(const std::vector<Point2>& pts, std::vector<Point2>& newpts) {
 
 	Mat pts_ref(pts), npts;
 	Scalar mean_p = mean(pts_ref);
@@ -111,7 +111,7 @@ Point_<T> applyTransform2x3(T x, T y, const Mat& matT) {
 }
 
 template <typename T>
-Size_<T> normalizeVertices(vector<vector<Point_<T> > >& vertices) {
+Size_<T> normalizeVertices(std::vector<std::vector<Point_<T> > >& vertices) {
 	T min_x = FLT_MAX, max_x = -FLT_MAX;
 	T min_y = FLT_MAX, max_y = -FLT_MAX;
 
@@ -134,14 +134,14 @@ Size_<T> normalizeVertices(vector<vector<Point_<T> > >& vertices) {
 }
 
 template <typename T>
-Rect_<T> getVerticesRects(const vector<Point_<T> >& vertices) {
-	vector<vector<Point_<T> > > tmp(1, vertices);
+Rect_<T> getVerticesRects(const std::vector<Point_<T> >& vertices) {
+	std::vector<std::vector<Point_<T> > > tmp(1, vertices);
 	return getVerticesRects(tmp).front();
 }
 
 template <typename T>
-vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > >& vertices) {
-	vector<Rect_<T> > result;
+std::vector<Rect_<T> > getVerticesRects(const std::vector<std::vector<Point_<T> > >& vertices) {
+	std::vector<Rect_<T> > result;
 	result.reserve(vertices.size());
 	for (int i = 0; i < vertices.size(); ++i) {
 		T min_ix = FLT_MAX, max_ix = -FLT_MAX;
@@ -247,15 +247,15 @@ template Point_<double> applyTransform3x3<double>(double x, double y, const Mat&
 template Point_< float> applyTransform2x3< float>(float x, float y, const Mat& matT);
 template Point_<double> applyTransform2x3<double>(double x, double y, const Mat& matT);
 
-template Size_<   int> normalizeVertices<   int>(vector<vector<Point_<   int> > >& vertices);
-template Size_< float> normalizeVertices< float>(vector<vector<Point_< float> > >& vertices);
-template Size_<double> normalizeVertices<double>(vector<vector<Point_<double> > >& vertices);
+template Size_<   int> normalizeVertices<   int>(std::vector<std::vector<Point_<   int> > >& vertices);
+template Size_< float> normalizeVertices< float>(std::vector<std::vector<Point_< float> > >& vertices);
+template Size_<double> normalizeVertices<double>(std::vector<std::vector<Point_<double> > >& vertices);
 
-template Rect_< float> getVerticesRects< float>(const vector<Point_< float> >& vertices);
-template Rect_<double> getVerticesRects<double>(const vector<Point_<double> >& vertices);
+template Rect_< float> getVerticesRects< float>(const std::vector<Point_< float> >& vertices);
+template Rect_<double> getVerticesRects<double>(const std::vector<Point_<double> >& vertices);
 
-template vector<Rect_< float> > getVerticesRects< float>(const vector<vector<Point_< float> > >& vertices);
-template vector<Rect_<double> > getVerticesRects<double>(const vector<vector<Point_<double> > >& vertices);
+template std::vector<Rect_< float> > getVerticesRects< float>(const std::vector<std::vector<Point_< float> > >& vertices);
+template std::vector<Rect_<double> > getVerticesRects<double>(const std::vector<std::vector<Point_<double> > >& vertices);
 
 template          float getSubpix<   float>(const Mat& img, const Point2f& pt);
 template Vec< uchar, 1> getSubpix<uchar, 1>(const Mat& img, const Point2f& pt);
@@ -275,14 +275,14 @@ template bool isEdgeIntersection<double>(const Point_<double>& src_1, const Poin
 template bool isRotationInTheRange< float>(const  float rotation, const  float min_rotation, const  float max_rotation);
 template bool isRotationInTheRange<double>(const double rotation, const double min_rotation, const double max_rotation);
 
-void SpiltString(string str, vector<string>& res, string delim)
+void SpiltString(std::string str, std::vector<std::string>& res, std::string delim)
 {
 	while (res.size() != 0)
 		res.pop_back();
-	string::size_type pos1, pos2;
+	std::string::size_type pos1, pos2;
 	pos2 = str.find(delim);
 	pos1 = 0;
-	while (string::npos != pos2)
+	while (std::string::npos != pos2)
 	{
 		res.push_back(str.substr(pos1, pos2 - pos1));
 		pos1 = pos2 + delim.size();
@@ -296,7 +296,7 @@ void SpiltString(string str, vector<string>& res, string delim)
 
 
 template <class Type>
-Type stringToNum(string str)
+Type stringToNum(std::string str)
 {
 	istringstream s(str);
 	Type num;
@@ -306,6 +306,6 @@ Type stringToNum(string str)
 
 
 Vector3d trans2Vector(Point2f point) {
-	Vector3d vector(point.x, point.y, 0);
-	return vector;
+	Vector3d vec(point.x, point.y, 0);
+	return vec;
 }

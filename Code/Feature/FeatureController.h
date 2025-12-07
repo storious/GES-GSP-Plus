@@ -3,22 +3,24 @@
 
 #include "../Configure.h"
 
+using Point2 = cv::Point_<float>;
+
 const int SIFT_DESCRIPTOR_DIM = 128;
 
 class FeatureDescriptor {
 public:
-	void addDescriptor(const Mat& _descriptor);
+	void addDescriptor(const cv::Mat& _descriptor);
 	static double getDistance(const FeatureDescriptor& _descriptor1,
 		const FeatureDescriptor& _descriptor2,
 		const double _threshold);
-	vector<Mat> data;
+	std::vector<cv::Mat> data;
 };
 
 class FeatureController {
 public:
-	static void detect(const Mat& _grey_img,
-		vector<Point2>& _feature_points,
-		vector<FeatureDescriptor>& _feature_descriptors);
+	static void detect(const cv::Mat& _grey_img,
+		std::vector<Point2>& _feature_points,
+		std::vector<FeatureDescriptor>& _feature_descriptors);
 
 private:
 };

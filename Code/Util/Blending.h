@@ -10,15 +10,16 @@
 #define __UglyMan_Stitiching__Blending__
 
 #include "../Configure.h"
+using namespace cv;
 
 Mat getMatOfLinearBlendWeight(const Mat& image);
 
-vector<Mat> getMatsLinearBlendWeight(const vector<Mat>& images);
+std::vector<Mat> getMatsLinearBlendWeight(const std::vector<Mat>& images);
 
-Mat Blending(const vector<Mat>& images,
-	const vector<Point2>& origins,
+Mat Blending(const std::vector<Mat>& images,
+	const std::vector<Point2>& origins,
 	const Size2 target_size,
-	const vector<Mat>& weight_mask,
+	const std::vector<Mat>& weight_mask,
 	const bool ignore_weight_mask = true);
 
 #endif /* defined(__UglyMan_Stitiching__Blending__) */

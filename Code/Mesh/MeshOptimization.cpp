@@ -19,9 +19,9 @@ MeshOptimization::MeshOptimization(const MultiImages &_multi_images)
 	global_similarity_weight_beta = global_similarity_weight_gamma = 0;
 	global_rotation_method = GLOBAL_ROTATION_METHODS_SIZE;
 
-	alignment_equation = make_pair(0, 0);
-	local_similarity_equation = make_pair(0, 0);
-	global_similarity_equation = make_pair(0, 0);
+	alignment_equation = std::make_pair(0, 0);
+	local_similarity_equation = std::make_pair(0, 0);
+	global_similarity_equation = std::make_pair(0, 0);
 }
 
 void MeshOptimization::setWeightToAlignmentTerm(const double _weight)
@@ -75,8 +75,8 @@ enum GLOBAL_ROTATION_METHODS MeshOptimization::getGlobalRotationMethod() const
 	return global_rotation_method;
 }
 
-void MeshOptimization::reserveData(vector<Triplet<double>> &_triplets,
-								   vector<pair<int, double>> &_b_vector,
+void MeshOptimization::reserveData(std::vector<Triplet<double>> &_triplets,
+								   std::vector<std::pair<int, double>> &_b_vector,
 								   const int _start_index)
 {
 
@@ -110,8 +110,8 @@ void MeshOptimization::reserveData(vector<Triplet<double>> &_triplets,
 					  _start_index);
 }
 
-void MeshOptimization::reserveData_content(vector<Triplet<double>> &_triplets,
-										   vector<pair<int, double>> &_b_vector,
+void MeshOptimization::reserveData_content(std::vector<Triplet<double>> &_triplets,
+										   std::vector<std::pair<int, double>> &_b_vector,
 										   const int _start_index)
 {
 	int equation = _start_index;
@@ -150,29 +150,29 @@ void MeshOptimization::reserveData_content(vector<Triplet<double>> &_triplets,
 					  _start_index);
 }
 
-void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) const
+void MeshOptimization::prepareAlignmentTerm(std::vector<Triplet<double>> &_triplets) const
 {
 	if (alignment_equation.second)
 	{
 		// startIndex = 2
 		const int equation = alignment_equation.first;
 
-		const vector<vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = multi_images->getInterpolateVerticesOfMatchingPoints();
-		const vector<detail::MatchesInfo> &pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
-		const vector<pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
-		const vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
+		const std::vector<std::vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = multi_images->getInterpolateVerticesOfMatchingPoints();
+		const std::vector<detail::MatchesInfo> &pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
+		const std::vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
 
 		int eq_count = 0;
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 		{
-			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+			const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const int &m1 = match_pair.first, &m2 = match_pair.second;
 			const int pm_index = m1 * (int)multi_images->images_data.size() + m2;
 
 			double ransacDiffWeight = 1;
 
-			const vector<Indices> &polygons_indices_1 = multi_images->images_data[m1].mesh_2d->getPolygonsIndices();
-			const vector<Indices> &polygons_indices_2 = multi_images->images_data[m2].mesh_2d->getPolygonsIndices();
+			const std::vector<Indices> &polygons_indices_1 = multi_images->images_data[m1].mesh_2d->getPolygonsIndices();
+			const std::vector<Indices> &polygons_indices_2 = multi_images->images_data[m2].mesh_2d->getPolygonsIndices();
 
 			for (int j = 0; j < pairwise_matches[pm_index].matches.size(); ++j)
 			{
@@ -202,23 +202,23 @@ void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) 
 	}
 }
 
-void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
-											 vector<pair<int, double>> &_b_vector) const
+void MeshOptimization::prepareSimilarityTerm(std::vector<Triplet<double>> &_triplets,
+											 std::vector<std::pair<int, double>> &_b_vector) const
 {
 	const bool local_similarity_term = local_similarity_equation.second;
 	const bool global_similarity_term = global_similarity_equation.second;
 	if (local_similarity_term || global_similarity_term)
 	{
-		const vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
-		const vector<vector<double>> &images_grid_space_matching_pts_weight = multi_images->getImagesGridSpaceMatchingPointsWeight(global_similarity_weight_gamma);
-		const vector<SimilarityElements> &images_similarity_elements = multi_images->getImagesSimilarityElements(global_rotation_method);
+		const std::vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
+		const std::vector<std::vector<double>> &images_grid_space_matching_pts_weight = multi_images->getImagesGridSpaceMatchingPointsWeight(global_similarity_weight_gamma);
+		const std::vector<SimilarityElements> &images_similarity_elements = multi_images->getImagesSimilarityElements(global_rotation_method);
 		int eq_count = 0, eq_count_rotation = 0;
 		for (int i = 0; i < multi_images->images_data.size(); ++i)
 		{
-			const vector<Edge> &edges = multi_images->images_data[i].mesh_2d->getEdges();
-			const vector<Point2> &vertices = multi_images->images_data[i].mesh_2d->getVertices();
-			const vector<Indices> &v_neighbors = multi_images->images_data[i].mesh_2d->getVertexStructures();
-			const vector<Indices> &e_neighbors = multi_images->images_data[i].mesh_2d->getEdgeStructures();
+			const std::vector<Edge> &edges = multi_images->images_data[i].mesh_2d->getEdges();
+			const std::vector<Point2> &vertices = multi_images->images_data[i].mesh_2d->getVertices();
+			const std::vector<Indices> &v_neighbors = multi_images->images_data[i].mesh_2d->getVertexStructures();
+			const std::vector<Indices> &e_neighbors = multi_images->images_data[i].mesh_2d->getEdgeStructures();
 
 			const double similarity[DIMENSION_2D] = {
 				images_similarity_elements[i].scale * cos(images_similarity_elements[i].theta),
@@ -231,7 +231,7 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 				const Point2 &src = multi_images->images_data[i].mesh_2d->getVertices()[ind_e1];
 				const Point2 &dst = multi_images->images_data[i].mesh_2d->getVertices()[ind_e2];
 
-				set<int> point_ind_set;
+				std::set<int> point_ind_set;
 				for (int e = 0; e < EDGE_VERTEX_SIZE; ++e)
 				{
 					for (int v = 0; v < v_neighbors[edges[j].indices[e]].indices.size(); ++v)
@@ -245,7 +245,7 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 				}
 
 				Mat Et, E_Main(DIMENSION_2D, DIMENSION_2D, CV_64FC1), E((int)point_ind_set.size() * DIMENSION_2D, DIMENSION_2D, CV_64FC1);
-				set<int>::const_iterator it = point_ind_set.begin();
+				std::set<int>::const_iterator it = point_ind_set.begin();
 				for (int p = 0; it != point_ind_set.end(); ++p, ++it)
 				{
 					Point2 e = vertices[*it] - src;
@@ -336,26 +336,26 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 /// </summary>
 /// <param name="_triplets"></param>
 /// <param name="_b_vector"></param>
-void MeshOptimization::prepareContentPreservingTerm(vector<Triplet<double>> &_triplets,
-													vector<pair<int, double>> &_b_vector) const
+void MeshOptimization::prepareContentPreservingTerm(std::vector<Triplet<double>> &_triplets,
+													std::vector<std::pair<int, double>> &_b_vector) const
 {
 	if (content_preserving_equation.second)
 	{
 		// Linear sampling point coordinates are converted to grid interpolation format.
-		const vector<vector<vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation();
+		const std::vector<std::vector<std::vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation();
 
-		const vector<vector<vector<double>>> &images_samples_weight = multi_images->getSamplesWeight();
+		const std::vector<std::vector<std::vector<double>>> &images_samples_weight = multi_images->getSamplesWeight();
 		int sampleCount = 0;
 
-		const vector<vector<vector<pair<double, double>>>> &content_term_uv = multi_images->getTermUV();
+		const std::vector<std::vector<std::vector<std::pair<double, double>>>> &content_term_uv = multi_images->getTermUV();
 
-		const vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
+		const std::vector<int> &images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
 
 		int eq_count = 0;
 		for (int i = 0; i < multi_images->images_data.size(); i++)
 		{
 
-			const vector<Indices> &poly_vertices_index = multi_images->images_data[i].mesh_2d->getPolygonsIndices();
+			const std::vector<Indices> &poly_vertices_index = multi_images->images_data[i].mesh_2d->getPolygonsIndices();
 
 			for (int j = 0; j < content_interpolation[i].size(); j++)
 			{
@@ -439,7 +439,7 @@ void MeshOptimization::prepareContentPreservingTerm(vector<Triplet<double>> &_tr
 				}
 			}
 		}
-		cout << "Sample num:" << sampleCount << endl;
+		std::cout << "Sample num:" << sampleCount << std::endl;
 		assert(eq_count == content_preserving_equation.second);
 	}
 }
@@ -448,14 +448,14 @@ int MeshOptimization::getAlignmentTermEquationsCount() const
 {
 	int result = 0;
 
-	const vector<pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
+	const std::vector<std::pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
 
-	const vector<detail::MatchesInfo> &pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
+	const std::vector<detail::MatchesInfo> &pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
 
 	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 	{
 
-		const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+		const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 		const int &m1 = match_pair.first, &m2 = match_pair.second;
 		const int pm_index = m1 * (int)multi_images->images_data.size() + m2;
 
@@ -490,9 +490,9 @@ int MeshOptimization::getEdgeNeighborVerticesCount() const
 	for (int i = 0; i < multi_images->images_data.size(); ++i)
 	{
 
-		const vector<Edge> &edges = multi_images->images_data[i].mesh_2d->getEdges();
+		const std::vector<Edge> &edges = multi_images->images_data[i].mesh_2d->getEdges();
 
-		const vector<Indices> &v_neighbors = multi_images->images_data[i].mesh_2d->getVertexStructures();
+		const std::vector<Indices> &v_neighbors = multi_images->images_data[i].mesh_2d->getVertexStructures();
 
 		for (int j = 0; j < edges.size(); ++j)
 		{
@@ -515,7 +515,7 @@ int MeshOptimization::getContentPreservingTermEquationCount() const
 {
 	int result = 0;
 	// Get grid vertex interpolation data type data of all sampling points.
-	const vector<vector<vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation();
+	const std::vector<std::vector<std::vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation();
 	for (int i = 0; i < content_interpolation.size(); i++) // pic
 	{
 		for (int j = 0; j < content_interpolation[i].size(); j++) // lines
@@ -528,8 +528,8 @@ int MeshOptimization::getContentPreservingTermEquationCount() const
 	return result * DIMENSION_2D;
 }
 
-vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triplet<double>> &_triplets,
-																   const vector<pair<int, double>> &_b_vector) const
+std::vector<std::vector<Point2>> MeshOptimization::getImageVerticesBySolving(std::vector<Triplet<double>> &_triplets,
+																   const std::vector<std::pair<int, double>> &_b_vector) const
 {
 
 	int equations;
@@ -548,7 +548,7 @@ vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triple
 
 #ifndef DP_NO_LOG
 	auto start = std::chrono::high_resolution_clock::now();
-	cout << "A = [" << equations << ", " << getVerticesCount() << "]" << endl;
+	std::cout << "A = [" << equations << ", " << getVerticesCount() << "]" << std::endl;
 #endif
 	A.setFromTriplets(_triplets.begin(), _triplets.end());
 	for (int i = 0; i < _b_vector.size(); ++i)
@@ -569,11 +569,11 @@ vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triple
 	duration_s = end - start;
 	// TODO: use C++20 print instead in future
 	printf("[TIME] %.4fs : %s\n", duration_s.count(), "Initial A matrix");
-	cout << "#Iterations:     " << lscg.iterations() << endl;
-	cout << "Estimated error: " << lscg.error() << endl;
+	std::cout << "#Iterations:     " << lscg.iterations() << std::endl;
+	std::cout << "Estimated error: " << lscg.error() << std::endl;
 #endif
 
-	vector<vector<Point2>> vertices;
+	std::vector<std::vector<Point2>> vertices;
 	vertices.resize(multi_images->images_data.size());
 	for (int i = 0, x_index = 0; i < vertices.size(); ++i)
 	{

@@ -8,6 +8,6 @@
 
 #include "ErrorController.h"
 
-void printError(const string _error) {
-	cerr << "[ERROR] " << _error << endl;
+void printError(const std::string _error) {
+	std::cerr << "[ERROR] " << _error << std::endl;
 }

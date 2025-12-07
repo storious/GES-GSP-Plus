@@ -28,12 +28,12 @@ void NISwGSP_Stitching::setWeightToContentPreservingTerm(const double _weight)
 	MeshOptimization::setWeightToContentPreservingTerm(_weight);
 }
 
-Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, vector<vector<Point2>> &original_vertices)
+Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, std::vector<std::vector<Point2>> &original_vertices)
 {
 	const MultiImages &multi_images = getMultiImages();
 
-	vector<Triplet<double>> triplets;
-	vector<pair<int, double>> b_vector;
+	std::vector<Triplet<double>> triplets;
+	std::vector<std::pair<int, double>> b_vector;
 
 	reserveData(triplets, b_vector, DIMENSION_2D);
 
@@ -58,12 +58,12 @@ Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, vector<vecto
 	return result;
 }
 
-Mat NISwGSP_Stitching::solve_content(const BLENDING_METHODS &_blend_method, vector<vector<Point2>> &original_vertices)
+Mat NISwGSP_Stitching::solve_content(const BLENDING_METHODS &_blend_method, std::vector<std::vector<Point2>> &original_vertices)
 {
 	const MultiImages &multi_images = getMultiImages();
 
-	vector<Triplet<double>> triplets;
-	vector<pair<int, double>> b_vector;
+	std::vector<Triplet<double>> triplets;
+	std::vector<std::pair<int, double>> b_vector;
 
 	reserveData_content(triplets, b_vector, DIMENSION_2D);
 
@@ -91,11 +91,11 @@ Mat NISwGSP_Stitching::solve_content(const BLENDING_METHODS &_blend_method, vect
 	return result;
 }
 
-void NISwGSP_Stitching::writeImage(const Mat &_image, const string _blend_method_name) const
+void NISwGSP_Stitching::writeImage(const Mat &_image, const std::string _blend_method_name) const
 {
 	const MultiImages &multi_images = getMultiImages();
 	const Parameter &parameter = multi_images.parameter;
-	string file_name = parameter.file_name;
+	std::string file_name = parameter.file_name;
 
 	if (_image.empty())
 	{
@@ -121,19 +121,19 @@ void NISwGSP_Stitching::writeImage(const Mat &_image, const string _blend_method
 /// <summary>
 /// Assessment
 /// </summary>
-void NISwGSP_Stitching::assessment(const vector<vector<Point2>> original_vertices)
+void NISwGSP_Stitching::assessment(const std::vector<std::vector<Point2>> original_vertices)
 {
 	double RMSE = getRMSE(original_vertices);
 	// MDR
-	pair<double, double> W_Residual = getWarpingResidual(original_vertices);
+	std::pair<double, double> W_Residual = getWarpingResidual(original_vertices);
 }
 
-pair<double, double> NISwGSP_Stitching::getWarpingResidual(vector<vector<Point2>> _vertices)
+std::pair<double, double> NISwGSP_Stitching::getWarpingResidual(std::vector<std::vector<Point2>> _vertices)
 {
 	return getMultiImages().getWarpingResidual(_vertices);
 }
 
-double NISwGSP_Stitching::getRMSE(vector<vector<Point2>> _vertices)
+double NISwGSP_Stitching::getRMSE(std::vector<std::vector<Point2>> _vertices)
 {
 	return getMultiImages().getRMSE(_vertices);
 }

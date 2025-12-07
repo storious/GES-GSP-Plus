@@ -216,11 +216,11 @@ void Line_reflect(Mat& inputarray, Mat& outputarray)
 void Delete_smallregions(Mat& pSrc, Mat& pDst)
 {
 
-	vector<vector<Point>> contours;
-	vector<Vec4i> hierarchy;
+	std::vector<std::vector<Point>> contours;
+	std::vector<Vec4i> hierarchy;
 	findContours(pSrc, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE);
 
-	vector<vector<Point>>::iterator k;
+	std::vector<std::vector<Point>>::iterator k;
 
 	for (k = contours.begin(); k != contours.end();)
 	{

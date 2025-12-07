@@ -10,10 +10,10 @@
 
 namespace fs = std::filesystem; // alias
 
-vector<string> getImageFileFullNamesInDir(const string &dir_name)
+std::vector<std::string> getImageFileFullNamesInDir(const std::string &dir_name)
 {
-	vector<string> result;
-	const vector<string> image_formats = {
+	std::vector<std::string> result;
+	const std::vector<std::string> image_formats = {
 		".bmp", ".dib",
 		".jpeg", ".jpg", ".jpe", ".JPG",
 		".jp2",
@@ -30,7 +30,7 @@ vector<string> getImageFileFullNamesInDir(const string &dir_name)
 			// ensure not a subdirectory
 			if (entry.is_regular_file())
 			{
-				string file_ext = entry.path().extension().string();
+				std::string file_ext = entry.path().extension().string();
 				// ignore lower/upper case
 				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(), ::tolower);
 
@@ -48,18 +48,18 @@ vector<string> getImageFileFullNamesInDir(const string &dir_name)
 	}
 	catch (const fs::filesystem_error &e)
 	{
-		printError(string("F(getImageFileFullNamesInDir) ") + e.what());
+		printError(std::string("F(getImageFileFullNamesInDir) ") + e.what());
 	}
 	return result;
 }
 
-bool isFileExist(const string &name)
+bool isFileExist(const std::string &name)
 {
 	// C++17 style
 	return fs::exists(name);
 }
 
-Parameter::Parameter(const string &_file_name)
+Parameter::Parameter(const std::string &_file_name)
 {
 
 	file_name = _file_name;
@@ -107,15 +107,15 @@ Parameter::Parameter(const string &_file_name)
 		for (int i = 0; i < images_count; ++i)
 		{
 			images_match_graph_manually[i].resize(images_count, false);
-			vector<int> labels = input_parser.getVec<int>("matching_graph_image_edges-" + to_string(i), false);
+			std::vector<int> labels = input_parser.getVec<int>("matching_graph_image_edges-" + std::to_string(i), false);
 			for (int j = 0; j < labels.size(); ++j)
 			{
 				images_match_graph_manually[i][labels[j]] = true;
 			}
 		}
 
-		queue<int> que;
-		vector<bool> label(images_count, false);
+		std::queue<int> que;
+		std::vector<bool> label(images_count, false);
 		que.push(center_image_index);
 		while (que.empty() == false)
 		{
@@ -136,14 +136,14 @@ Parameter::Parameter(const string &_file_name)
 		/*************/
 
 #ifndef DP_NO_LOG
-		cout << "center_image_index = " << center_image_index << endl;
-		cout << "center_image_rotation_angle = " << center_image_rotation_angle << endl;
-		cout << "images_count = " << images_count << endl;
+		std::cout << "center_image_index = " << center_image_index << std::endl;
+		std::cout << "center_image_rotation_angle = " << center_image_rotation_angle << std::endl;
+		std::cout << "images_count = " << images_count << std::endl;
 #endif
 	}
 }
 
-const vector<vector<bool>> &Parameter::getImagesMatchGraph() const
+const std::vector<std::vector<bool>> &Parameter::getImagesMatchGraph() const
 {
 	if (images_match_graph_manually.empty())
 	{
@@ -153,11 +153,11 @@ const vector<vector<bool>> &Parameter::getImagesMatchGraph() const
 	return images_match_graph_manually;
 }
 
-const vector<pair<int, int>> &Parameter::getImagesMatchGraphPairList() const
+const std::vector<std::pair<int, int>> &Parameter::getImagesMatchGraphPairList() const
 {
 	if (images_match_graph_pair_list.empty())
 	{
-		const vector<vector<bool>> &images_match_graph = getImagesMatchGraph();
+		const std::vector<std::vector<bool>> &images_match_graph = getImagesMatchGraph();
 		for (int i = 0; i < images_match_graph.size(); ++i)
 		{
 			for (int j = 0; j < images_match_graph[i].size(); ++j)

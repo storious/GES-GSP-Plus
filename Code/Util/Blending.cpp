@@ -21,8 +21,8 @@ Mat getMatOfLinearBlendWeight(const Mat& image) {
 }
 
 
-vector<Mat> getMatsLinearBlendWeight(const vector<Mat>& images) {
-	vector<Mat> result;
+std::vector<Mat> getMatsLinearBlendWeight(const std::vector<Mat>& images) {
+	std::vector<Mat> result;
 	result.reserve(images.size());
 	for (int i = 0; i < images.size(); ++i) {
 		result.emplace_back(getMatOfLinearBlendWeight(images[i]));
@@ -30,15 +30,15 @@ vector<Mat> getMatsLinearBlendWeight(const vector<Mat>& images) {
 	return result;
 }
 
-Mat Blending(const vector<Mat>& images,
-	const vector<Point2>& origins,
+Mat Blending(const std::vector<Mat>& images,
+	const std::vector<Point2>& origins,
 	const Size2 target_size,
-	const vector<Mat>& weight_mask,
+	const std::vector<Mat>& weight_mask,
 	const bool ignore_weight_mask) {
 
 	Mat result = Mat::zeros(round(max(target_size.height, 0.0f)), round(max(target_size.width, 0.0f)), CV_8UC4);
 
-	vector<Rect2> rects;
+	std::vector<Rect2> rects;
 	rects.reserve(origins.size());
 	for (int i = 0; i < origins.size(); ++i) {
 		rects.emplace_back(origins[i], images[i].size());

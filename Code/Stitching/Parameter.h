@@ -7,24 +7,24 @@
 // 	storious modified
 //
 
-#ifndef __UglyMan_Stitiching__Parameter__
-#define __UglyMan_Stitiching__Parameter__
+#ifndef __UglyMan_Stitching__Parameter__
+#define __UglyMan_Stitching__Parameter__
 
 #include <queue>
 #include <filesystem>
 #include "../Configure.h"
-#include "../Util/InputParser.h"
+#include "Util/InputParser.h"
 
 
 class Parameter {
 public:
-	Parameter(const string& _file_name);
+	Parameter(const std::string& _file_name);
 
-	string file_name, file_dir;
-	string stitching_parse_file_name;
+	std::string file_name, file_dir;
+	std::string stitching_parse_file_name;
 
-	string result_dir, debug_dir;
-	vector<string> image_file_full_names;
+	std::string result_dir, debug_dir;
+	std::vector<std::string> image_file_full_names;
 	/* configure */
 	int grid_size;
 	int down_sample_image_size;
@@ -39,12 +39,12 @@ public:
 	int center_image_index;
 	double center_image_rotation_angle;
 
-	const vector<vector<bool> >& getImagesMatchGraph() const;
-	const vector<pair<int, int> >& getImagesMatchGraphPairList() const;
+	const std::vector<std::vector<bool> >& getImagesMatchGraph() const;
+	const std::vector<std::pair<int, int> >& getImagesMatchGraphPairList() const;
 private:
-	mutable vector<vector<bool> >   images_match_graph_manually;
-	mutable vector<vector<bool> >   images_match_graph_automatically; /* TODO */
-	mutable vector<pair<int, int> > images_match_graph_pair_list;
+	mutable std::vector<std::vector<bool> >   images_match_graph_manually;
+	mutable std::vector<std::vector<bool> >   images_match_graph_automatically; /* TODO */
+	mutable std::vector<std::pair<int, int> > images_match_graph_pair_list;
 };
 
-#endif /* defined(__UglyMan_Stitiching__Parameter__) */
+#endif /* defined(__UglyMan_Stitching__Parameter__) */

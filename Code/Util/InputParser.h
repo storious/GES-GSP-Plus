@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__InputParser__
-#define __UglyMan_Stitiching__InputParser__
+#ifndef __UglyMan_Stitching__InputParser__
+#define __UglyMan_Stitching__InputParser__
 
 #include <iostream>
 #include <fstream>
@@ -15,23 +15,21 @@
 #include <vector>
 #include <map>
 
-#include "../Debugger/ErrorController.h"
-
-using namespace std;
+#include "Debugger/ErrorController.h"
 
 class InputParser {
 public:
 	template <typename T>
-	T get(const string& key, const T* ptr = NULL) const;
+	T get(const std::string& key, const T* ptr = NULL) const;
 
 	template <typename T>
-	vector<T> getVec(const string& key,
+	std::vector<T> getVec(const std::string& key,
 		const bool sure_exist = true) const;
 
-	InputParser(const string& file_name);
+	InputParser(const std::string& file_name);
 private:
-	map<string, string> data;
+	std::map<std::string, std::string> data;
 
 };
 
-#endif /* defined(__UglyMan_Stitiching__InputParser__) */
+#endif /* defined(__UglyMan_Stitching__InputParser__) */

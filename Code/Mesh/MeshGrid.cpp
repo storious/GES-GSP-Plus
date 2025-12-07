@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#include "./MeshGrid.h"
-#include "./Mesh2D.h"
+#include "MeshGrid.h"
 
 const int GRID_VERTEX_SIZE = 4;
 
@@ -15,7 +14,7 @@ MeshGrid::MeshGrid(const int _cols, const int _rows) : Mesh2D(_cols, _rows) {
 
 }
 
-const vector<Point2>& MeshGrid::getVertices() const {
+const std::vector<Point2>& MeshGrid::getVertices() const {
 	if (vertices.empty()) {
 		const int memory = (nh + 1) * (nw + 1);
 		vertices.reserve(memory);
@@ -29,9 +28,9 @@ const vector<Point2>& MeshGrid::getVertices() const {
 	return vertices;
 }
 
-const vector<Edge>& MeshGrid::getEdges() const {
+const std::vector<Edge>& MeshGrid::getEdges() const {
 	if (edges.empty()) {
-		const vector<Point2i> nexts = { Point2i(1, 0), Point2i(0, 1) };
+		const std::vector<Point2i> nexts = { Point2i(1, 0), Point2i(0, 1) };
 		const int memory = DIMENSION_2D * nh * nw + nh + nw;
 		edges.reserve(memory);
 		for (int h = 0; h <= nh; ++h) {
@@ -51,7 +50,7 @@ const vector<Edge>& MeshGrid::getEdges() const {
 	return edges;
 }
 
-const vector<Indices>& MeshGrid::getPolygonsIndices() const {
+const std::vector<Indices>& MeshGrid::getPolygonsIndices() const {
 	if (polygons_indices.empty()) {
 		const Point2i nexts[GRID_VERTEX_SIZE] = {
 			Point2i(0, 0), Point2i(1, 0), Point2i(1, 1), Point2i(0, 1)
@@ -76,9 +75,9 @@ const vector<Indices>& MeshGrid::getPolygonsIndices() const {
 }
 
 
-const vector<Indices>& MeshGrid::getPolygonsNeighbors() const {
+const std::vector<Indices>& MeshGrid::getPolygonsNeighbors() const {
 	if (polygons_neighbors.empty()) {
-		const vector<Point2i> nexts = {
+		const std::vector<Point2i> nexts = {
 			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1)
 		};
 		const int memory = nh * nw;
@@ -100,9 +99,9 @@ const vector<Indices>& MeshGrid::getPolygonsNeighbors() const {
 	}
 	return polygons_neighbors;
 }
-const vector<Indices>& MeshGrid::getPolygonsEdges() const {
+const std::vector<Indices>& MeshGrid::getPolygonsEdges() const {
 	if (polygons_edges.empty()) {
-		const vector<int> nexts = {
+		const std::vector<int> nexts = {
 			0, 1, 3, nw * 2 + 1
 		};
 		const int memory = nh * nw;
@@ -126,9 +125,9 @@ const vector<Indices>& MeshGrid::getPolygonsEdges() const {
 }
 
 
-const vector<Indices>& MeshGrid::getVertexStructures() const {
+const std::vector<Indices>& MeshGrid::getVertexStructures() const {
 	if (vertex_structures.empty()) {
-		const vector<Point2i> nexts = {
+		const std::vector<Point2i> nexts = {
 			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1)
 		};
 		const int memory = (nh + 1) * (nw + 1);
@@ -150,10 +149,10 @@ const vector<Indices>& MeshGrid::getVertexStructures() const {
 	}
 	return vertex_structures;
 }
-const vector<Indices>& MeshGrid::getEdgeStructures() const {
+const std::vector<Indices>& MeshGrid::getEdgeStructures() const {
 	if (edge_structures.empty()) {
-		const vector<Point2i>         nexts = { Point2i(1,  0), Point2i(0, 1) };
-		const vector<Point2i> grid_neighbor = { Point2i(0, -1), Point2i(-1, 0) };
+		const std::vector<Point2i>         nexts = { Point2i(1,  0), Point2i(0, 1) };
+		const std::vector<Point2i> grid_neighbor = { Point2i(0, -1), Point2i(-1, 0) };
 		const int memory = DIMENSION_2D * nh * nw + nh + nw;
 		edge_structures.resize(memory);
 		int index = 0;
@@ -179,7 +178,7 @@ const vector<Indices>& MeshGrid::getEdgeStructures() const {
 	return edge_structures;
 }
 
-const vector<Indices>& MeshGrid::getTriangulationIndices() const {
+const std::vector<Indices>& MeshGrid::getTriangulationIndices() const {
 	if (triangulation_indices.empty()) {
 		triangulation_indices.emplace_back(0, 1, 2);
 		triangulation_indices.emplace_back(0, 2, 3);
@@ -191,7 +190,7 @@ const int& MeshGrid::getPolygonVerticesCount() const {
 	return GRID_VERTEX_SIZE;
 }
 
-const vector<int>& MeshGrid::getBoundaryVertexIndices() const {
+const std::vector<int>& MeshGrid::getBoundaryVertexIndices() const {
 	if (boundary_vertex_indices.empty()) {
 		const int memory = DIMENSION_2D * (nw + nh) + 1;
 		boundary_vertex_indices.reserve(memory);
@@ -214,7 +213,7 @@ const vector<int>& MeshGrid::getBoundaryVertexIndices() const {
 	return boundary_vertex_indices;
 }
 
-const vector<int>& MeshGrid::getBoundaryEdgeIndices() const {
+const std::vector<int>& MeshGrid::getBoundaryEdgeIndices() const {
 	if (boundary_edge_indices.empty()) {
 		const int memory = DIMENSION_2D * (nh + nw);
 		boundary_edge_indices.reserve(memory);
@@ -239,17 +238,17 @@ template InterpolateVertex MeshGrid::getInterpolateVertexTemplate<double>(const 
 
 template <typename T>
 InterpolateVertex MeshGrid::getInterpolateVertexTemplate(const Point_<T>& _p) const {
-	const vector<Point2>& vertices = getVertices();
-	const vector<Indices>& grids = getPolygonsIndices();
+	const std::vector<Point2>& vertices = getVertices();
+	const std::vector<Indices>& grids = getPolygonsIndices();
 	const int grid_index = getGridIndexOfPoint(_p);
 	const Indices& g = grids[grid_index];
 
-	const vector<int> diagonal_indices = { 2, 3, 0, 1 }; /* 0 1    2 3
+	const std::vector<int> diagonal_indices = { 2, 3, 0, 1 }; /* 0 1    2 3
 															  ->
 														  3 2    1 0 */
 	assert(g.indices.size() == GRID_VERTEX_SIZE);
 
-	vector<double> weights(GRID_VERTEX_SIZE);
+	std::vector<double> weights(GRID_VERTEX_SIZE);
 	double sum_inv = 0;
 	for (int i = 0; i < diagonal_indices.size(); ++i) {
 		//distX, distY

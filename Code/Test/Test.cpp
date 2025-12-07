@@ -6,7 +6,6 @@
 #include <Eigen/Geometry> 
 
 using namespace cv;
-using namespace std;
 
 /// <summary>
 /// 测试三角形数学公式
@@ -19,8 +18,8 @@ int TestSP::testTriangle(double startX = 0, double startY = 0, double endX = 6, 
 	double x1 = startX, y1 = startY; //start
 	double x2 = endX, y2 = endY; //end
 	double x3 = sampleX, y3 = sampleY; //sample
-	cout << "采样点X" << sampleX << endl;
-	cout << "采样点Y" << sampleY << endl;
+	std::cout << "采样点X" << sampleX << std::endl;
+	std::cout << "采样点Y" << sampleY << std::endl;
 
 	//1.三角形3个点. 起始点|终点|采样点
 	Point2f a(x1, y1), b(x2, y2), c(x3, y3);
@@ -57,26 +56,26 @@ int TestSP::testTriangle(double startX = 0, double startY = 0, double endX = 6, 
 	else {
 		v = -v;
 	}
-	cout << "v:" << v << endl;
-	cout << "u:" << u << endl;
+	std::cout << "v:" << v << std::endl;
+	std::cout << "u:" << u << std::endl;
 	//7.u,v计算完成,扭曲前数据准备完成.
 
 	//8.根据start,end,计算出样本点.
 	double predictX3 = (1 - u) * x1 - v * y1 + u * x2 + v * y2;
 	double predictY3 = (v * x1 + (1 - u) * y1 - v * x2 + u * y2);
-	cout << "预测x:" << predictX3 << endl;
-	cout << "预测y:" << predictY3 << endl;
+	std::cout << "预测x:" << predictX3 << std::endl;
+	std::cout << "预测y:" << predictY3 << std::endl;
 
-	cout << "时间:" << clock() - clockStart << endl;
+	std::cout << "时间:" << clock() - clockStart << std::endl;
 	return 0;
 }
 
 
 void TestSP::testContours()
 {
-	string path = R"(F:\Projects\C++\02.jpg)";
+	std::string path = R"(F:\Projects\C++\02.jpg)";
 	Mat imgRes = imread(path, 1);
-	cout << imgRes.rows << "  " << imgRes.cols << endl;
+	std::cout << imgRes.rows << "  " << imgRes.cols << std::endl;
 
 	Mat image;
 	//1.调整到HED规定图片大小.
@@ -131,8 +130,8 @@ void TestSP::testContours()
 
 
 	//5.对细化后的边缘图像进行轮廓提取
-	vector<vector<Point>> contours;
-	vector<Vec4i> hierarchy;
+	std::vector<std::vector<Point>> contours;
+	std::vector<Vec4i> hierarchy;
 
 	findContours(image, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE, Point());
 	Mat imageContours = Mat::zeros(image.size(), CV_8UC3);//输出图
@@ -146,7 +145,7 @@ void TestSP::testContours()
 
 
 	//5.1将同方向相近线段连接
-	vector<vector<Point>> contoursLineConnected;
+	std::vector<std::vector<Point>> contoursLineConnected;
 	connectSmallLine1(contours, hierarchy, contoursLineConnected);
 
 	//5.2将拐度较大处断
@@ -158,9 +157,9 @@ void TestSP::testContours()
 	//大小阈值
 	double min_size = min(image.cols, image.rows) * 0.1;
 	//存储排除后的曲线集.
-	vector<vector<Point>> res;
+	std::vector<std::vector<Point>> res;
 	Rect tempRect;
-	for (vector<vector<Point>>::iterator iterator = contoursLineConnected.begin(); iterator != contoursLineConnected.end(); ++iterator) {
+	for (std::vector<std::vector<Point>>::iterator iterator = contoursLineConnected.begin(); iterator != contoursLineConnected.end(); ++iterator) {
 		tempRect = boundingRect(*iterator);
 		float maxLength = max(tempRect.width, tempRect.height);
 		if (maxLength <= min_size) {
@@ -177,15 +176,15 @@ void TestSP::testContours()
 	}
 
 	//6.1添加直线数据
-	vector<Vec4f> lines = findLine1(gray);
+	std::vector<Vec4f> lines = findLine1(gray);
 
 
 	//7.取采样点
 	Mat imageSamples = Mat::zeros(image.size(), CV_8UC3);//输出图
 	//存放所有曲线的起终点,采样点数据.0:起点,1:终点,之后是采样点.
-	vector<vector<Point>> samplesData;
+	std::vector<std::vector<Point>> samplesData;
 	samplesData.reserve(contoursLineConnected.size() + lines.size());
-	vector<double> weights;
+	std::vector<double> weights;
 	weights.reserve(contoursLineConnected.size() + lines.size());
 
 	//7.1直线采样
@@ -193,7 +192,7 @@ void TestSP::testContours()
 	double lineLength, lineSampleDistX, lineSampleDistY;
 	//分别为一条曲线点的数量,采样点个数,采样点间隔数
 	int lineSampleNum, index = 0;
-	for (vector<Vec4f>::iterator iterator = lines.begin(); iterator != lines.end(); ++iterator) {
+	for (std::vector<Vec4f>::iterator iterator = lines.begin(); iterator != lines.end(); ++iterator) {
 		Vec4f item = *iterator;
 		Point start = Point(item[0], item[1]);
 		Point end = Point(item[2], item[3]);
@@ -207,7 +206,7 @@ void TestSP::testContours()
 			continue;
 		}
 		//存放采样点,起终点.
-		vector<Point> itemLine;
+		std::vector<Point> itemLine;
 		//4.放入起点,终点
 		itemLine.reserve(lineSampleNum + 3);
 		itemLine.push_back(start);
@@ -269,7 +268,7 @@ void TestSP::testContours()
 	//分别为一条曲线点的数量,采样点个数,采样点间隔数
 	int contourSize, sampleNum, sampleDist;
 
-	for (vector<vector<Point>>::iterator iterator = res.begin(); iterator != res.end(); ++iterator) {
+	for (std::vector<std::vector<Point>>::iterator iterator = res.begin(); iterator != res.end(); ++iterator) {
 		//1.计算曲线长度
 		contourLength = arcLength(*iterator, true);
 		//2.根据总长度计算合适的采样点个数
@@ -284,7 +283,7 @@ void TestSP::testContours()
 		(*iterator).erase(unique((*iterator).begin(), (*iterator).end(), equalForPoint1), (*iterator).end());
 
 		//存放采样点,起终点.
-		vector<Point> itemLine;
+		std::vector<Point> itemLine;
 		//5.放入起点,终点
 		itemLine.reserve(sampleNum + 3);
 		itemLine.push_back((*iterator)[0]);
@@ -323,7 +322,7 @@ void TestSP::testContours()
 				//circle(imageSamples, samplesData[index][i], 6, s);
 			}
 		}
-		String weightStr = to_string(weights[index]);
+		String weightStr = std::to_string(weights[index]);
 		//putText(imageSamples, weightStr, samplesData[index][0], FONT_HERSHEY_COMPLEX, 0.35, Scalar(0, 255, 255));
 
 		for (int j = 0; j < (*iterator).size(); j++) {
@@ -340,8 +339,8 @@ void TestSP::testContours()
 }
 
 void TestSP::testLineProcess() {
-	string path_dir = R"(E:\TestImgs)";
-	vector<string> files;
+	std::string path_dir = R"(E:\TestImgs)";
+	std::vector<std::string> files;
 	//文件句柄  
 	long long hFile = 0;
 	//文件信息，_finddata_t需要io.h头文件  
@@ -367,7 +366,7 @@ void TestSP::testLineProcess() {
 	}
 
 	for (int i = 0; i < files.size(); i++) {
-		string path = path_dir + "\\" + files[i];
+		std::string path = path_dir + "\\" + files[i];
 		Mat image = imread(path);
 		cvtColor(image, image, COLOR_BGR2GRAY);
 		//4.1 角点检测
@@ -406,8 +405,8 @@ void TestSP::testLineProcess() {
 		}
 		imshow("image", image);
 		//5.对细化后的边缘图像进行轮廓提取
-		vector<vector<Point>> contours;
-		vector<Vec4i> hierarchy;
+		std::vector<std::vector<Point>> contours;
+		std::vector<Vec4i> hierarchy;
 
 		findContours(image, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE, Point());
 		Mat imageContours = Mat::zeros(image.size(), CV_8UC3);//输出图
@@ -421,18 +420,18 @@ void TestSP::testLineProcess() {
 
 
 		//5.2将同方向相近线段连接
-		vector<vector<Point>> contoursLineConnected;
+		std::vector<std::vector<Point>> contoursLineConnected;
 		connectSmallLine1(contours, hierarchy, contoursLineConnected);
 		//6.1 连接共线直线.
-		vector <double > lineslength; //每个线段的长度
-		vector<vector<Point>> static_sample; //每个线段一定要加的样本点位置
+		std::vector <double > lineslength; //每个线段的长度
+		std::vector<std::vector<Point>> static_sample; //每个线段一定要加的样本点位置
 		//存储排除后的曲线集.
-		vector<vector<Point>> res;
+		std::vector<std::vector<Point>> res;
 		res = connectCollineationLine1(contoursLineConnected, lineslength, static_sample, image.cols, image.rows);
 
 		//Mat imageSamples = Mat::zeros(image.size(), CV_8UC3);//输出图
 		int i_length = 0;
-		for (vector<vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i_length < lineslength.size(); ++iterator, i_length++) {
+		for (std::vector<std::vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i_length < lineslength.size(); ++iterator, i_length++) {
 			if (lineslength[i_length] <= 10) {
 				continue;
 			}
@@ -465,9 +464,9 @@ bool equalForPoint1(Point a, Point b) {
 /// <param name="contours"></param>
 /// <param name="hierarchy"></param>
 /// <param name="contoursConnected"></param>
-void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, vector<vector<Point>>& contoursConnected)
+void connectSmallLine1(std::vector<std::vector<Point>> contours, std::vector<Vec4i> hierarchy, std::vector<std::vector<Point>>& contoursConnected)
 {
-	for (vector<vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end(); ++iterator) {
+	for (std::vector<std::vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end(); ++iterator) {
 		sort((*iterator).begin(), (*iterator).end(), sortForPoint);
 		(*iterator).erase(unique((*iterator).begin(), (*iterator).end(), equalForPoint), (*iterator).end());
 	}
@@ -476,15 +475,15 @@ void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, 
 	double angleThrhold = (20.0 / 180) * M_PI;
 
 	//保存每条线的斜率
-	vector<double> angles;
+	std::vector<double> angles;
 	//保存每条线的两端点
-	vector< pair<Point, Point>> ses;
-	vector< pair<Point, Point>> minMaxs;
+	std::vector< std::pair<Point, Point>> ses;
+	std::vector< std::pair<Point, Point>> minMaxs;
 
 	//遍历所有线
-	for (vector<vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end();) {
+	for (std::vector<std::vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end();) {
 		//去掉边界点
-		for (vector<Point>::iterator iteratorItem = (*iterator).begin(); iteratorItem != (*iterator).end();) {
+		for (std::vector<Point>::iterator iteratorItem = (*iterator).begin(); iteratorItem != (*iterator).end();) {
 			if ((*iteratorItem).x <= 2 || (*iteratorItem).y <= 2) {
 				iteratorItem = (*iterator).erase(iteratorItem);
 			}
@@ -511,15 +510,15 @@ void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, 
 		}
 
 		//找到一条线的端点
-		pair<Point, Point> SEPoint = findStartEndPoint1(*iterator, line_para);
-		pair<Point, Point> mmPoint = findLineMinAndMax1(*iterator);
+		std::pair<Point, Point> SEPoint = findStartEndPoint1(*iterator, line_para);
+		std::pair<Point, Point> mmPoint = findLineMinAndMax1(*iterator);
 		ses.push_back(SEPoint);
 		minMaxs.push_back(mmPoint);
 		++iterator;
 	}
 
 	//记录邻接线的关系,存放index 
-	vector<vector<int>> connectIds;
+	std::vector<std::vector<int>> connectIds;
 	connectIds.resize(contours.size());
 
 	for (int j = 0; j < contours.size(); j++) {
@@ -528,7 +527,7 @@ void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, 
 				continue;
 			}
 			//角度符合?
-			if (abs(angles[j] - angles[k]) <= angleThrhold) {
+			if (std::abs(angles[j] - angles[k]) <= angleThrhold) {
 				//距离符合?
 				//if (isClose(ses[j], ses[k])) {
 				if (isExtend(minMaxs[j], minMaxs[k], ses[j], ses[k])) {
@@ -544,7 +543,7 @@ void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, 
 		if (connectIds[j].size() <= 0) {
 			continue;
 		}
-		pair<Point, Point> SEPoint, SEPoint2, mmPoint, mmPoint2;
+		std::pair<Point, Point> SEPoint, SEPoint2, mmPoint, mmPoint2;
 		for (int k = 0; k < connectIds[j].size(); k++) {
 			mmPoint = findLineMinAndMax1(contours[j]);
 			mmPoint2 = findLineMinAndMax1(contours[connectIds[j][k]]);
@@ -574,32 +573,32 @@ void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, 
 /// <param name="input"></param>
 /// <param name="lengths_out"></param>
 /// <returns></returns>
-vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vector <double >& lengths_out, vector<vector<Point>>& static_sample_out, int image_width, int image_height) {
+std::vector<std::vector<Point>> connectCollineationLine1(std::vector<std::vector<Point>>& input, std::vector <double >& lengths_out, std::vector<std::vector<Point>>& static_sample_out, int image_width, int image_height) {
 
 	double threshold_r = 8;
 	double threshold_theta = 10 * M_PI / 180;
 
-	map<int, double> lengths;
+	std::map<int, double> lengths;
 	//存放每一条线的极坐标数据,已经对应samplesData的index
-	vector<pair<double, double>> linesPolarData;
+	std::vector<std::pair<double, double>> linesPolarData;
 	linesPolarData.reserve(input.size());
-	map<int, vector<Point>> static_sample;
+	std::map<int, std::vector<Point>> static_sample;
 
 	for (int i = 0; i < input.size(); i++) {
 		//拟合线段,转成极坐标,加入vector
 		Vec4f line_para;
 		fitLine(input[i], line_para, DIST_L2, 0, 1e-2, 1e-2);
-		pair<double, double> polarData = transRectangular2Polar(line_para, image_width, image_height);
+		std::pair<double, double> polarData = transRectangular2Polar(line_para, image_width, image_height);
 		linesPolarData.emplace_back(polarData);
 	}
 
 	//将共线的线 index 整合到二维表中.
-	vector<vector<int>> connectIndexs;
+	std::vector<std::vector<int>> connectIndexs;
 	connectIndexs.resize(linesPolarData.size());
 	for (int i = 0; i < linesPolarData.size(); i++) {
-		pair<double, double> itemPolarDataFirst = linesPolarData[i];
+		std::pair<double, double> itemPolarDataFirst = linesPolarData[i];
 		for (int j = i + 1; j < linesPolarData.size(); j++) {
-			pair<double, double> itemPolarDataSecond = linesPolarData[j];
+			std::pair<double, double> itemPolarDataSecond = linesPolarData[j];
 			if (abs(itemPolarDataFirst.first - itemPolarDataSecond.first) < threshold_r
 				&& abs(itemPolarDataFirst.second - itemPolarDataSecond.second) < threshold_theta) {
 				//属于共线;
@@ -615,7 +614,7 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 		//没有与其共线的
 		if (connectIndexs[j].size() <= 0) {
 			//算长度
-			map<int, double>::iterator length_j = lengths.find(j);
+			std::map<int, double>::iterator length_j = lengths.find(j);
 			if (length_j == lengths.end() || length_j->second == 0) {
 				Size2f size = minAreaRect(input[j]).size;
 				length = sqrt(size.width * size.width + size.height * size.height);
@@ -623,10 +622,10 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 			}
 
 			//将两端点设为采样点.
-			map<int, vector<Point>>::iterator sample_j = static_sample.find(j);
+			std::map<int, std::vector<Point>>::iterator sample_j = static_sample.find(j);
 			if (sample_j == static_sample.end() || sample_j->second.empty()) {
-				pair<Point, Point> points = findStartEndPoint1(input[j]);
-				vector<Point> samples;
+				std::pair<Point, Point> points = findStartEndPoint1(input[j]);
+				std::vector<Point> samples;
 				samples.emplace_back(points.first);
 				samples.emplace_back(points.second);
 				static_sample.insert({ j,samples });
@@ -635,24 +634,24 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 		}
 
 		//加上自身长度
-		map<int, double>::iterator length_j = lengths.find(j);
+		std::map<int, double>::iterator length_j = lengths.find(j);
 		if (length_j == lengths.end() || length_j->second == 0) {
 			Size2f size = minAreaRect(input[j]).size;
 			double l = sqrt(size.width * size.width + size.height * size.height);
 			length += l;
 		}
 		//加上自身的采样点
-		map<int, vector<Point>>::iterator sample_j = static_sample.find(j);
+		std::map<int, std::vector<Point>>::iterator sample_j = static_sample.find(j);
 		if (sample_j == static_sample.end() || sample_j->second.empty()) {
-			pair<Point, Point> points = findStartEndPoint1(input[j]);
-			vector<Point> samples;
+			std::pair<Point, Point> points = findStartEndPoint1(input[j]);
+			std::vector<Point> samples;
 			samples.emplace_back(points.first);
 			samples.emplace_back(points.second);
 			static_sample.insert({ j,samples });
 			sample_j = static_sample.find(j);
 		}
 
-		pair<Point, Point> mmPoint, mmPoint2;
+		std::pair<Point, Point> mmPoint, mmPoint2;
 		for (int k = 0; k < connectIndexs[j].size(); k++) {
 			if (input[connectIndexs[j][k]].empty()) {//已被被人抢走
 				continue;
@@ -662,10 +661,10 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 			mmPoint2 = findLineMinAndMax1(input[connectIndexs[j][k]]);
 			if (!isParallax1(mmPoint, mmPoint2)) {
 				//合并k的采样点
-				map<int, vector<Point>>::iterator sample_k = static_sample.find(connectIndexs[j][k]);
+				std::map<int, std::vector<Point>>::iterator sample_k = static_sample.find(connectIndexs[j][k]);
 				if (sample_k == static_sample.end() || sample_k->second.empty()) {
-					pair<Point, Point> points = findStartEndPoint1(input[connectIndexs[j][k]]);
-					vector<Point> samples;
+					std::pair<Point, Point> points = findStartEndPoint1(input[connectIndexs[j][k]]);
+					std::vector<Point> samples;
 					samples.emplace_back(points.first);
 					samples.emplace_back(points.second);
 					static_sample.insert({ connectIndexs[j][k],samples });
@@ -675,7 +674,7 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 				//合并数据
 				input[j].insert(input[j].end(), input[connectIndexs[j][k]].begin(), input[connectIndexs[j][k]].end());
 				//合并长度
-				map<int, double>::iterator length_k = lengths.find(connectIndexs[j][k]);
+				std::map<int, double>::iterator length_k = lengths.find(connectIndexs[j][k]);
 				if (length_k == lengths.end() || length_k->second == 0) {
 					Size2f size = minAreaRect(input[connectIndexs[j][k]]).size;
 					double l = sqrt(size.width * size.width + size.height * size.height);
@@ -693,7 +692,7 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 
 		lengths.insert({ j,length });
 	}
-	vector<vector<Point>> output;
+	std::vector<std::vector<Point>> output;
 	lengths_out.reserve(input.size());
 	static_sample_out.reserve(input.size());
 	output.reserve(input.size());
@@ -707,8 +706,8 @@ vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vec
 	return output;
 }
 
-pair<Point, Point> findLineMinAndMax1(vector<Point > contour) {
-	pair<Point, Point> pair;
+std::pair<Point, Point> findLineMinAndMax1(std::vector<Point > contour) {
+	std::pair<Point, Point> pair;
 	float minX, maxX, minY, maxY;
 	for (int i = 0; i < contour.size(); i++) {
 		Point item = contour[i];
@@ -742,9 +741,9 @@ pair<Point, Point> findLineMinAndMax1(vector<Point > contour) {
 /// </summary>
 /// <param name="contour"></param>
 /// <returns></returns>
-pair<Point, Point> findStartEndPoint1(vector<Point > contour) {
+std::pair<Point, Point> findStartEndPoint1(std::vector<Point > contour) {
 	if (contour.empty()) {
-		return pair<Point, Point>(Point(-99, -99), Point(-99, -99));
+		return std::pair<Point, Point>(Point(-99, -99), Point(-99, -99));
 	}
 	Vec4f line_para;
 	fitLine(contour, line_para, DIST_L2, 0, 1e-2, 1e-2);
@@ -756,19 +755,19 @@ pair<Point, Point> findStartEndPoint1(vector<Point > contour) {
 /// </summary>
 /// <param name="contour"></param>
 /// <returns></returns>
-pair<Point, Point> findStartEndPoint1(vector<Point > contour, Vec4i fitline) {
+std::pair<Point, Point> findStartEndPoint1(std::vector<Point > contour, Vec4i fitline) {
 	if (contour.empty()) {
-		return pair<Point, Point>(Point(-99, -99), Point(-99, -99));
+		return std::pair<Point, Point>(Point(-99, -99), Point(-99, -99));
 	}
 	int max = 0, min = 0;
 	if (fitline[0] != 0) {
 		double k = fitline[1] / fitline[0];
-		double angle = atan(k) * (180 / M_PI);
+		double angle = std::atan(k) * (180 / M_PI);
 
 		if (!(angle <= 95 && angle >= 85)) {//斜率不大
 			double b = fitline[3] - k * fitline[2];
 
-			vector<double> projPoints;
+			std::vector<double> projPoints;
 			projPoints.reserve(contour.size());
 
 			for (int i = 0; i < contour.size(); i++) {
@@ -811,10 +810,10 @@ pair<Point, Point> findStartEndPoint1(vector<Point > contour, Vec4i fitline) {
 
 
 
-	pair<Point, Point> pair;
-	pair.first = contour[min];
-	pair.second = contour[max];
-	return pair;
+	std::pair<Point, Point> pr;
+	pr.first = contour[min];
+	pr.second = contour[max];
+	return pr;
 	/*
 	//记录一点有几个相邻的点.
 	int count = 0;
@@ -878,7 +877,7 @@ double PointDist1(Point p1, Point p2) {
 /// <param name="mmpair1"></param>
 /// <param name="mmpair2"></param>
 /// <returns></returns>
-bool isParallax1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2) {
+bool isParallax1(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2) {
 	return false;
 	//距离阈值
 	double distThrhold = 18;
@@ -923,7 +922,7 @@ bool isParallax1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2) {
 /// 判断两线是否是延伸关系.
 /// </summary>
 /// <returns></returns>
-bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Point, Point> sepair1, pair<Point, Point> sepair2) {
+bool isExtend1(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2, std::pair<Point, Point> sepair1, std::pair<Point, Point> sepair2) {
 	//距离阈值
 	double distThrhold = 18;
 	double distThrholdRatio = 0.5;
@@ -933,13 +932,13 @@ bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Poin
 	float minX1 = mmpair1.first.x, maxX1 = mmpair1.first.y, minY1 = mmpair1.second.x, maxY1 = mmpair1.second.y;
 	float minX2 = mmpair2.first.x, maxX2 = mmpair2.first.y, minY2 = mmpair2.second.x, maxY2 = mmpair2.second.y;
 
-	float minX = min(abs(minX1 - maxX1), abs(minX2 - maxX2));
-	float minY = min(abs(minY1 - maxY1), abs(minY2 - maxY2));
+	float minX = std::min(std::abs(minX1 - maxX1), std::abs(minX2 - maxX2));
+	float minY = std::min(std::abs(minY1 - maxY1), std::abs(minY2 - maxY2));
 
-	float distx = min(maxX1, maxX2) - max(minX1, minX2);
-	if (max(minX1, minX2) < min(maxX1, maxX2)) {
+	float distx = std::min(maxX1, maxX2) - std::max(minX1, minX2);
+	if (std::max(minX1, minX2) < std::min(maxX1, maxX2)) {
 		//有交集
-		if (abs(distx) >= max(distUThreholdRatio * minX, distUThrehold)) {
+		if (std::abs(distx) >= std::max(distUThreholdRatio * minX, distUThrehold)) {
 			//相交太多,判断为不是延伸关系
 			return false;
 		}
@@ -947,16 +946,16 @@ bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Poin
 	}
 	else {
 		//无交集
-		if (abs(distx) >= max(distThrholdRatio * minX, distThrhold)) {
+		if (std::abs(distx) >=std::max(distThrholdRatio * minX, distThrhold)) {
 			//相差太远
 			return false;
 		}
 
 	}
-	float disty = min(maxY1, maxY2) - max(minY1, minY2);
-	if (max(minY1, minY2) < min(maxY1, maxY2)) {
+	float disty = std::min(maxY1, maxY2) - std::max(minY1, minY2);
+	if (std::max(minY1, minY2) < std::min(maxY1, maxY2)) {
 		//有交集
-		if (abs(disty) >= max(distUThreholdRatio * minY, distUThrehold)) {
+		if (std::abs(disty) >= std::max(distUThreholdRatio * minY, distUThrehold)) {
 			//相交太多,判断为不是延伸关系
 			return false;
 		}
@@ -964,7 +963,7 @@ bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Poin
 	}
 	else {
 		//无交集
-		if (abs(disty) >= max(distThrholdRatio * minY, distThrhold)) {
+		if (std::abs(disty) >= std::max(distThrholdRatio * minY, distThrhold)) {
 			//相差太远
 			return false;
 		}
@@ -985,40 +984,40 @@ bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Poin
 /// <param name="pair1"></param>
 /// <param name="pair2"></param>
 /// <returns></returns>
-bool isClose1(pair<Point, Point> pair1, pair<Point, Point> pair2) {
+bool isClose1(std::pair<Point, Point> pair1, std::pair<Point, Point> pair2) {
 	//距离阈值
 	double distThrhold = 14; // 
 	float distThrholdRadio = 0.5;
 
-	double minDist = min(PointDist(pair1.first, pair1.second), PointDist(pair2.first, pair2.second)) * distThrholdRadio;
+	double minDist = std::min(PointDist(pair1.first, pair1.second), PointDist(pair2.first, pair2.second)) * distThrholdRadio;
 
 	Point jFirst = pair1.first, jSecond = pair1.second;
 	Point kFirst = pair2.first, kSecond = pair2.second;
 	//有一对端点靠的近.
-	vector<double> dists;
+	std::vector<double> dists;
 	dists.emplace_back(PointDist(jFirst, kFirst));
 	dists.emplace_back(PointDist(jFirst, kSecond));
 	dists.emplace_back(PointDist(jSecond, kFirst));
 	dists.emplace_back(PointDist(jSecond, kSecond));
-	sort(dists.begin(), dists.end());
-	if (dists[0] <= max(distThrhold, minDist)) {//近点小于阈值,且原点大于两个长度和.保证了两线是延伸关系. && (*dists.end()) >= (PointDist(jFirst, jSecond) + PointDist(kFirst, kSecond))
+	std::sort(dists.begin(), dists.end());
+	if (dists[0] <= std::max(distThrhold, minDist)) {//近点小于阈值,且原点大于两个长度和.保证了两线是延伸关系. && (*dists.end()) >= (PointDist(jFirst, jSecond) + PointDist(kFirst, kSecond))
 		return true;
 	}
 	return false;
 }
 
 
-double getLineWeight1(vector<Point> line) {
+double getLineWeight1(std::vector<Point> line) {
 	double minWeight = 0.2;
 	RotatedRect rrect = minAreaRect(line);
 	Rect rect = rrect.boundingRect();
-	double ratio = min((double)rect.width, (double)rect.height) / max((double)rect.width, (double)rect.height);
+	double ratio = std::min((double)rect.width, (double)rect.height) / std::max((double)rect.width, (double)rect.height);
 	double weight = exp(log(minWeight) * ratio) + (1 - minWeight) / 2; // 控制weight在1.4--0.6
 	return weight;
 }
 
 
-vector<double> getCurvature(std::vector<cv::Point> const& vecContourPoints, int step)
+std::vector<double> getCurvature(std::vector<cv::Point> const& vecContourPoints, int step)
 {
 	std::vector< double > vecCurvature(vecContourPoints.size());
 
@@ -1093,17 +1092,17 @@ double dist(Point p, Vec4f l)
 	return h;
 }
 
-vector<Vec4f> delectParallaxAndNear(vector<Vec4f> lines) {
-	vector<Vec4f> linesRes;
+std::vector<Vec4f> delectParallaxAndNear(std::vector<Vec4f> lines) {
+	std::vector<Vec4f> linesRes;
 	linesRes.reserve(lines.size());
 	double thresholdSlop = 5;
 	double thresholdDist = 10;
-	vector<double> slop;
+	std::vector<double> slop;
 	slop.reserve(lines.size());
 	for (int i = 0; i < lines.size(); i++) {
 		slop.emplace_back((lines[i][3] - lines[i][1]) / (lines[i][2] - lines[i][0]));
 	}
-	sort(slop.begin(), slop.end());
+	std::sort(slop.begin(), slop.end());
 	for (int i = 0; i < slop.size(); i++) {
 		if (i == 0) {
 			linesRes.emplace_back(lines[i]);
@@ -1120,7 +1119,7 @@ vector<Vec4f> delectParallaxAndNear(vector<Vec4f> lines) {
 	return linesRes;
 }
 
-vector<Vec4f> findLine1(Mat& gray) {
+std::vector<Vec4f> findLine1(Mat& gray) {
 
 	GaussianBlur(gray, gray, Size(15, 15), 1, 1);
 	//大小阈值
@@ -1128,7 +1127,7 @@ vector<Vec4f> findLine1(Mat& gray) {
 	double min_size_grid = 1.41 * GRID_SIZE;
 	double min = max(min_size_grid, min_size_img);
 	Ptr<FastLineDetector> fld = createFastLineDetector(min, 1.414213538F, 50.0, 50.0, 3, true);
-	vector<Vec4f> lines_std;
+	std::vector<Vec4f> lines_std;
 	fld->detect(gray, lines_std);
 
 	//delectParallaxAndNear(lines_std);
@@ -1140,8 +1139,8 @@ vector<Vec4f> findLine1(Mat& gray) {
 	return lines_std;
 }
 
-vector<Point>& getVector() {
-	vector<Point> samples;
+std::vector<Point>& getVector() {
+	std::vector<Point> samples;
 	samples.emplace_back(1, 1);
 	samples.emplace_back(2, 2);
 	return samples;
@@ -1149,11 +1148,9 @@ vector<Point>& getVector() {
 
 void TestSP::testVector()
 {
-	vector<vector<Point>> sampleSS;
+	std::vector<std::vector<Point>> sampleSS;
 	sampleSS.resize(2);
 	sampleSS[1] = getVector();
-
-	cout << "d " << endl;
 }
 
 void TestSP::testNormalWayExtract()
@@ -1161,7 +1158,7 @@ void TestSP::testNormalWayExtract()
 	int threshold_value = 100;
 	int threshold_max = 255;
 
-	string path = R"(F:\Projects\C++\e-05.jpg)";
+	std::string path = R"(F:\Projects\C++\e-05.jpg)";
 	Mat imgRes = imread(path, 1);
 	imshow("1", imgRes);
 	Mat gray, image;
@@ -1171,8 +1168,8 @@ void TestSP::testNormalWayExtract()
 	Canny(gray, image, threshold_value, threshold_value * 2, 3, false);
 	imshow("canny detection", image);
 
-	vector<vector<Point>> contours;
-	vector<Vec4i> hierarchy;
+	std::vector<std::vector<Point>> contours;
+	std::vector<Vec4i> hierarchy;
 
 	findContours(image, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE, Point());
 	Mat imageContours = Mat::zeros(imgRes.size(), CV_8UC3);//输出图

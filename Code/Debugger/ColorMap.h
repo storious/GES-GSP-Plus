@@ -7,8 +7,8 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__ColorMap__
-#define __UglyMan_Stitiching__ColorMap__
+#ifndef __UglyMan_Stitching__ColorMap__
+#define __UglyMan_Stitching__ColorMap__
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -18,4 +18,4 @@ using namespace cv;
 
 Scalar getBlueToRedScalar(double v, double vmin = -1, double vmax = 1);
 
-#endif /* defined(__UglyMan_Stitiching_ColorMap__) */
+#endif /* defined(__UglyMan_Stitching_ColorMap__) */

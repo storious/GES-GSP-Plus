@@ -8,11 +8,11 @@
 
 #include "APAP_Stitching.h"
 
-void APAP_Stitching::apap_project(const vector<Point2> &_p_src,
-								  const vector<Point2> &_p_dst,
-								  const vector<Point2> &_src,
-								  vector<Point2> &_dst,
-								  vector<Mat> &_homographies)
+void APAP_Stitching::apap_project(const std::vector<Point2> &_p_src,
+								  const std::vector<Point2> &_p_dst,
+								  const std::vector<Point2> &_src,
+								  std::vector<Point2> &_dst,
+								  std::vector<Mat> &_homographies)
 {
 
 	if (_p_src.empty() || _p_dst.empty() || _p_src.size() != _p_dst.size())
@@ -23,7 +23,7 @@ void APAP_Stitching::apap_project(const vector<Point2> &_p_src,
 		_homographies.clear();
 		return;
 	}
-	vector<Point2> nf1, nf2, cf1, cf2;
+	std::vector<Point2> nf1, nf2, cf1, cf2;
 
 	Mat N1, N2, C1, C2;
 

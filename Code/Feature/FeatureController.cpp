@@ -36,8 +36,8 @@ double FeatureDescriptor::getDistance(const FeatureDescriptor &_descriptor1,
 
 
 void FeatureController::detect(const Mat &_grey_img,
-                                      vector<Point2f> &_feature_points,
-                                      vector<FeatureDescriptor> &_feature_descriptors)
+                                      std::vector<Point2f> &_feature_points,
+                                      std::vector<FeatureDescriptor> &_feature_descriptors)
 {
     _feature_points.clear();
     _feature_descriptors.clear();
@@ -49,7 +49,7 @@ void FeatureController::detect(const Mat &_grey_img,
         SIFT_PEAK_THRESH,        // contrastThreshold
         SIFT_EDGE_THRESH        // edgeThreshold
     );
-    vector<KeyPoint> keypoints;
+    std::vector<KeyPoint> keypoints;
     Mat descriptors;
 
     sift->detectAndCompute(_grey_img, noArray(), keypoints, descriptors);

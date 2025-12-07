@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__NISwGSP_Stitching__
-#define __UglyMan_Stitiching__NISwGSP_Stitching__
+#ifndef __UglyMan_Stitching__NISwGSP_Stitching__
+#define __UglyMan_Stitching__NISwGSP_Stitching__
 
-#include "../Mesh/MeshOptimization.h"
+#include "Mesh/MeshOptimization.h"
 
 class NISwGSP_Stitching : public MeshOptimization {
 public:
@@ -24,14 +24,14 @@ public:
 		const enum GLOBAL_ROTATION_METHODS _global_rotation_method);
 	void setWeightToContentPreservingTerm(const double _weight);
 
-	Mat solve(const BLENDING_METHODS& _blend_method, vector<vector<Point2> >& original_vertices);
-	Mat solve_content(const BLENDING_METHODS& _blend_method, vector<vector<Point2> >& original_vertices);
+	Mat solve(const BLENDING_METHODS& _blend_method, std::vector<std::vector<Point2> >& original_vertices);
+	Mat solve_content(const BLENDING_METHODS& _blend_method, std::vector<std::vector<Point2> >& original_vertices);
 
-	void writeImage(const Mat& _image, const string _blend_method_name) const;
-	void assessment(const vector<vector<Point2> > original_vertices);
-	double getRMSE(vector<vector<Point2> > _vertices);
-	pair<double, double> getWarpingResidual(vector<vector<Point2> >_vertices);
+	void writeImage(const Mat& _image, const std::string _blend_method_name) const;
+	void assessment(const std::vector<std::vector<Point2> > original_vertices);
+	double getRMSE(std::vector<std::vector<Point2> > _vertices);
+	std::pair<double, double> getWarpingResidual(std::vector<std::vector<Point2> >_vertices);
 private:
 };
 
-#endif /* defined(__UglyMan_Stitiching__NISwGSP_Stitching__) */
+#endif /* defined(__UglyMan_Stitching__NISwGSP_Stitching__) */

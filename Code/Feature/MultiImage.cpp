@@ -2,14 +2,12 @@
 
 #include "MultiImages.h"
 
-// 包含必要的 Eigen 头文件
 #include <Eigen/Dense>
 
 constexpr int HOMOGRAPHY_MODEL_MIN_POINTS = 4;
-// 显式实例化 Matrix<double, 3, 1> 的 cross 函数
 template Eigen::Matrix<double, 3, 1> Eigen::MatrixBase<Eigen::Matrix<double, 3, 1>>::cross<Eigen::Matrix<double, 3, 1>>(Eigen::MatrixBase<Eigen::Matrix<double, 3, 1>> const &) const;
 
-MultiImages::MultiImages(const string &_file_name,
+MultiImages::MultiImages(const std::string &_file_name,
 						 LINES_FILTER_FUNC *_width_filter,
 						 LINES_FILTER_FUNC *_length_filter) : parameter(_file_name)
 {
@@ -34,7 +32,7 @@ MultiImages::MultiImages(const string &_file_name,
 void MultiImages::doFeatureMatching() const
 {
 
-	const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+	const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 
 	images_features.resize(images_data.size());
 
@@ -43,7 +41,7 @@ void MultiImages::doFeatureMatching() const
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 
-		const vector<Point2> &vertices = images_data[i].mesh_2d->getVertices();
+		const std::vector<Point2> &vertices = images_data[i].mesh_2d->getVertices();
 
 		images_features_mask[i].resize(vertices.size(), false);
 
@@ -67,18 +65,18 @@ void MultiImages::doFeatureMatching() const
 		apap_matching_points[i].resize(images_data.size());
 	}
 
-	const vector<vector<vector<Point2>>> &feature_matches = getFeatureMatches();
+	const std::vector<std::vector<std::vector<Point2>>> &feature_matches = getFeatureMatches();
 
 	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 	{
 
-		const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+		const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 
 		const int &m1 = match_pair.first, &m2 = match_pair.second;
 		if (feature_matches[m1][m2].size() < HOMOGRAPHY_MODEL_MIN_POINTS ||
 			feature_matches[m2][m1].size() < HOMOGRAPHY_MODEL_MIN_POINTS)
 		{
-			cout << "[INFO] Skipping APAP for pair (" << m1 << ", " << m2 << ") due to insufficient matches." << endl;
+			std::cout << "[INFO] Skipping APAP for std::pair (" << m1 << ", " << m2 << ") due to insufficient matches." << std::endl;
 			continue;
 		}
 
@@ -88,19 +86,19 @@ void MultiImages::doFeatureMatching() const
 		APAP_Stitching::apap_project(feature_matches[m2][m1],
 									 feature_matches[m1][m2],
 									 images_data[m2].mesh_2d->getVertices(), apap_matching_points[m2][m1], apap_homographies[m2][m1]);
-		const int PAIR_SIZE = 2;
+		const int pair_SIZE = 2;
 
-		const vector<Point2> *out_dst[PAIR_SIZE] = {&apap_matching_points[m1][m2], &apap_matching_points[m2][m1]};
+		const std::vector<Point2> *out_dst[pair_SIZE] = {&apap_matching_points[m1][m2], &apap_matching_points[m2][m1]};
 
 		apap_overlap_mask[m1][m2].resize(apap_homographies[m1][m2].size(), false);
 		apap_overlap_mask[m2][m1].resize(apap_homographies[m2][m1].size(), false);
 
 		const int pm_index = m1 * (int)images_data.size() + m2;
-		const int m_index[PAIR_SIZE] = {m2, m1};
+		const int m_index[pair_SIZE] = {m2, m1};
 
-		vector<DMatch> &D_matches = pairwise_matches[pm_index].matches;
+		std::vector<DMatch> &D_matches = pairwise_matches[pm_index].matches;
 
-		for (int j = 0; j < PAIR_SIZE; ++j)
+		for (int j = 0; j < pair_SIZE; ++j)
 		{
 			for (int k = 0; k < out_dst[j]->size(); ++k)
 			{
@@ -135,11 +133,11 @@ void MultiImages::doFeatureMatching() const
 		pairwise_matches[pm_index].dst_img_idx = m2;
 		pairwise_matches[pm_index].inliers_mask.resize(D_matches.size(), 1);
 		pairwise_matches[pm_index].num_inliers = (int)D_matches.size();
-		pairwise_matches[pm_index].H = apap_homographies[m1][m2].front(); /*** for OpenCV findMaxSpanningTree funtion ***/
+		pairwise_matches[pm_index].H = apap_homographies[m1][m2].front(); /*** for OpenCV findMaxSpanningTree function ***/
 	}
 }
 
-const vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoints() const
+const std::vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoints() const
 {
 
 	if (images_features.empty())
@@ -149,7 +147,7 @@ const vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoi
 	return images_features;
 }
 
-const vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoints() const
+const std::vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoints() const
 {
 	if (pairwise_matches.empty())
 	{
@@ -158,16 +156,16 @@ const vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoin
 	return pairwise_matches;
 }
 
-const vector<detail::CameraParams> &MultiImages::getCameraParams() const
+const std::vector<detail::CameraParams> &MultiImages::getCameraParams() const
 {
 	if (camera_params.empty())
 	{
 		camera_params.resize(images_data.size());
 		/*** Focal Length ***/
-		const vector<vector<vector<bool>>> &apap_overlap_mask = getAPAPOverlapMask();
-		const vector<vector<vector<Mat>>> &apap_homographies = getAPAPHomographies();
+		const std::vector<std::vector<std::vector<bool>>> &apap_overlap_mask = getAPAPOverlapMask();
+		const std::vector<std::vector<std::vector<Mat>>> &apap_homographies = getAPAPHomographies();
 
-		vector<Mat> translation_matrix;
+		std::vector<Mat> translation_matrix;
 		translation_matrix.reserve(images_data.size());
 		for (int i = 0; i < images_data.size(); ++i)
 		{
@@ -178,7 +176,7 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			T.at<double>(0, 1) = T.at<double>(1, 0) = T.at<double>(2, 0) = T.at<double>(2, 1) = 0;
 			translation_matrix.emplace_back(T);
 		}
-		vector<vector<double>> image_focal_candidates;
+		std::vector<std::vector<double>> image_focal_candidates;
 		image_focal_candidates.resize(images_data.size());
 		for (int i = 0; i < images_data.size(); ++i)
 		{
@@ -216,18 +214,18 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 		}
 		/********************/
 		/*** 3D Rotations ***/
-		vector<vector<Mat>> relative_3D_rotations;
+		std::vector<std::vector<Mat>> relative_3D_rotations;
 		relative_3D_rotations.resize(images_data.size());
 		for (int i = 0; i < relative_3D_rotations.size(); ++i)
 		{
 			relative_3D_rotations[i].resize(images_data.size());
 		}
-		const vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints();
-		const vector<detail::MatchesInfo> &pairwise_matches = getPairwiseMatchesByMatchingPoints();
-		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		const std::vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints();
+		const std::vector<detail::MatchesInfo> &pairwise_matches = getPairwiseMatchesByMatchingPoints();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 		{
-			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+			const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const int &m1 = match_pair.first, &m2 = match_pair.second;
 			const int m_index = m1 * (int)images_data.size() + m2;
 			const detail::MatchesInfo &matches_info = pairwise_matches[m_index];
@@ -272,10 +270,10 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			SVD svd(R, SVD::FULL_UV);
 			relative_3D_rotations[m1][m2] = svd.u * svd.vt;
 		}
-		queue<int> que;
-		vector<bool> labels(images_data.size(), false);
+		std::queue<int> que;
+		std::vector<bool> labels(images_data.size(), false);
 		const int &center_index = parameter.center_image_index;
-		const vector<vector<bool>> &images_match_graph = parameter.getImagesMatchGraph();
+		const std::vector<std::vector<bool>> &images_match_graph = parameter.getImagesMatchGraph();
 
 		que.push(center_index);
 		relative_3D_rotations[center_index][center_index] = Mat::eye(3, 3, CV_64FC1);
@@ -331,7 +329,7 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 		/* wave correction */
 		if (WAVE_CORRECT != WAVE_X)
 		{
-			vector<Mat> rotations;
+			std::vector<Mat> rotations;
 			rotations.reserve(camera_params.size());
 			for (int i = 0; i < camera_params.size(); ++i)
 			{
@@ -349,7 +347,7 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 }
 
 //<image url="$(ProjectDir)CommentImage\MultiImage_getImagesFeaturesMaskByMatchingPoints1.png" scale="1"/>
-const vector<vector<bool>> &MultiImages::getImagesFeaturesMaskByMatchingPoints() const
+const std::vector<std::vector<bool>> &MultiImages::getImagesFeaturesMaskByMatchingPoints() const
 {
 	if (images_features_mask.empty())
 	{
@@ -362,7 +360,7 @@ const vector<vector<bool>> &MultiImages::getImagesFeaturesMaskByMatchingPoints()
 /// 获取
 /// </summary>
 /// <returns></returns>
-const vector<vector<vector<bool>>> &MultiImages::getAPAPOverlapMask() const
+const std::vector<std::vector<std::vector<bool>>> &MultiImages::getAPAPOverlapMask() const
 {
 	if (apap_overlap_mask.empty())
 	{
@@ -370,7 +368,7 @@ const vector<vector<vector<bool>>> &MultiImages::getAPAPOverlapMask() const
 	}
 	return apap_overlap_mask;
 }
-const vector<vector<vector<Mat>>> &MultiImages::getAPAPHomographies() const
+const std::vector<std::vector<std::vector<Mat>>> &MultiImages::getAPAPHomographies() const
 {
 
 	if (apap_homographies.empty())
@@ -380,7 +378,7 @@ const vector<vector<vector<Mat>>> &MultiImages::getAPAPHomographies() const
 	return apap_homographies;
 }
 
-const vector<vector<vector<Point2>>> &MultiImages::getAPAPMatchingPoints() const
+const std::vector<std::vector<std::vector<Point2>>> &MultiImages::getAPAPMatchingPoints() const
 {
 	if (apap_matching_points.empty())
 	{
@@ -389,14 +387,14 @@ const vector<vector<vector<Point2>>> &MultiImages::getAPAPMatchingPoints() const
 	return apap_matching_points;
 }
 
-const vector<vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMatchingPoints() const
+const std::vector<std::vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMatchingPoints() const
 {
 	if (mesh_interpolate_vertex_of_matching_pts.empty())
 	{
 
 		mesh_interpolate_vertex_of_matching_pts.resize(images_data.size());
 		// images_features[m1] 放m1自己的网格点加上扭曲的m2网格点;images_features[m2] 放m2自己的网格点加上扭曲的m1网格点;
-		const vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints();
+		const std::vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints();
 		for (int i = 0; i < mesh_interpolate_vertex_of_matching_pts.size(); ++i)
 		{
 			// 第i张图
@@ -411,7 +409,7 @@ const vector<vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMa
 	return mesh_interpolate_vertex_of_matching_pts;
 }
 
-const vector<int> &MultiImages::getImagesVerticesStartIndex() const
+const std::vector<int> &MultiImages::getImagesVerticesStartIndex() const
 {
 	if (images_vertices_start_index.empty())
 	{
@@ -426,15 +424,15 @@ const vector<int> &MultiImages::getImagesVerticesStartIndex() const
 	return images_vertices_start_index;
 }
 
-const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS &_global_rotation_method) const
+const std::vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS &_global_rotation_method) const
 {
-	const vector<vector<SimilarityElements> *> &images_similarity_elements = {
+	const std::vector<std::vector<SimilarityElements> *> &images_similarity_elements = {
 		&images_similarity_elements_2D, &images_similarity_elements_3D};
-	vector<SimilarityElements> &result = *images_similarity_elements[_global_rotation_method];
+	std::vector<SimilarityElements> &result = *images_similarity_elements[_global_rotation_method];
 	if (result.empty())
 	{
 		result.reserve(images_data.size());
-		const vector<detail::CameraParams> &camera_params = getCameraParams();
+		const std::vector<detail::CameraParams> &camera_params = getCameraParams();
 
 		for (int i = 0; i < images_data.size(); ++i)
 		{
@@ -449,8 +447,8 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			result[i].theta = normalizeAngle(a) * M_PI / 180;
 		}
 
-		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
-		const vector<vector<pair<double, double>>> &images_relative_rotation_range = getImagesRelativeRotationRange();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		const std::vector<std::vector<std::pair<double, double>>> &images_relative_rotation_range = getImagesRelativeRotationRange();
 
 		switch (_global_rotation_method)
 		{
@@ -469,13 +467,13 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			};
 
 			const double TOLERANT_THETA = TOLERANT_ANGLE * M_PI / 180;
-			vector<pair<int, double>> theta_constraints;
-			vector<bool> decided(images_data.size(), false);
-			vector<RotationNode> priority_que;
+			std::vector<std::pair<int, double>> theta_constraints;
+			std::vector<bool> decided(images_data.size(), false);
+			std::vector<RotationNode> priority_que;
 			theta_constraints.emplace_back(parameter.center_image_index, result[parameter.center_image_index].theta);
 			decided[parameter.center_image_index] = true;
 			priority_que.emplace_back(parameter.center_image_index, -1);
-			const vector<vector<bool>> &images_match_graph = parameter.getImagesMatchGraph();
+			const std::vector<std::vector<bool>> &images_match_graph = parameter.getImagesMatchGraph();
 			while (priority_que.empty() == false)
 			{
 				RotationNode node = priority_que.front();
@@ -517,7 +515,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			const int equations_count = (int)(images_match_graph_pair_list.size() + theta_constraints.size()) * DIMENSION_2D;
 			SparseMatrix<double> A(equations_count, images_data.size() * DIMENSION_2D);
 			VectorXd b = VectorXd::Zero(equations_count);
-			vector<Triplet<double>> triplets;
+			std::vector<Triplet<double>> triplets;
 			triplets.reserve(theta_constraints.size() * 2 + images_match_graph_pair_list.size() * 6);
 
 			int equation = 0;
@@ -531,7 +529,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			}
 			for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 			{
-				const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+				const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 				const int &m1 = match_pair.first, &m2 = match_pair.second;
 				const FLOAT_TYPE &MLDR_theta = getImagesMinimumLineDistortionRotation(m1, m2);
 				triplets.emplace_back(equation, DIMENSION_2D * m1, cos(MLDR_theta));
@@ -559,7 +557,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			const int equations_count = (int)images_match_graph_pair_list.size() * DIMENSION_2D + DIMENSION_2D;
 			SparseMatrix<double> A(equations_count, images_data.size() * DIMENSION_2D);
 			VectorXd b = VectorXd::Zero(equations_count);
-			vector<Triplet<double>> triplets;
+			std::vector<Triplet<double>> triplets;
 			triplets.reserve(images_match_graph_pair_list.size() * 6 + DIMENSION_2D);
 
 			b[0] = STRONG_CONSTRAINT * cos(result[parameter.center_image_index].theta);
@@ -569,7 +567,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 			int equation = DIMENSION_2D;
 			for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 			{
-				const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+				const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 				const int &m1 = match_pair.first, &m2 = match_pair.second;
 				const double guess_theta = result[m2].theta - result[m1].theta;
 				FLOAT_TYPE decision_theta, weight;
@@ -613,34 +611,34 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 	return result;
 }
 
-const vector<vector<pair<double, double>>> &MultiImages::getImagesRelativeRotationRange() const
+const std::vector<std::vector<std::pair<double, double>>> &MultiImages::getImagesRelativeRotationRange() const
 {
 	if (images_relative_rotation_range.empty())
 	{
 		images_relative_rotation_range.resize(images_data.size());
 		for (int i = 0; i < images_relative_rotation_range.size(); ++i)
 		{
-			images_relative_rotation_range[i].resize(images_relative_rotation_range.size(), make_pair(0, 0));
+			images_relative_rotation_range[i].resize(images_relative_rotation_range.size(), std::make_pair(0, 0));
 		}
-		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
-		const vector<vector<vector<bool>>> &apap_overlap_mask = getAPAPOverlapMask();
-		const vector<vector<vector<Point2>>> &apap_matching_points = getAPAPMatchingPoints();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		const std::vector<std::vector<std::vector<bool>>> &apap_overlap_mask = getAPAPOverlapMask();
+		const std::vector<std::vector<std::vector<Point2>>> &apap_matching_points = getAPAPMatchingPoints();
 
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 		{
-			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+			const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const int &m1 = match_pair.first, &m2 = match_pair.second;
-			const vector<Edge> &m1_edges = images_data[m1].mesh_2d->getEdges();
-			const vector<Edge> &m2_edges = images_data[m2].mesh_2d->getEdges();
+			const std::vector<Edge> &m1_edges = images_data[m1].mesh_2d->getEdges();
+			const std::vector<Edge> &m2_edges = images_data[m2].mesh_2d->getEdges();
 
-			const vector<const vector<Edge> *> &edges = {&m1_edges, &m2_edges};
+			const std::vector<const std::vector<Edge> *> &edges = {&m1_edges, &m2_edges};
 
-			const vector<pair<int, int>> pair_index = {make_pair(m1, m2), make_pair(m2, m1)};
-			const vector<pair<const vector<Point2> *, const vector<Point2> *>> &vertices_pair = {
-				make_pair(&images_data[m1].mesh_2d->getVertices(), &apap_matching_points[m1][m2]),
-				make_pair(&images_data[m2].mesh_2d->getVertices(), &apap_matching_points[m2][m1])};
-			vector<double> positive, negative;
-			const vector<bool> sign_mapping = {false, true, true, false};
+			const std::vector<std::pair<int, int>> pair_index = {std::make_pair(m1, m2), std::make_pair(m2, m1)};
+			const std::vector<std::pair<const std::vector<Point2> *, const std::vector<Point2> *>> &vertices_pair = {
+				std::make_pair(&images_data[m1].mesh_2d->getVertices(), &apap_matching_points[m1][m2]),
+				std::make_pair(&images_data[m2].mesh_2d->getVertices(), &apap_matching_points[m2][m1])};
+			std::vector<double> positive, negative;
+			const std::vector<bool> sign_mapping = {false, true, true, false};
 			for (int j = 0; j < edges.size(); ++j)
 			{
 				for (int k = 0; k < edges[j]->size(); ++k)
@@ -720,30 +718,30 @@ FLOAT_TYPE MultiImages::getImagesMinimumLineDistortionRotation(const int _from, 
 	if (images_minimum_line_distortion_rotation[_from][_to] == FLT_MAX)
 	{
 
-		const vector<LineData> &from_lines = images_data[_from].getLines();
+		const std::vector<LineData> &from_lines = images_data[_from].getLines();
 
-		const vector<LineData> &to_lines = images_data[_to].getLines();
+		const std::vector<LineData> &to_lines = images_data[_to].getLines();
 
-		const vector<Point2> &from_project = getImagesLinesProject(_from, _to);
+		const std::vector<Point2> &from_project = getImagesLinesProject(_from, _to);
 
-		const vector<Point2> &to_project = getImagesLinesProject(_to, _from);
+		const std::vector<Point2> &to_project = getImagesLinesProject(_to, _from);
 
-		const vector<const vector<LineData> *> &lines = {&from_lines, &to_lines};
+		const std::vector<const std::vector<LineData> *> &lines = {&from_lines, &to_lines};
 
-		const vector<const vector<Point2> *> &projects = {&from_project, &to_project};
-		const vector<int> &img_indices = {_to, _from};
-		const vector<int> sign_mapping = {-1, 1, 1, -1};
+		const std::vector<const std::vector<Point2> *> &projects = {&from_project, &to_project};
+		const std::vector<int> &img_indices = {_to, _from};
+		const std::vector<int> sign_mapping = {-1, 1, 1, -1};
 
-		vector<pair<double, double>> theta_weight_pairs;
+		std::vector<std::pair<double, double>> theta_weight_pairs;
 		for (int i = 0; i < lines.size(); ++i)
 		{
 			const int &rows = images_data[img_indices[i]].img.rows;
 			const int &cols = images_data[img_indices[i]].img.cols;
-			const vector<pair<Point2, Point2>> &boundary_edgs = {
-				make_pair(Point2(0, 0), Point2(cols, 0)),
-				make_pair(Point2(cols, 0), Point2(cols, rows)),
-				make_pair(Point2(cols, rows), Point2(0, rows)),
-				make_pair(Point2(0, rows), Point2(0, 0))};
+			const std::vector<std::pair<Point2, Point2>> &boundary_edgs = {
+				std::make_pair(Point2(0, 0), Point2(cols, 0)),
+				std::make_pair(Point2(cols, 0), Point2(cols, rows)),
+				std::make_pair(Point2(cols, rows), Point2(0, rows)),
+				std::make_pair(Point2(0, rows), Point2(0, 0))};
 			for (int j = 0; j < lines[i]->size(); ++j)
 			{
 
@@ -759,7 +757,7 @@ FLOAT_TYPE MultiImages::getImagesMinimumLineDistortionRotation(const int _from, 
 
 				if (!p1_in_img || !p2_in_img)
 				{
-					vector<double> scales;
+					std::vector<double> scales;
 					for (int k = 0; k < boundary_edgs.size(); ++k)
 					{
 						double s1;
@@ -823,7 +821,7 @@ FLOAT_TYPE MultiImages::getImagesMinimumLineDistortionRotation(const int _from, 
 	return images_minimum_line_distortion_rotation[_from][_to];
 }
 
-const vector<Point2> &MultiImages::getImagesLinesProject(const int _from, const int _to) const
+const std::vector<Point2> &MultiImages::getImagesLinesProject(const int _from, const int _to) const
 {
 	if (images_lines_projects.empty())
 	{
@@ -835,10 +833,10 @@ const vector<Point2> &MultiImages::getImagesLinesProject(const int _from, const 
 	}
 	if (images_lines_projects[_from][_to].empty())
 	{
-		const vector<vector<vector<Point2>>> &feature_matches = getFeatureMatches();
+		const std::vector<std::vector<std::vector<Point2>>> &feature_matches = getFeatureMatches();
 
-		const vector<LineData> &lines = images_data[_from].getLines();
-		vector<Point2> points, project_points;
+		const std::vector<LineData> &lines = images_data[_from].getLines();
+		std::vector<Point2> points, project_points;
 		points.reserve(lines.size() * EDGE_VERTEX_SIZE);
 		for (int i = 0; i < lines.size(); ++i)
 		{
@@ -847,14 +845,14 @@ const vector<Point2> &MultiImages::getImagesLinesProject(const int _from, const 
 				points.emplace_back(lines[i].data[j]);
 			}
 		}
-		vector<Mat> not_be_used;
+		std::vector<Mat> not_be_used;
 
 		APAP_Stitching::apap_project(feature_matches[_from][_to], feature_matches[_to][_from], points, images_lines_projects[_from][_to], not_be_used);
 	}
 	return images_lines_projects[_from][_to];
 }
 
-const vector<Mat> &MultiImages::getImages() const
+const std::vector<Mat> &MultiImages::getImages() const
 {
 	if (images.empty())
 	{
@@ -883,16 +881,16 @@ public:
 	}
 };
 
-const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeight(const double _global_weight_gamma) const
+const std::vector<std::vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeight(const double _global_weight_gamma) const
 {
 	if (_global_weight_gamma && images_polygon_space_matching_pts_weight.empty())
 	{
 
 		images_polygon_space_matching_pts_weight.resize(images_data.size());
 
-		const vector<vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();
+		const std::vector<std::vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();
 
-		const vector<vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints();
+		const std::vector<std::vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints();
 
 		//
 		for (int i = 0; i < images_polygon_space_matching_pts_weight.size(); ++i)
@@ -900,7 +898,7 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 
 			const int polygons_count = (int)images_data[i].mesh_2d->getPolygonsIndices().size();
 
-			vector<bool> polygons_has_matching_pts(polygons_count, false);
+			std::vector<bool> polygons_has_matching_pts(polygons_count, false);
 
 			for (int j = 0; j < images_features_mask[i].size(); ++j)
 			{
@@ -911,7 +909,7 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 			}
 			images_polygon_space_matching_pts_weight[i].reserve(polygons_count);
 
-			priority_queue<dijkstraNode> que;
+			std::priority_queue<dijkstraNode> que;
 
 			for (int j = 0; j < polygons_has_matching_pts.size(); ++j)
 			{
@@ -926,8 +924,8 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 					images_polygon_space_matching_pts_weight[i].emplace_back(FLT_MAX);
 				}
 			}
-			const vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
-			const vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();
+			const std::vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
+			const std::vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();
 			while (que.empty() == false)
 			{
 				const dijkstraNode now = que.top();
@@ -971,7 +969,7 @@ void MultiImages::initialFeaturePairsSpace() const
 	}
 }
 
-void MultiImages::initialRansacDiffPairs() const
+void MultiImages::initialRansacDiffpairs() const
 {
 	ransacDiff.resize(images_data.size());
 	for (int i = 0; i < images_data.size(); ++i)
@@ -990,34 +988,34 @@ void MultiImages::initialRansacDiffPairs() const
 	}
 }
 
-const vector<vector<vector<pair<int, int>>>> &MultiImages::getFeaturePairs() const
+const std::vector<std::vector<std::vector<std::pair<int, int>>>> &MultiImages::getFeaturepairs() const
 {
 	if (feature_pairs.empty())
 	{
 		initialFeaturePairsSpace();
-		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 		{
-			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
-			const vector<pair<int, int>> &initial_indices = getInitialFeaturePairs(match_pair);
-			const vector<Point2> &m1_fpts = images_data[match_pair.first].getFeaturePoints();
-			const vector<Point2> &m2_fpts = images_data[match_pair.second].getFeaturePoints();
-			vector<Point2> X, Y;
+			const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
+			const std::vector<std::pair<int, int>> &initial_indices = getInitialFeaturepairs(match_pair);
+			const std::vector<Point2> &m1_fpts = images_data[match_pair.first].getFeaturePoints();
+			const std::vector<Point2> &m2_fpts = images_data[match_pair.second].getFeaturePoints();
+			std::vector<Point2> X, Y;
 			X.reserve(initial_indices.size());
 			Y.reserve(initial_indices.size());
 			for (int j = 0; j < initial_indices.size(); ++j)
 			{
-				const pair<int, int> it = initial_indices[j];
+				const std::pair<int, int> it = initial_indices[j];
 				X.emplace_back(m1_fpts[it.first]);
 				Y.emplace_back(m2_fpts[it.second]);
 			}
 			if (X.size() < HOMOGRAPHY_MODEL_MIN_POINTS || Y.size() < HOMOGRAPHY_MODEL_MIN_POINTS)
 			{
-				cout << "[INFO] Skipping image pair due to insufficient feature matches." << endl;
+				std::cout << "[INFO] Skipping image std::pair due to insufficient feature matches." << std::endl;
 				continue;
 			}
-			vector<pair<int, int>> &result = feature_pairs[match_pair.first][match_pair.second];
-			result = getFeaturePairsBySequentialRANSAC(match_pair, X, Y, initial_indices);
+			std::vector<std::pair<int, int>> &result = feature_pairs[match_pair.first][match_pair.second];
+			result = getFeaturepairsBySequentialRANSAC(match_pair, X, Y, initial_indices);
 
 			assert(result.empty() == false);
 		}
@@ -1026,14 +1024,14 @@ const vector<vector<vector<pair<int, int>>>> &MultiImages::getFeaturePairs() con
 	return feature_pairs;
 }
 
-const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
+const std::vector<std::vector<std::vector<Point2>>> &MultiImages::getFeatureMatches() const
 {
 
 	if (feature_matches.empty())
 	{
-		const vector<vector<vector<pair<int, int>>>> &feature_pairs = getFeaturePairs();
+		const std::vector<std::vector<std::vector<std::pair<int, int>>>> &feature_pairs = getFeaturepairs();
 
-		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 
 		feature_matches.resize(images_data.size());
 		for (int i = 0; i < images_data.size(); ++i)
@@ -1042,12 +1040,12 @@ const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
 		}
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 		{
-			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+			const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const int &m1 = match_pair.first, &m2 = match_pair.second;
 			feature_matches[m1][m2].reserve(feature_pairs[m1][m2].size());
 			feature_matches[m2][m1].reserve(feature_pairs[m1][m2].size());
-			const vector<Point2> &m1_fpts = images_data[m1].getFeaturePoints();
-			const vector<Point2> &m2_fpts = images_data[m2].getFeaturePoints();
+			const std::vector<Point2> &m1_fpts = images_data[m1].getFeaturePoints();
+			const std::vector<Point2> &m2_fpts = images_data[m2].getFeaturePoints();
 			for (int j = 0; j < feature_pairs[m1][m2].size(); ++j)
 			{
 				feature_matches[m1][m2].emplace_back(m1_fpts[feature_pairs[m1][m2][j].first]);
@@ -1058,15 +1056,15 @@ const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
 	return feature_matches;
 }
 
-vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair<int, int> &_match_pair,
-																	  const vector<Point2> &_X,
-																	  const vector<Point2> &_Y,
-																	  const vector<pair<int, int>> &_initial_indices) const
+std::vector<std::pair<int, int>> MultiImages::getFeaturepairsBySequentialRANSAC(const std::pair<int, int> &_match_pair,
+																				const std::vector<Point2> &_X,
+																				const std::vector<Point2> &_Y,
+																				const std::vector<std::pair<int, int>> &_initial_indices) const
 {
-	initialRansacDiffPairs();
+	initialRansacDiffpairs();
 
 	const int GLOBAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(GLOBAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
-	vector<char> final_mask(_initial_indices.size(), 0);
+	std::vector<char> final_mask(_initial_indices.size(), 0);
 
 	Mat H(3, 3, CV_64F);
 	if (_X.size() >= HOMOGRAPHY_MODEL_MIN_POINTS && _Y.size() >= HOMOGRAPHY_MODEL_MIN_POINTS)
@@ -1075,9 +1073,9 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 		updataRansacDiff(_match_pair, _X, _Y, final_mask, H);
 	}
 
-	vector<Point2> tmp_X = _X, tmp_Y = _Y;
+	std::vector<Point2> tmp_X = _X, tmp_Y = _Y;
 
-	vector<int> mask_indices(_initial_indices.size(), 0);
+	std::vector<int> mask_indices(_initial_indices.size(), 0);
 	for (int i = 0; i < mask_indices.size(); ++i)
 	{
 		mask_indices[i] = i;
@@ -1088,8 +1086,8 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 	{
 
 		const int LOCAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(LOCAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
-		vector<Point2> next_X, next_Y;
-		vector<char> mask(tmp_X.size(), 0);
+		std::vector<Point2> next_X, next_Y;
+		std::vector<char> mask(tmp_X.size(), 0);
 
 		if (tmp_X.size() >= HOMOGRAPHY_MODEL_MIN_POINTS && tmp_Y.size() >= HOMOGRAPHY_MODEL_MIN_POINTS)
 		{
@@ -1098,14 +1096,14 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 		}
 		else
 		{
-			std::cout << "[INFO] Not enough points for homography. Using Identity matrix." << endl;
+			std::cout << "[INFO] Not enough points for homography. Using Identity matrix." << std::endl;
 			continue;
 		}
 
 		int inliers_count = 0;
 		for (int i = 0; i < mask.size(); ++i)
 		{
-			// true为inlier
+			// true is inlier
 			if (mask[i])
 			{
 				++inliers_count;
@@ -1130,13 +1128,13 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 		}
 
 #ifndef DP_NO_LOG
-		cout << "Local true Probabiltiy = " << next_X.size() / (float)tmp_X.size() << endl;
+		std::cout << "Local true Probabiltiy = " << next_X.size() / (float)tmp_X.size() << std::endl;
 #endif
 		tmp_X = next_X;
 		tmp_Y = next_Y;
 	}
 
-	vector<pair<int, int>> result;
+	std::vector<std::pair<int, int>> result;
 	for (int i = 0; i < final_mask.size(); ++i)
 	{
 		if (final_mask[i])
@@ -1146,16 +1144,16 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 	}
 	double ransacDst = generateRansacAvgDiff(_match_pair);
 #ifndef DP_NO_LOG
-	cout << "Global true Probabiltiy = " << result.size() / (float)_initial_indices.size() << endl;
+	std::cout << "Global true Probabiltiy = " << result.size() / (float)_initial_indices.size() << std::endl;
 #endif
 	return result;
 }
 
-void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vector<Point2> srcPoints, const vector<Point2> dstPoints, const vector<char> final_mask, const Mat H) const
+void MultiImages::updataRansacDiff(const std::pair<int, int> &_index_pair, const std::vector<Point2> srcPoints, const std::vector<Point2> dstPoints, const std::vector<char> final_mask, const Mat H) const
 {
-	vector<double> *diffList = &ransacDiff[_index_pair.first][_index_pair.second];
-	ofstream mycout(txtName + to_string(_index_pair.first) + "_" + to_string(_index_pair.second) + ".txt", ios::app);
-	mycout << "****************" << endl;
+	std::vector<double> *diffList = &ransacDiff[_index_pair.first][_index_pair.second];
+	std::ofstream mycout(txtName + std::to_string(_index_pair.first) + "_" + std::to_string(_index_pair.second) + ".txt", std::ios::app);
+	mycout << "****************" << std::endl;
 	for (int i = 0; i < final_mask.size(); i++)
 	{
 		char isIn = final_mask[i];
@@ -1168,7 +1166,7 @@ void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vect
 			Point2 d = pointTransDst - pointDst;
 			double dst = sqrt(d.x * d.x + d.y * d.y);
 			diffList->emplace_back(dst);
-			mycout << dst << "," << 1 << endl;
+			mycout << dst << "," << 1 << std::endl;
 		}
 		else
 		{
@@ -1177,15 +1175,15 @@ void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vect
 			pointTransDst = applyTransform3x3(pointSrc.x, pointSrc.y, H);
 			Point2 d = pointTransDst - pointDst;
 			double dst = sqrt(d.x * d.x + d.y * d.y);
-			mycout << dst << "," << 0 << endl;
+			mycout << dst << "," << 0 << std::endl;
 		}
 	}
 	mycout.close();
 }
 
-double MultiImages::generateRansacAvgDiff(const pair<int, int> &_index_pair) const
+double MultiImages::generateRansacAvgDiff(const std::pair<int, int> &_index_pair) const
 {
-	vector<double> diffList = ransacDiff[_index_pair.first][_index_pair.second];
+	std::vector<double> diffList = ransacDiff[_index_pair.first][_index_pair.second];
 	double sum = 0, avg;
 	for (int i = 0; i < diffList.size(); i++)
 	{
@@ -1195,26 +1193,26 @@ double MultiImages::generateRansacAvgDiff(const pair<int, int> &_index_pair) con
 	ransacAvgDiff[_index_pair.first][_index_pair.second] = avg;
 
 #ifndef DP_NO_LOG
-	ofstream mycout(txtName + to_string(_index_pair.first) + "_" + to_string(_index_pair.second) + ".txt", ios::app);
-	mycout << "****************" << endl;
-	mycout << avg << endl;
+	std::ofstream mycout(txtName + std::to_string(_index_pair.first) + "_" + std::to_string(_index_pair.second) + ".txt", std::ios::app);
+	mycout << "****************" << std::endl;
+	mycout << avg << std::endl;
 	mycout.close();
 #endif
 	return avg;
 }
 
-void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) const
+void MultiImages::generateRansacDiffWeight(std::vector<std::pair<int, int>> pairList) const
 {
-	vector<double> avgDiffs;
+	std::vector<double> avgDiffs;
 	double sumWeight = 0;
 	for (int i = 0; i < pairList.size(); ++i)
 	{
-		const pair<int, int> &match_pair = pairList[i];
+		const std::pair<int, int> &match_pair = pairList[i];
 		avgDiffs.emplace_back(ransacAvgDiff[match_pair.first][match_pair.second]);
 
 #ifndef DP_NO_LOG
-		ofstream mycoutAvg(txtName + "ransacAvg.txt", ios::app);
-		mycoutAvg << match_pair.first << "--" << match_pair.second << "," << ransacAvgDiff[match_pair.first][match_pair.second] << endl;
+		std::ofstream mycoutAvg(txtName + "ransacAvg.txt", std::ios::app);
+		mycoutAvg << match_pair.first << "--" << match_pair.second << "," << ransacAvgDiff[match_pair.first][match_pair.second] << std::endl;
 		mycoutAvg.close();
 #endif
 
@@ -1223,20 +1221,20 @@ void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) cons
 		ransacDiffWeight[match_pair.first][match_pair.second] = weightTemp;
 
 #ifndef DP_NO_LOG
-		ofstream mycoutWeightTemp(txtName + "weightTemp.txt", ios::app);
-		mycoutWeightTemp << match_pair.first << "--" << match_pair.second << "," << weightTemp << endl;
+		std::ofstream mycoutWeightTemp(txtName + "weightTemp.txt", std::ios::app);
+		mycoutWeightTemp << match_pair.first << "--" << match_pair.second << "," << weightTemp << std::endl;
 		mycoutWeightTemp.close();
 #endif
 	}
 	double avgWeight = sumWeight / pairList.size();
 	for (int i = 0; i < pairList.size(); ++i)
 	{
-		const pair<int, int> &match_pair = pairList[i];
+		const std::pair<int, int> &match_pair = pairList[i];
 		ransacDiffWeight[match_pair.first][match_pair.second] = ransacDiffWeight[match_pair.first][match_pair.second] + 1 - avgWeight;
 #ifndef DP_NO_LOG
 
-		ofstream mycout(txtName + "weightFinal.txt", ios::app);
-		mycout << match_pair.first << "--" << match_pair.second << "," << ransacDiffWeight[match_pair.first][match_pair.second] << endl;
+		std::ofstream mycout(txtName + "weightFinal.txt", std::ios::app);
+		mycout << match_pair.first << "--" << match_pair.second << "," << ransacDiffWeight[match_pair.first][match_pair.second] << std::endl;
 		mycout.close();
 #endif
 	}
@@ -1244,23 +1242,23 @@ void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) cons
 	return void();
 }
 
-const double MultiImages::getRansacDiffWeight(const pair<int, int> &_index_pair) const
+const double MultiImages::getRansacDiffWeight(const std::pair<int, int> &_index_pair) const
 {
 	return ransacDiffWeight[_index_pair.first][_index_pair.second];
 }
 
 // Wasted
-const float MultiImages::getOverlap(pair<int, int> _mask_pair) const
+const float MultiImages::getOverlap(std::pair<int, int> _mask_pair) const
 {
 	return 0;
 }
 
-bool compareFeaturePair(const FeatureDistance &fd_1, const FeatureDistance &fd_2)
+bool compareFeaturepair(const FeatureDistance &fd_1, const FeatureDistance &fd_2)
 {
 	return (fd_1.feature_index[0] == fd_2.feature_index[0]) ? (fd_1.feature_index[1] < fd_2.feature_index[1]) : (fd_1.feature_index[0] < fd_2.feature_index[0]);
 }
 
-vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> &_match_pair) const
+std::vector<std::pair<int, int>> MultiImages::getInitialFeaturepairs(const std::pair<int, int> &_match_pair) const
 {
 	const int nearest_size = 2, pair_count = 1;
 	const bool ratio_test = true, intersect = true;
@@ -1269,23 +1267,23 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 
 	const int feature_size_1 = (int)images_data[_match_pair.first].getFeaturePoints().size();
 	const int feature_size_2 = (int)images_data[_match_pair.second].getFeaturePoints().size();
-	const int PAIR_COUNT = 2;
-	const int feature_size[PAIR_COUNT] = {feature_size_1, feature_size_2};
-	const int pair_match[PAIR_COUNT] = {_match_pair.first, _match_pair.second};
+	const int pair_COUNT = 2;
+	const int feature_size[pair_COUNT] = {feature_size_1, feature_size_2};
+	const int pair_match[pair_COUNT] = {_match_pair.first, _match_pair.second};
 
-	vector<FeatureDistance> feature_pairs[PAIR_COUNT];
+	std::vector<FeatureDistance> feature_pairs[pair_COUNT];
 
 	for (int p = 0; p < pair_count; ++p)
 	{
 		const int another_feature_size = feature_size[1 - p];
 
 		const int nearest_k = min(nearest_size, another_feature_size);
-		const vector<FeatureDescriptor> &feature_descriptors_1 = images_data[pair_match[p]].getFeatureDescriptors();
-		const vector<FeatureDescriptor> &feature_descriptors_2 = images_data[pair_match[!p]].getFeatureDescriptors();
+		const std::vector<FeatureDescriptor> &feature_descriptors_1 = images_data[pair_match[p]].getFeatureDescriptors();
+		const std::vector<FeatureDescriptor> &feature_descriptors_2 = images_data[pair_match[!p]].getFeatureDescriptors();
 
 		for (int f1 = 0; f1 < feature_size[p]; ++f1)
 		{
-			set<FeatureDistance> feature_distance_set;
+			std::set<FeatureDistance> feature_distance_set;
 			feature_distance_set.insert(FeatureDistance(FLT_MAX, p, -1, -1));
 			for (int f2 = 0; f2 < feature_size[!p]; ++f2)
 			{
@@ -1299,10 +1297,10 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 					feature_distance_set.insert(FeatureDistance(dist, p, f1, f2));
 				}
 			}
-			set<FeatureDistance>::const_iterator it = feature_distance_set.begin();
+			std::set<FeatureDistance>::const_iterator it = feature_distance_set.begin();
 			if (ratio_test && feature_distance_set.size() >= 2)
 			{
-				const set<FeatureDistance>::const_iterator it2 = std::next(it, 1);
+				const std::set<FeatureDistance>::const_iterator it2 = std::next(it, 1);
 				if (nearest_k == nearest_size &&
 					it2->distance * FEATURE_RATIO_TEST_THRESHOLD > it->distance)
 				{
@@ -1313,24 +1311,24 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 			feature_pairs[p].insert(feature_pairs[p].end(), it, feature_distance_set.end());
 		}
 	}
-	vector<FeatureDistance> feature_pairs_result;
-	if (pair_count == PAIR_COUNT)
+	std::vector<FeatureDistance> feature_pairs_result;
+	if (pair_count == pair_COUNT)
 	{
-		sort(feature_pairs[0].begin(), feature_pairs[0].end(), compareFeaturePair);
-		sort(feature_pairs[1].begin(), feature_pairs[1].end(), compareFeaturePair);
+		sort(feature_pairs[0].begin(), feature_pairs[0].end(), compareFeaturepair);
+		sort(feature_pairs[1].begin(), feature_pairs[1].end(), compareFeaturepair);
 		if (intersect)
 		{
 			set_intersection(feature_pairs[0].begin(), feature_pairs[0].end(),
 							 feature_pairs[1].begin(), feature_pairs[1].end(),
 							 std::inserter(feature_pairs_result, feature_pairs_result.begin()),
-							 compareFeaturePair);
+							 compareFeaturepair);
 		}
 		else
 		{
 			set_union(feature_pairs[0].begin(), feature_pairs[0].end(),
 					  feature_pairs[1].begin(), feature_pairs[1].end(),
 					  std::inserter(feature_pairs_result, feature_pairs_result.begin()),
-					  compareFeaturePair);
+					  compareFeaturepair);
 		}
 	}
 	else
@@ -1338,7 +1336,7 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 		feature_pairs_result = std::move(feature_pairs[0]);
 	}
 
-	vector<double> distances;
+	std::vector<double> distances;
 	distances.reserve(feature_pairs_result.size());
 	for (int i = 0; i < feature_pairs_result.size(); ++i)
 	{
@@ -1348,7 +1346,7 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 	Statistics::getMeanAndSTD(distances, mean, std);
 
 	const double OUTLIER_THRESHOLD = (INLIER_TOLERANT_STD_DISTANCE * std) + mean;
-	vector<pair<int, int>> initial_indices;
+	std::vector<std::pair<int, int>> initial_indices;
 	initial_indices.reserve(feature_pairs_result.size());
 	for (int i = 0; i < feature_pairs_result.size(); ++i)
 	{
@@ -1361,23 +1359,23 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 	return initial_indices;
 }
 
-Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
+Mat MultiImages::textureMapping(const std::vector<std::vector<Point2>> &_vertices,
 								const Size2 &_target_size,
 								const BLENDING_METHODS &_blend_method) const
 {
-	vector<Mat> warp_images;
+	std::vector<Mat> warp_images;
 	return textureMapping(_vertices, _target_size, _blend_method, warp_images);
 }
 
-Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
+Mat MultiImages::textureMapping(const std::vector<std::vector<Point2>> &_vertices,
 								const Size2 &_target_size,
 								const BLENDING_METHODS &_blend_method,
-								vector<Mat> &_warp_images) const
+								std::vector<Mat> &_warp_images) const
 {
 
-	vector<Mat> weight_mask, new_weight_mask;
-	vector<Point2> origins;
-	vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);
+	std::vector<Mat> weight_mask, new_weight_mask;
+	std::vector<Point2> origins;
+	std::vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);
 
 	switch (_blend_method)
 	{
@@ -1388,12 +1386,11 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 		break;
 	default:
 		printError("F(textureMapping) BLENDING METHOD");
-		;
 	}
 #ifndef DP_NO_LOG
 	for (int i = 0; i < rects.size(); ++i)
 	{
-		cout << images_data[i].file_name << " rect = " << rects[i] << endl;
+		std::cout << images_data[i].file_name << " rect = " << rects[i] << std::endl;
 	}
 #endif
 	_warp_images.reserve(_vertices.size());
@@ -1405,13 +1402,13 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 
 	for (int i = 0; i < images_data.size(); ++i)
 	{
-		const vector<Point2> &src_vertices = images_data[i].mesh_2d->getVertices();
-		const vector<Indices> &polygons_indices = images_data[i].mesh_2d->getPolygonsIndices();
+		const std::vector<Point2> &src_vertices = images_data[i].mesh_2d->getVertices();
+		const std::vector<Indices> &polygons_indices = images_data[i].mesh_2d->getPolygonsIndices();
 		const Point2 origin(rects[i].x, rects[i].y);
 
 		const Point2 shift(0.5, 0.5);
 
-		vector<Mat> affine_transforms;
+		std::vector<Mat> affine_transforms;
 		affine_transforms.reserve(polygons_indices.size() * (images_data[i].mesh_2d->getTriangulationIndices().size()));
 		int mask_width = rects[i].width + shift.x;
 		int mask_height = rects[i].height + shift.y;
@@ -1506,8 +1503,8 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 }
 
 void MultiImages::writeResultWithMesh(const Mat &_result,
-									  const vector<vector<Point2>> &_vertices,
-									  const string &_postfix,
+									  const std::vector<std::vector<Point2>> &_vertices,
+									  const std::string &_postfix,
 									  const bool _only_border) const
 {
 #ifndef DP_NO_LOG
@@ -1556,10 +1553,10 @@ void MultiImages::writeResultWithMesh(const Mat &_result,
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 		Mat item_img(_result.size() + Size(line_thickness * 6, line_thickness * 6), CV_8UC4);
-		string mesh_img_name = "-Mesh";
+		std::string mesh_img_name = "-Mesh";
 		const Scalar &color = getBlueToRedScalar((2. * i / (images_data.size() - 1)) - 1) * 255;
-		const vector<Edge> &edges = images_data[i].mesh_2d->getEdges();
-		vector<int> edge_indices;
+		const std::vector<Edge> &edges = images_data[i].mesh_2d->getEdges();
+		std::vector<int> edge_indices;
 		if (_only_border)
 		{
 			edge_indices = images_data[i].mesh_2d->getBoundaryEdgeIndices();
@@ -1591,16 +1588,16 @@ void MultiImages::writeResultWithMesh(const Mat &_result,
 #endif
 }
 
-const vector<vector<vector<Point2>>> &MultiImages::getTwoImgFeatureMatches(pair<int, int> _mask_pair_) const
+const std::vector<std::vector<std::vector<Point2>>> &MultiImages::getTwoImgFeatureMatches(std::pair<int, int> _mask_pair_) const
 {
 
-	vector<pair<int, int>> feature_pair_ = getTwoImgFeaturePairs(_mask_pair_);
+	std::vector<std::pair<int, int>> feature_pair_ = getTwoImgFeaturepairs(_mask_pair_);
 	const int &m1 = _mask_pair_.first, &m2 = _mask_pair_.second;
 
 	feature_matches[m1][m2].reserve(feature_pair_.size());
 	feature_matches[m2][m1].reserve(feature_pair_.size());
-	const vector<Point2> &m1_fpts = images_data[m1].getFeaturePoints();
-	const vector<Point2> &m2_fpts = images_data[m2].getFeaturePoints();
+	const std::vector<Point2> &m1_fpts = images_data[m1].getFeaturePoints();
+	const std::vector<Point2> &m2_fpts = images_data[m2].getFeaturePoints();
 	for (int j = 0; j < feature_pair_.size(); ++j)
 	{
 		feature_matches[m1][m2].emplace_back(m1_fpts[feature_pair_[j].first]);
@@ -1609,19 +1606,19 @@ const vector<vector<vector<Point2>>> &MultiImages::getTwoImgFeatureMatches(pair<
 	return feature_matches;
 }
 
-vector<pair<int, int>> MultiImages::getTwoImgFeaturePairs(pair<int, int> _mask_pair_) const
+std::vector<std::pair<int, int>> MultiImages::getTwoImgFeaturepairs(std::pair<int, int> _mask_pair_) const
 {
 
-	const vector<pair<int, int>> &initial_indices = getInitialFeaturePairs(_mask_pair_);
-	const vector<Point2> &m1_fpts = images_data[_mask_pair_.first].getFeaturePoints();
-	const vector<Point2> &m2_fpts = images_data[_mask_pair_.second].getFeaturePoints();
-	vector<Point2> X, Y;
+	const std::vector<std::pair<int, int>> &initial_indices = getInitialFeaturepairs(_mask_pair_);
+	const std::vector<Point2> &m1_fpts = images_data[_mask_pair_.first].getFeaturePoints();
+	const std::vector<Point2> &m2_fpts = images_data[_mask_pair_.second].getFeaturePoints();
+	std::vector<Point2> X, Y;
 	X.reserve(initial_indices.size());
 	Y.reserve(initial_indices.size());
 	int flag = 0;
 	for (int j = 0; j < initial_indices.size(); ++j)
 	{
-		const pair<int, int> it = initial_indices[j];
+		const std::pair<int, int> it = initial_indices[j];
 		if (it.first < 0 || it.second == -1)
 		{
 			flag = 1;
@@ -1630,51 +1627,51 @@ vector<pair<int, int>> MultiImages::getTwoImgFeaturePairs(pair<int, int> _mask_p
 		X.emplace_back(m1_fpts[it.first]);
 		Y.emplace_back(m2_fpts[it.second]);
 	}
-	vector<pair<int, int>> result;
+	std::vector<std::pair<int, int>> result;
 	if (X.size() < HOMOGRAPHY_MODEL_MIN_POINTS || Y.size() < HOMOGRAPHY_MODEL_MIN_POINTS)
 	{
-		cout << "[INFO] Not enough valid points (" << X.size() << ", " << Y.size() << ") for image pair ("
-			 << _mask_pair_.first << ", " << _mask_pair_.second << ") after filtering. Skipping RANSAC." << endl;
+		std::cout << "[INFO] Not enough valid points (" << X.size() << ", " << Y.size() << ") for image std::pair ("
+			 << _mask_pair_.first << ", " << _mask_pair_.second << ") after filtering. Skipping RANSAC." << std::endl;
 		return result;
 	}
-	result = getFeaturePairsBySequentialRANSAC(_mask_pair_, X, Y, initial_indices);
+	result = getFeaturepairsBySequentialRANSAC(_mask_pair_, X, Y, initial_indices);
 
 	return result;
 }
 
-double MultiImages::getRMSE(vector<vector<Point2>> _vertices) const
+double MultiImages::getRMSE(std::vector<std::vector<Point2>> _vertices) const
 {
-	string file_name = RUN_TYPE ? "[DPS]" : "[GPS]";
-	ofstream _f(parameter.debug_dir + parameter.file_name + "-RMSE-" +
+	std::string file_name = RUN_TYPE ? "[DPS]" : "[GPS]";
+	std::ofstream _f(parameter.debug_dir + parameter.file_name + "-RMSE-" +
 					file_name +
 					".txt",
-				ios::out);
+				std::ios::out);
 
-	const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+	const std::vector<std::pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 
 	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 	{
-		const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+		const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 		const int &m1 = match_pair.first, &m2 = match_pair.second;
 		if (feature_matches[m1][m2].size() == 0)
 		{
-			getTwoImgFeatureMatches(pair<int, int>(m1, m2));
+			getTwoImgFeatureMatches(std::pair<int, int>(m1, m2));
 		}
 	}
 
-	vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);
+	std::vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);
 	int feature_num = 0;
 	double rmse_temp = 0.0;
 
 	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
 	{
-		const pair<int, int> &match_pair = images_match_graph_pair_list[i];
+		const std::pair<int, int> &match_pair = images_match_graph_pair_list[i];
 		const int &m1 = match_pair.first, &m2 = match_pair.second;
 
 		feature_num += feature_matches[m1][m2].size();
 		double temp__ = rmse_temp;
-		const vector<Indices> &m1_polygons_indice = images_data[m1].mesh_2d->getPolygonsIndices(); // 得到网格四个顶点索引
-		const vector<Point2> &m1_vertices = images_data[m1].mesh_2d->getVertices();
+		const std::vector<Indices> &m1_polygons_indice = images_data[m1].mesh_2d->getPolygonsIndices(); // 得到网格四个顶点索引
+		const std::vector<Point2> &m1_vertices = images_data[m1].mesh_2d->getVertices();
 		for (int j = 0; j < feature_matches[m1][m2].size(); ++j)
 		{
 			// get mesh indices and vertex coordinates
@@ -1700,28 +1697,29 @@ double MultiImages::getRMSE(vector<vector<Point2>> _vertices) const
 		}
 	}
 	double res = sqrt(rmse_temp / feature_num);
-	_f << "RMSE: " << res << endl;
+	_f << "RMSE: " << res << std::endl;
 	_f.close();
 	return res;
 }
 
-pair<double, double> MultiImages::getWarpingResidual(vector<vector<Point2>> _vertices) const
+std::pair<double, double> MultiImages::getWarpingResidual(std::vector<std::vector<Point2>> _vertices) const
 {
-	string file_name = RUN_TYPE ? "[DPS]" : "[GPS]";
-	ofstream _f(parameter.debug_dir + parameter.file_name + "-W_Residual-" +
+	// TODO: 
+	std::string file_name = RUN_TYPE ? "[DPS]" : "[GPS]";
+	std::ofstream _f(parameter.debug_dir + parameter.file_name + "-W_Residual-" +
 					file_name +
 					".txt",
-				ios::out);
+				std::ios::out);
 
 	double residual_avg = 0, residual_sd = 0;
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 
-		const vector<Edge> &edges = images_data[i].mesh_2d->getEdges();
+		const std::vector<Edge> &edges = images_data[i].mesh_2d->getEdges();
 
 		int nw = images_data[i].mesh_2d->nw;
 		int nh = images_data[i].mesh_2d->nh;
-		vector<vector<Point2f>> rows, cols;
+		std::vector<std::vector<Point2f>> rows, cols;
 		rows.resize(nh + 1);
 		cols.resize(nw + 1);
 
@@ -1735,7 +1733,7 @@ pair<double, double> MultiImages::getWarpingResidual(vector<vector<Point2>> _ver
 				stride = 1;
 			}
 
-			vector<Point2f> row_item;
+			std::vector<Point2f> row_item;
 			row_item.reserve(nw + 1);
 			for (int x = 0; j < edges.size() && x <= nw - 1; j = j + stride, x++)
 			{
@@ -1759,7 +1757,7 @@ pair<double, double> MultiImages::getWarpingResidual(vector<vector<Point2>> _ver
 				j--;
 			}
 
-			vector<Point2f> col_item;
+			std::vector<Point2f> col_item;
 			col_item.reserve(nh + 1);
 			for (int y = 0; j < edges.size() && y <= nh - 1; j = j + nw * 2 + 1, y++)
 			{
@@ -1777,44 +1775,44 @@ pair<double, double> MultiImages::getWarpingResidual(vector<vector<Point2>> _ver
 		double sum_avg = 0, sum_standard_deviation = 0;
 		for (int j_row = 0; j_row < rows.size(); j_row++)
 		{
-			vector<Point2f> row_item = rows[j_row];
+			std::vector<Point2f> row_item = rows[j_row];
 			Vec4f line_para;
 			fitLine(row_item, line_para, DIST_L2, 0, 1e-2, 1e-2);
-			pair<double, double> data = getLineResidual(row_item, line_para);
+			std::pair<double, double> data = getLineResidual(row_item, line_para);
 			sum_avg += data.first;
 			sum_standard_deviation += data.second;
 		}
 		for (int j_col = 0; j_col < cols.size(); j_col++)
 		{
-			vector<Point2f> col_item = cols[j_col];
+			std::vector<Point2f> col_item = cols[j_col];
 			Vec4f line_para;
 			fitLine(col_item, line_para, DIST_L2, 0, 1e-2, 1e-2);
-			pair<double, double> data = getLineResidual(col_item, line_para);
+			std::pair<double, double> data = getLineResidual(col_item, line_para);
 			sum_avg += data.first;
 			sum_standard_deviation += data.second;
 		}
 		residual_avg += sum_avg / (rows.size() + cols.size());
 		residual_sd += sum_standard_deviation / (rows.size() + cols.size());
 
-		_f << "Image index: " << i << " avg: " << residual_avg << " sd: " << residual_sd << endl;
+		_f << "Image index: " << i << " avg: " << residual_avg << " sd: " << residual_sd << std::endl;
 	}
 	residual_avg = residual_avg / images_data.size();
 	residual_sd = residual_sd / images_data.size();
-	_f << "" << residual_avg << "       " << residual_sd << endl;
+	_f << "" << residual_avg << "       " << residual_sd << std::endl;
 	_f.close();
-	return pair<double, double>(residual_avg, residual_sd);
+	return std::pair<double, double>(residual_avg, residual_sd);
 }
 
-void MultiImages::writeImageOfFeaturePairs(const string &_name,
-										   const pair<int, int> &_match_pair,
-										   const vector<pair<int, int>> &_pairs) const
+void MultiImages::writeImageOfFeaturepairs(const std::string &_name,
+												const std::pair<int, int> &_match_pair,
+												const std::vector<std::pair<int, int>> &_pairs) const
 {
 #ifndef DP_NO_LOG
-	cout << images_data[_match_pair.first].file_name << "-" << images_data[_match_pair.second].file_name << " " << _name << " feature pairs = " << _pairs.size() << endl;
+	std::cout << images_data[_match_pair.first].file_name << "-" << images_data[_match_pair.second].file_name << " " << _name << " feature std::pairs = " << _pairs.size() << std::endl;
 
-	const vector<Point2> &m1_fpts = images_data[_match_pair.first].getFeaturePoints();
-	const vector<Point2> &m2_fpts = images_data[_match_pair.second].getFeaturePoints();
-	vector<Point2> f1, f2;
+	const std::vector<Point2> &m1_fpts = images_data[_match_pair.first].getFeaturePoints();
+	const std::vector<Point2> &m2_fpts = images_data[_match_pair.second].getFeaturePoints();
+	std::vector<Point2> f1, f2;
 	f1.reserve(_pairs.size());
 	f2.reserve(_pairs.size());
 	for (int i = 0; i < _pairs.size(); ++i)
@@ -1823,13 +1821,13 @@ void MultiImages::writeImageOfFeaturePairs(const string &_name,
 		f2.emplace_back(m2_fpts[_pairs[i].second]);
 	}
 	Mat image_of_feauture_pairs = getImageOfFeaturePairs(images_data[_match_pair.first].img,
-														 images_data[_match_pair.second].img,
-														 f1, f2);
+																   images_data[_match_pair.second].img,
+																   f1, f2);
 	imwrite(parameter.debug_dir +
-				"feature_pairs-" + _name + "-" +
+				"feature_std::pairs-" + _name + "-" +
 				images_data[_match_pair.first].file_name + "-" +
 				images_data[_match_pair.second].file_name + "-" +
-				to_string(_pairs.size()) +
+				std::to_string(_pairs.size()) +
 				images_data[_match_pair.first].file_extension,
 			image_of_feauture_pairs);
 #endif
@@ -1837,7 +1835,7 @@ void MultiImages::writeImageOfFeaturePairs(const string &_name,
 
 int timeransac = 0;
 void MultiImages::drawRansac(const int img_index, const int img_index_second,
-							 const vector<pair<int, int>> &_initial_indices, const vector<char> &_mask) const
+							 const std::vector<std::pair<int, int>> &_initial_indices, const std::vector<char> &_mask) const
 {
 #ifndef DP_NO_LOG
 	Mat img1 = images_data[img_index].img;
@@ -1866,9 +1864,9 @@ void MultiImages::drawRansac(const int img_index, const int img_index_second,
 	img1_8UC3.copyTo(left);
 	img2_8UC3.copyTo(right);
 
-	const vector<Point2> &m1_fpts = images_data[img_index].getFeaturePoints();
-	const vector<Point2> &m2_fpts = images_data[img_index_second].getFeaturePoints();
-	vector<Point2> f1, f2;
+	const std::vector<Point2> &m1_fpts = images_data[img_index].getFeaturePoints();
+	const std::vector<Point2> &m2_fpts = images_data[img_index_second].getFeaturePoints();
+	std::vector<Point2> f1, f2;
 	f1.reserve(_initial_indices.size());
 	f2.reserve(_initial_indices.size());
 	for (int i = 0; i < _initial_indices.size(); ++i)
@@ -1898,19 +1896,19 @@ void MultiImages::drawRansac(const int img_index, const int img_index_second,
 	}
 
 	imwrite(parameter.debug_dir +
-				"ransac-" + to_string(timeransac) +
+				"ransac-" + std::to_string(timeransac) +
 				images_data[img_index].file_extension,
 			result);
 	timeransac++;
 #endif
 }
 
-const vector<vector<vector<InterpolateVertex>>> &MultiImages::getSamplesInterpolation() const
+const std::vector<std::vector<std::vector<InterpolateVertex>>> &MultiImages::getSamplesInterpolation() const
 {
 	if (content_mesh_interpolation.empty())
 	{
 		content_mesh_interpolation.resize(images_data.size());
-		const vector<vector<vector<Point>>> &content_sample_points = getContentSamplePoints();
+		const std::vector<std::vector<std::vector<Point>>> &content_sample_points = getContentSamplePoints();
 		for (int i = 0; i < content_sample_points.size(); ++i)
 		{
 			content_mesh_interpolation[i].resize(content_sample_points[i].size());
@@ -1925,12 +1923,12 @@ const vector<vector<vector<InterpolateVertex>>> &MultiImages::getSamplesInterpol
 	return content_mesh_interpolation;
 }
 
-const vector<vector<vector<pair<double, double>>>> &MultiImages::getTermUV() const
+const std::vector<std::vector<std::vector<std::pair<double, double>>>> &MultiImages::getTermUV() const
 {
 	if (content_term_uv.empty())
 	{
 		content_term_uv.reserve(images_data.size());
-		const vector<vector<vector<Point>>> &content_sample_points = getContentSamplePoints();
+		const std::vector<std::vector<std::vector<Point>>> &content_sample_points = getContentSamplePoints();
 		for (int i = 0; i < content_sample_points.size(); ++i)
 		{
 			content_term_uv.push_back(calcTriangleUV(content_sample_points[i]));
@@ -1939,7 +1937,7 @@ const vector<vector<vector<pair<double, double>>>> &MultiImages::getTermUV() con
 	return content_term_uv;
 }
 
-const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
+const std::vector<std::vector<std::vector<Point>>> &MultiImages::getContentSamplePoints() const
 {
 	if (content_sample_points.empty())
 	{
@@ -1947,9 +1945,9 @@ const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
 		for (int i = 0; i < images_data.size(); i++)
 		{
 			//	if(images_data[i].getContentSamplesPoint().empty())
-			//	content_sample_points.push_back(vector<vector<Point>>(1,vector<Point>(1,Point(65535,65535))));
+			//	content_sample_points.push_back(std::vector<std::vector<Point>>(1,std::vector<Point>(1,Point(65535,65535))));
 			//	else
-			vector<double> weight;
+			std::vector<double> weight;
 			content_sample_points[i] = images_data[i].getContentSamplesPoint(weight);
 			content_line_weights.emplace_back(weight);
 		}
@@ -1957,9 +1955,9 @@ const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
 	return content_sample_points;
 }
 
-const vector<vector<pair<double, double>>> MultiImages::calcTriangleUV(const vector<vector<Point>> samples) const
+const std::vector<std::vector<std::pair<double, double>>> MultiImages::calcTriangleUV(const std::vector<std::vector<Point>> samples) const
 {
-	vector<vector<pair<double, double>>> uvs;
+	std::vector<std::vector<std::pair<double, double>>> uvs;
 	uvs.reserve(samples.size());
 	if (samples.size() <= 0)
 	{
@@ -1968,9 +1966,9 @@ const vector<vector<pair<double, double>>> MultiImages::calcTriangleUV(const vec
 
 	for (int i = 0; i < samples.size(); i++)
 	{
-		vector<pair<double, double>> item_uvs;
+		std::vector<std::pair<double, double>> item_uvs;
 
-		vector<Point> item = samples[i];
+		std::vector<Point> item = samples[i];
 		Point2 start = item[0], end = item[1];
 		item_uvs.reserve(item.size() - 2);
 
@@ -2013,29 +2011,29 @@ const vector<vector<pair<double, double>>> MultiImages::calcTriangleUV(const vec
 	return uvs;
 }
 
-const vector<vector<vector<double>>> &MultiImages::getSamplesWeight() const
+const std::vector<std::vector<std::vector<double>>> &MultiImages::getSamplesWeight() const
 {
 	if (samplesWeight.empty())
 	{
 		double throsholdMin = 0.02;
-		const vector<vector<vector<InterpolateVertex>>> &content_interpolation = getSamplesInterpolation();
+		const std::vector<std::vector<std::vector<InterpolateVertex>>> &content_interpolation = getSamplesInterpolation();
 		samplesWeight.resize(content_interpolation.size());
 
-		vector<vector<double>> images_polygon_distance_to_nonOverlap;
+		std::vector<std::vector<double>> images_polygon_distance_to_nonOverlap;
 		images_polygon_distance_to_nonOverlap.resize(images_data.size());
 
-		const vector<vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();
+		const std::vector<std::vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();
 
-		const vector<vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints();
+		const std::vector<std::vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints();
 
 		for (int i = 0; i < images_polygon_distance_to_nonOverlap.size(); ++i)
 		{ // 图像个数,遍历每个图像
-			vector<vector<InterpolateVertex>> oneImageSamples = content_interpolation[i];
+			std::vector<std::vector<InterpolateVertex>> oneImageSamples = content_interpolation[i];
 			samplesWeight[i].resize(oneImageSamples.size());
 
 			const int polygons_count = (int)images_data[i].mesh_2d->getPolygonsIndices().size();
 
-			vector<bool> polygons_has_matching_pts(polygons_count, false);
+			std::vector<bool> polygons_has_matching_pts(polygons_count, false);
 
 			for (int j = 0; j < images_features_mask[i].size(); ++j)
 			{
@@ -2046,7 +2044,7 @@ const vector<vector<vector<double>>> &MultiImages::getSamplesWeight() const
 			}
 			images_polygon_distance_to_nonOverlap[i].reserve(polygons_count);
 
-			priority_queue<dijkstraNode> que;
+			std::priority_queue<dijkstraNode> que;
 			for (int j = 0; j < polygons_has_matching_pts.size(); ++j)
 			{
 				if (polygons_has_matching_pts[j])
@@ -2061,8 +2059,8 @@ const vector<vector<vector<double>>> &MultiImages::getSamplesWeight() const
 				}
 			}
 
-			const vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
-			const vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();
+			const std::vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
+			const std::vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();
 			while (que.empty() == false)
 			{
 				const dijkstraNode now = que.top();
@@ -2122,7 +2120,7 @@ double Point2dDis(Point2d p1, Point2d p2)
 	return (pow((p1.x - p2.x), 2) + pow((p1.y - p2.y), 2));
 }
 
-int VerifyVertices(Point2d p1, int m1Tom2_p1_index, const vector<Indices> &m1_polygons_indice, const vector<Point2> &m1_vertices)
+int VerifyVertices(Point2d p1, int m1Tom2_p1_index, const std::vector<Indices> &m1_polygons_indice, const std::vector<Point2> &m1_vertices)
 {
 	int m1_temp;
 	if (Point2dDis(p1, m1_vertices[m1_polygons_indice[m1Tom2_p1_index].indices[1]]) >
@@ -2133,7 +2131,7 @@ int VerifyVertices(Point2d p1, int m1Tom2_p1_index, const vector<Indices> &m1_po
 	return m1_temp;
 }
 
-Mat _getAffineTransform(vector<vector<Point2>> &_vertices, int m1, const vector<Indices> &m1_polygons_indice, int m1Tom2_p1_index, int m1Tom2_p1_temp, const vector<Point2> &m1_vertices)
+Mat _getAffineTransform(std::vector<std::vector<Point2>> &_vertices, int m1, const std::vector<Indices> &m1_polygons_indice, int m1Tom2_p1_index, int m1Tom2_p1_temp, const std::vector<Point2> &m1_vertices)
 {
 	Point2f src[] = {
 		m1_vertices[m1_polygons_indice[m1Tom2_p1_index].indices[0]],
@@ -2148,7 +2146,7 @@ Mat _getAffineTransform(vector<vector<Point2>> &_vertices, int m1, const vector<
 	return affineTransform;
 }
 
-pair<double, double> getLineResidual(vector<Point2f> _vertices, Vec4f _line_param)
+std::pair<double, double> getLineResidual(std::vector<Point2f> _vertices, Vec4f _line_param)
 {
 	double a, b, c; // ax+by+c = 0;
 	if (_line_param[0] == 0)
@@ -2165,7 +2163,7 @@ pair<double, double> getLineResidual(vector<Point2f> _vertices, Vec4f _line_para
 	}
 	double sum = 0;
 	double item_residual = 0;
-	vector<double> residuals;
+	std::vector<double> residuals;
 	residuals.reserve(_vertices.size());
 	Point2f p_item;
 	for (int i = 0; i < _vertices.size(); i++)
@@ -2182,5 +2180,5 @@ pair<double, double> getLineResidual(vector<Point2f> _vertices, Vec4f _line_para
 		s += pow(residuals[i] - avg, 2) / residuals.size();
 	}
 	s = sqrt(s);
-	return pair<double, double>(avg, s);
+	return std::pair<double, double>(avg, s);
 }

@@ -6,26 +6,26 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__MeshGrid__
-#define __UglyMan_Stitiching__MeshGrid__
+#ifndef __UglyMan_Stitching__MeshGrid__
+#define __UglyMan_Stitching__MeshGrid__
 
-#include "./Mesh2D.h"
+#include "Mesh2D.h"
 
 
 class MeshGrid : public Mesh2D {
 public:
 	MeshGrid(const int _cols, const int _rows);
-	const vector<Point2>& getVertices() const;
-	const vector<Edge>& getEdges() const;
-	const vector<Indices>& getPolygonsIndices() const;
-	const vector<Indices>& getPolygonsNeighbors() const;
-	const vector<Indices>& getPolygonsEdges() const;
-	const vector<Indices>& getVertexStructures() const;
-	const vector<Indices>& getEdgeStructures() const;
-	const vector<Indices>& getTriangulationIndices() const;
+	const std::vector<Point2>& getVertices() const;
+	const std::vector<Edge>& getEdges() const;
+	const std::vector<Indices>& getPolygonsIndices() const;
+	const std::vector<Indices>& getPolygonsNeighbors() const;
+	const std::vector<Indices>& getPolygonsEdges() const;
+	const std::vector<Indices>& getVertexStructures() const;
+	const std::vector<Indices>& getEdgeStructures() const;
+	const std::vector<Indices>& getTriangulationIndices() const;
 	const int& getPolygonVerticesCount() const;
-	const vector<int>& getBoundaryVertexIndices() const;
-	const vector<int>& getBoundaryEdgeIndices() const;
+	const std::vector<int>& getBoundaryVertexIndices() const;
+	const std::vector<int>& getBoundaryEdgeIndices() const;
 
 	InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const;
 	InterpolateVertex getInterpolateVertex(const Point_<double>& _p) const;
@@ -37,4 +37,4 @@ private:
 
 };
 
-#endif /* defined(__UglyMan_Stitiching__MeshGrid__) */
+#endif /* defined(__UglyMan_Stitching__MeshGrid__) */

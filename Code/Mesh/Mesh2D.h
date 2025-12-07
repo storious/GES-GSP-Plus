@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#ifndef __UglyMan_Stitiching__Mesh2D__
-#define __UglyMan_Stitiching__Mesh2D__
+#ifndef __UglyMan_Stitching__Mesh2D__
+#define __UglyMan_Stitching__Mesh2D__
 
 #include "../Configure.h"
-#include "../Util/Transform.h"
+#include "Util/Transform.h"
 
 const int EDGE_VERTEX_SIZE = 2;
 
@@ -26,7 +26,7 @@ private:
 
 class Indices { /* 3 or 4 */
 public:
-	vector<int> indices;
+	std::vector<int> indices;
 	Indices() {
 
 	}
@@ -47,7 +47,7 @@ private:
 class InterpolateVertex {
 public:
 	int polygon;
-	vector<double> weights;
+	std::vector<double> weights;
 	InterpolateVertex() {
 		polygon = -1;
 	}
@@ -63,7 +63,7 @@ public:
 		weights.emplace_back(_w2);
 	}
 	InterpolateVertex(const int _polygon,
-		const vector<double>& _weights) {
+		const std::vector<double>& _weights) {
 		polygon = _polygon;
 		weights = _weights;
 	}
@@ -76,23 +76,23 @@ public:
 	double lw, lh;
 	Mesh2D(const int _cols, const int _rows);
 	virtual ~Mesh2D();
-	virtual const vector<Point2>& getVertices() const = 0;
-	virtual const vector<Edge>& getEdges() const = 0;
-	virtual const vector<Indices>& getPolygonsIndices() const = 0;
-	virtual const vector<Indices>& getPolygonsNeighbors() const = 0;
-	virtual const vector<Indices>& getPolygonsEdges() const = 0;
-	virtual const vector<Indices>& getVertexStructures() const = 0;
-	virtual const vector<Indices>& getEdgeStructures() const = 0; /* grid neighbor */
-	virtual const vector<Indices>& getTriangulationIndices() const = 0;
+	virtual const std::vector<Point2>& getVertices() const = 0;
+	virtual const std::vector<Edge>& getEdges() const = 0;
+	virtual const std::vector<Indices>& getPolygonsIndices() const = 0;
+	virtual const std::vector<Indices>& getPolygonsNeighbors() const = 0;
+	virtual const std::vector<Indices>& getPolygonsEdges() const = 0;
+	virtual const std::vector<Indices>& getVertexStructures() const = 0;
+	virtual const std::vector<Indices>& getEdgeStructures() const = 0; /* grid neighbor */
+	virtual const std::vector<Indices>& getTriangulationIndices() const = 0;
 	virtual const int& getPolygonVerticesCount() const = 0;
-	virtual const vector<int>& getBoundaryVertexIndices() const = 0; /* clockwise order */
-	virtual const vector<int>& getBoundaryEdgeIndices() const = 0;
+	virtual const std::vector<int>& getBoundaryVertexIndices() const = 0; /* clockwise order */
+	virtual const std::vector<int>& getBoundaryEdgeIndices() const = 0;
 
 	virtual InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const = 0;
 	virtual InterpolateVertex getInterpolateVertex(const Point_<double>& _p) const = 0;
 	virtual InterpolateVertex getInterpolateVertex(const Point_<int>& _p) const = 0;
 
-	virtual const vector<Point2>& getPolygonsCenter() const;
+	virtual const std::vector<Point2>& getPolygonsCenter() const;
 
 	template <typename T>
     inline int getGridIndexOfPoint(const Point_<T>& _p) const {
@@ -102,17 +102,17 @@ public:
     }
 
 protected:
-	mutable vector<Point2> vertices;
-	mutable vector<Point2> polygons_center;
-	mutable vector<Edge> edges;
-	mutable vector<Indices> polygons_indices;
-	mutable vector<Indices> polygons_neighbors;
-	mutable vector<Indices> polygons_edges;
-	mutable vector<Indices> vertex_structures;
-	mutable vector<Indices> edge_structures;
-	mutable vector<Indices> triangulation_indices;
-	mutable vector<int> boundary_vertex_indices;
-	mutable vector<int> boundary_edge_indices;
+	mutable std::vector<Point2> vertices;
+	mutable std::vector<Point2> polygons_center;
+	mutable std::vector<Edge> edges;
+	mutable std::vector<Indices> polygons_indices;
+	mutable std::vector<Indices> polygons_neighbors;
+	mutable std::vector<Indices> polygons_edges;
+	mutable std::vector<Indices> vertex_structures;
+	mutable std::vector<Indices> edge_structures;
+	mutable std::vector<Indices> triangulation_indices;
+	mutable std::vector<int> boundary_vertex_indices;
+	mutable std::vector<int> boundary_edge_indices;
 };
 
-#endif /* defined(__UglyMan_Stitiching__Mesh2D__) */
+#endif /* defined(__UglyMan_Stitching__Mesh2D__) */

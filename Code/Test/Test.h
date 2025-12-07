@@ -21,24 +21,24 @@ const double MESH_GRID_SIZE = 40;
 
 bool sortForPoint1(Point a, Point b);
 bool equalForPoint1(Point a, Point b);
-void connectSmallLine1(vector<vector<Point>> contours, vector<Vec4i> hierarchy, vector<vector<Point>>& contoursConnected);
-pair<Point, Point> findStartEndPoint1(vector<Point > contour);
-pair<Point, Point> findStartEndPoint1(vector<Point > contour, Vec4i fitline);
-pair<Point, Point> findLineMinAndMax1(vector<Point > contour);
-vector<vector<Point>> connectCollineationLine1(vector<vector<Point>>& input, vector <double >& lengths_out, vector<vector<Point>>& static_sample_out, int image_width, int image_height);
-bool isClose1(pair<Point, Point> pair1, pair<Point, Point> pair2);
+void connectSmallLine1(std::vector<std::vector<Point>> contours, std::vector<Vec4i> hierarchy, std::vector<std::vector<Point>>& contoursConnected);
+std::pair<Point, Point> findStartEndPoint1(std::vector<Point > contour);
+std::pair<Point, Point> findStartEndPoint1(std::vector<Point > contour, Vec4i fitline);
+std::pair<Point, Point> findLineMinAndMax1(std::vector<Point > contour);
+std::vector<std::vector<Point>> connectCollineationLine1(std::vector<std::vector<Point>>& input, std::vector <double >& lengths_out, std::vector<std::vector<Point>>& static_sample_out, int image_width, int image_height);
+bool isClose1(std::pair<Point, Point> pair1, std::pair<Point, Point> pair2);
 double PointDist1(Point p1, Point p2);
-void breakCurveInflectionPoint(vector<vector<Point>>& curves);
-vector<double> getCurvature(std::vector<cv::Point> const& vecContourPoints, int step);
-double getLineWeight1(vector<Point> line);
-vector<Vec4f> delectParallaxAndNear(vector<Vec4f> lines);
-vector<Vec4f> findLine1(Mat& gray);
-bool isParallax1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2);
-bool isExtend1(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Point, Point> sepair1, pair<Point, Point> sepair2);
-bool isClose1(pair<Point, Point> pair1, pair<Point, Point> pair2);
+void breakCurveInflectionPoint(std::vector<std::vector<Point>>& curves);
+std::vector<double> getCurvature(std::vector<cv::Point> const& vecContourPoints, int step);
+double getLineWeight1(std::vector<Point> line);
+std::vector<Vec4f> delectParallaxAndNear(std::vector<Vec4f> lines);
+std::vector<Vec4f> findLine1(Mat& gray);
+bool isParallax1(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2);
+bool isExtend1(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2, std::pair<Point, Point> sepair1, std::pair<Point, Point> sepair2);
+bool isClose1(std::pair<Point, Point> stdpair1, std::pair<Point, Point> pair2);
 
 struct ContoursConnectionObj {
-	pair<Point, Point> SEPoint;
+	std::pair<Point, Point> SEPoint;
 	double k;
 
 };

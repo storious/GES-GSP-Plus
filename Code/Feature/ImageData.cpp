@@ -1,5 +1,6 @@
 ﻿#define _USE_MATH_DEFINES
 #include "ImageData.h"
+#include <cmath>
 
 LineData::LineData(const Point2 &_a,
 				   const Point2 &_b,
@@ -32,11 +33,11 @@ const bool LINES_FILTER_LENGTH(const double _data,
 	return true;
 };
 
-ImageData::ImageData(const string &_file_dir,
-					 const string &_file_full_name,
+ImageData::ImageData(const std::string &_file_dir,
+					 const std::string &_file_full_name,
 					 LINES_FILTER_FUNC *_width_filter,
 					 LINES_FILTER_FUNC *_length_filter,
-					 const string *_debug_dir)
+					 const std::string *_debug_dir)
 {
 
 	file_dir = &_file_dir;
@@ -46,7 +47,7 @@ ImageData::ImageData(const string &_file_dir,
 	file_extension = _file_full_name.substr(found);
 	debug_dir = _debug_dir;
 
-	grey_img = Mat();
+	grey_img = cv::Mat();
 
 	width_filter = _width_filter;
 	length_filter = _length_filter;
@@ -68,15 +69,15 @@ ImageData::ImageData(const string &_file_dir,
 	{
 		cvtColor(rgba_img, rgba_img, CV_BGR2BGRA);
 	}
-	vector<Mat> channels;
+	std::vector<cv::Mat> channels;
 
 	split(rgba_img, channels);
 	alpha_mask = channels[3];
 
-	mesh_2d = make_unique<MeshGrid>(img.cols, img.rows);
+	mesh_2d = std::make_unique<MeshGrid>(img.cols, img.rows);
 }
 
-const Mat &ImageData::getGreyImage() const
+const cv::Mat &ImageData::getGreyImage() const
 {
 	if (grey_img.empty())
 	{
@@ -85,19 +86,19 @@ const Mat &ImageData::getGreyImage() const
 	return grey_img;
 }
 
-const vector<LineData> &ImageData::getLines() const
+const std::vector<LineData> &ImageData::getLines() const
 {
 	if (img_lines.empty())
 	{
-		const Mat &grey_image = getGreyImage();
+		const cv::Mat &grey_image = getGreyImage();
 		Ptr<LineSegmentDetector> ls = createLineSegmentDetector(LSD_REFINE_STD);
 
-		vector<Vec4f> lines;
-		vector<double> lines_width, lines_prec, lines_nfa;
+		std::vector<Vec4f> lines;
+		std::vector<double> lines_width, lines_prec, lines_nfa;
 		ls->detect(grey_image, lines, lines_width, lines_prec, lines_nfa);
 
-		vector<double> lines_length;
-		vector<Point2> lines_points[2];
+		std::vector<double> lines_length;
+		std::vector<Point2> lines_points[2];
 
 		const int line_count = (int)lines.size();
 
@@ -128,7 +129,7 @@ const vector<LineData> &ImageData::getLines() const
 	return img_lines;
 }
 
-const vector<Point2> &ImageData::getFeaturePoints() const
+const std::vector<Point2> &ImageData::getFeaturePoints() const
 {
 	if (feature_points.empty())
 	{
@@ -137,7 +138,7 @@ const vector<Point2> &ImageData::getFeaturePoints() const
 	return feature_points;
 }
 
-const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
+const std::vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
 {
 	if (feature_descriptors.empty())
 	{
@@ -146,12 +147,12 @@ const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
 	return feature_descriptors;
 }
 
-const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &weights) const
+const std::vector<std::vector<Point>> ImageData::getContentSamplesPoint(std::vector<double> &weights) const
 {
-	Mat imgRes = img.clone();
-	Mat gray;
+	cv::Mat imgRes = img.clone();
+	cv::Mat gray;
 	cvtColor(imgRes, gray, COLOR_BGR2GRAY);
-	Mat image;
+	cv::Mat image;
 	// 1.Adjust the image size to HED.
 	resize(imgRes, image, cv::Size(500, 500 * (double)imgRes.rows / imgRes.cols));
 
@@ -193,45 +194,39 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		roi.y = itemPoint.y - 4;
 		roi &= Rect(0, 0, image.cols, image.rows);
 
-		Mat cover = Mat::zeros(roi.size(), CV_8UC1);
+		cv::Mat cover = cv::Mat::zeros(roi.size(), CV_8UC1);
 		cover.setTo(Scalar(0));
 		cover.copyTo(image(roi));
 	}
 
 	// 5.To refine the edge image contour extraction
-	vector<vector<Point>> contours;
-	vector<Vec4i> hierarchy;
+	std::vector<std::vector<Point>> contours;
+	std::vector<Vec4i> hierarchy;
 
 	findContours(image, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE, Point());
 
 	// 5.1Add line data
-	vector<Vec4f> lines = findLine(gray);
+	std::vector<Vec4f> lines = findLine(gray);
 	transLines2Contours(contours, lines);
 
 	// 5.2Connect line segments close in the same direction
-	vector<vector<Point>> contoursLineConnected;
+	std::vector<std::vector<Point>> contoursLineConnected;
 	connectSmallLine(contours, hierarchy, contoursLineConnected);
 
-	Mat imageCorn = Mat::zeros(image.size(), CV_8UC3);
-	Mat Contours = Mat::zeros(image.size(), CV_8UC1);
+	cv::Mat imageCorn = cv::Mat::zeros(image.size(), CV_8UC3);
+	cv::Mat Contours = cv::Mat::zeros(image.size(), CV_8UC1);
 
 	// 6.Contour data elimination optimization
 
 	double min_size = min(image.cols, image.rows) * 0.1;
 
-	vector<vector<Point>> res;
+	std::vector<std::vector<Point>> res;
 	Size2f tempRect;
-	for (vector<vector<Point>>::iterator iterator = contoursLineConnected.begin(); iterator != contoursLineConnected.end(); ++iterator)
+	for (std::vector<std::vector<Point>>::iterator iterator = contoursLineConnected.begin(); iterator != contoursLineConnected.end(); ++iterator)
 	{
 		tempRect = minAreaRect(*iterator).size;
 		float maxLength = max(tempRect.width, tempRect.height);
-		if (maxLength <= min_size)
-		{
-		}
-		else if (false)
-		{
-		}
-		else
+		if (maxLength > min_size)
 		{
 			res.push_back(*iterator);
 
@@ -239,19 +234,17 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		}
 	}
 
-
 	// 6.1 Connect collinear lines.
-	vector<double> lineslength;
-	vector<vector<Point>> static_sample;
+	std::vector<double> lineslength;
+	std::vector<std::vector<Point>> static_sample;
 	res = connectCollineationLine(res, lineslength, static_sample, image.cols, image.rows);
 
 	// 7.Sampling points
-	Mat imageSamples = Mat::zeros(image.size(), CV_8UC3);
-	Mat imageTest = Mat::zeros(image.size(), CV_8UC3);
+	cv::Mat imageSamples = cv::Mat::zeros(image.size(), CV_8UC3);
+	cv::Mat imageTest = cv::Mat::zeros(image.size(), CV_8UC3);
 	resize(imgRes, imageSamples, image.size());
 
-
-	vector<vector<Point>> samplesData;
+	std::vector<std::vector<Point>> samplesData;
 	samplesData.reserve(res.size());
 	weights.reserve(res.size());
 
@@ -263,7 +256,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 	int contourSize, sampleNum, sampleDist;
 
 	int i = 0;
-	for (vector<vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i < lineslength.size(); ++iterator, ++i)
+	for (std::vector<std::vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i < lineslength.size(); ++iterator, ++i)
 	{
 
 		// 1.Calculate curve length
@@ -284,16 +277,15 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		}
 		// 4.Curve point data is sorted and de-duplicated
 		sort((*iterator).begin(), (*iterator).end(), sortForPoint);
-		(*iterator).erase(unique((*iterator).begin(), (*iterator).end(), equalForPoint), (*iterator).end());
+		(*iterator).erase(std::unique((*iterator).begin(), (*iterator).end(), equalForPoint), (*iterator).end());
 
-		vector<Point> static_samples = static_sample[i];
-		vector<Point> itemLine;
+		std::vector<Point> static_samples = static_sample[i];
+		std::vector<Point> itemLine;
 		// 5.Put in the starting point, the ending point
 		itemLine.reserve(sampleNum + 3 + static_samples.size());
-		pair<Point, Point> SEPoint = findStartEndPoint(*iterator);
+		std::pair<Point, Point> SEPoint = findStartEndPoint(*iterator);
 		itemLine.emplace_back(SEPoint.first);
 		itemLine.emplace_back(SEPoint.second);
-
 
 		// 6.Calculate the interval number of sampling points
 		contourSize = (*iterator).size();
@@ -320,23 +312,22 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		samplesData.push_back(itemLine);
 		weights.emplace_back(getLineWeight(*iterator));
 
-
 #ifndef DP_NO_LOG
 		RNG rng(cvGetTickCount());
 		Scalar s = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
-		for (int i = 0; i < samplesData[index].size(); i++)
-		{
-			if (i == 0 || i == 1)
-			{
-				// circle(imageSamples, samplesData[index][i], 6, s);
-			}
-			else
-			{
-				// circle(imageSamples, samplesData[index][i], 4, s, FILLED);
-			}
-		}
+		// for (int i = 0; i < samplesData[index].size(); i++)
+		// {
+		// 	if (i == 0 || i == 1)
+		// 	{
+		// 		// circle(imageSamples, samplesData[index][i], 6, s);
+		// 	}
+		// 	else
+		// 	{
+		// 		// circle(imageSamples, samplesData[index][i], 4, s, FILLED);
+		// 	}
+		// }
 
-		String weightStr = to_string(weights[index]);
+		String weightStr = std::to_string(weights[index]);
 		// putText(imageSamples, weightStr, samplesData[index][0], FONT_HERSHEY_COMPLEX, 0.3, Scalar(0, 255, 255));
 		for (int j = 0; j < (*iterator).size(); j++)
 		{
@@ -379,9 +370,9 @@ bool equalForPoint(Point a, Point b)
 /// <param name="contours"></param>
 /// <param name="hierarchy"></param>
 /// <param name="contoursConnected"></param>
-void connectSmallLine(vector<vector<Point>> contours, vector<Vec4i> hierarchy, vector<vector<Point>> &contoursConnected)
+void connectSmallLine(std::vector<std::vector<Point>> contours, std::vector<Vec4i> hierarchy, std::vector<std::vector<Point>> &contoursConnected)
 {
-	for (vector<vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end(); ++iterator)
+	for (std::vector<std::vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end(); ++iterator)
 	{
 		sort((*iterator).begin(), (*iterator).end(), sortForPoint);
 		(*iterator).erase(unique((*iterator).begin(), (*iterator).end(), equalForPoint), (*iterator).end());
@@ -389,13 +380,13 @@ void connectSmallLine(vector<vector<Point>> contours, vector<Vec4i> hierarchy, v
 
 	double angleThrhold = (20.0 / 180) * M_PI;
 
-	vector<double> angles;
-	vector<pair<Point, Point>> ses;
-	vector<pair<Point, Point>> minMaxs;
+	std::vector<double> angles;
+	std::vector<std::pair<Point, Point>> ses;
+	std::vector<std::pair<Point, Point>> minMaxs;
 
-	for (vector<vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end();)
+	for (std::vector<std::vector<Point>>::iterator iterator = contours.begin(); iterator != contours.end();)
 	{
-		for (vector<Point>::iterator iteratorItem = (*iterator).begin(); iteratorItem != (*iterator).end();)
+		for (std::vector<Point>::iterator iteratorItem = (*iterator).begin(); iteratorItem != (*iterator).end();)
 		{
 			if ((*iteratorItem).x <= 2 || (*iteratorItem).y <= 2)
 			{
@@ -425,14 +416,14 @@ void connectSmallLine(vector<vector<Point>> contours, vector<Vec4i> hierarchy, v
 			angles.push_back(atan(k));
 		}
 
-		pair<Point, Point> SEPoint = findStartEndPoint(*iterator, line_para);
-		pair<Point, Point> mmPoint = findLineMinAndMax(*iterator);
+		std::pair<Point, Point> SEPoint = findStartEndPoint(*iterator, line_para);
+		std::pair<Point, Point> mmPoint = findLineMinAndMax(*iterator);
 		ses.push_back(SEPoint);
 		minMaxs.push_back(mmPoint);
 		++iterator;
 	}
 
-	vector<vector<int>> connectIds;
+	std::vector<std::vector<int>> connectIds;
 	connectIds.resize(contours.size());
 
 	for (int j = 0; j < contours.size(); j++)
@@ -459,7 +450,7 @@ void connectSmallLine(vector<vector<Point>> contours, vector<Vec4i> hierarchy, v
 		{
 			continue;
 		}
-		pair<Point, Point> SEPoint, SEPoint2, mmPoint, mmPoint2;
+		std::pair<Point, Point> SEPoint, SEPoint2, mmPoint, mmPoint2;
 		for (int k = 0; k < connectIds[j].size(); k++)
 		{
 			mmPoint = findLineMinAndMax(contours[j]);
@@ -485,35 +476,35 @@ void connectSmallLine(vector<vector<Point>> contours, vector<Vec4i> hierarchy, v
 	}
 }
 
-vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vector<double> &lengths_out, vector<vector<Point>> &static_sample_out, int image_width, int image_height)
+std::vector<std::vector<Point>> connectCollineationLine(std::vector<std::vector<Point>> &input, std::vector<double> &lengths_out, std::vector<std::vector<Point>> &static_sample_out, int image_width, int image_height)
 {
 
 	double threshold_r = 8;
 	double threshold_theta = 5 * M_PI / 180;
 
-	map<int, double> lengths;
-	vector<pair<double, double>> linesPolarData;
+	std::map<int, double> lengths;
+	std::vector<std::pair<double, double>> linesPolarData;
 	linesPolarData.reserve(input.size());
-	map<int, vector<Point>> static_sample;
+	std::map<int, std::vector<Point>> static_sample;
 
 	for (int i = 0; i < input.size(); i++)
 	{
 		Vec4f line_para;
 		fitLine(input[i], line_para, DIST_L2, 0, 1e-2, 1e-2);
-		pair<double, double> polarData = transRectangular2Polar(line_para, image_width, image_height);
+		std::pair<double, double> polarData = transRectangular2Polar(line_para, image_width, image_height);
 
 		linesPolarData.emplace_back(polarData);
 	}
 
-	vector<vector<int>> connectIndexs;
+	std::vector<std::vector<int>> connectIndexs;
 	connectIndexs.resize(linesPolarData.size());
 	for (int i = 0; i < linesPolarData.size(); i++)
 	{
-		pair<double, double> itemPolarDataFirst = linesPolarData[i];
+		std::pair<double, double> itemPolarDataFirst = linesPolarData[i];
 		for (int j = i + 1; j < linesPolarData.size(); j++)
 		{
-			pair<double, double> itemPolarDataSecond = linesPolarData[j];
-			if (abs(itemPolarDataFirst.first - itemPolarDataSecond.first) < threshold_r && abs(itemPolarDataFirst.second - itemPolarDataSecond.second) < threshold_theta)
+			std::pair<double, double> itemPolarDataSecond = linesPolarData[j];
+			if (std::abs(itemPolarDataFirst.first - itemPolarDataSecond.first) < threshold_r && std::abs(itemPolarDataFirst.second - itemPolarDataSecond.second) < threshold_theta)
 			{
 				connectIndexs[i].emplace_back(j);
 			}
@@ -526,7 +517,7 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 
 		if (connectIndexs[j].size() <= 0)
 		{
-			map<int, double>::iterator length_j = lengths.find(j);
+			std::map<int, double>::iterator length_j = lengths.find(j);
 			if (length_j == lengths.end() || length_j->second == 0)
 			{
 				Size2f size = minAreaRect(input[j]).size;
@@ -534,11 +525,11 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 				lengths.insert({j, length});
 			}
 
-			map<int, vector<Point>>::iterator sample_j = static_sample.find(j);
+			std::map<int, std::vector<Point>>::iterator sample_j = static_sample.find(j);
 			if (sample_j == static_sample.end() || sample_j->second.empty())
 			{
-				pair<Point, Point> points = findStartEndPoint(input[j]);
-				vector<Point> samples;
+				std::pair<Point, Point> points = findStartEndPoint(input[j]);
+				std::vector<Point> samples;
 				samples.emplace_back(points.first);
 				samples.emplace_back(points.second);
 				static_sample.insert({j, samples});
@@ -546,25 +537,25 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 			continue;
 		}
 
-		map<int, double>::iterator length_j = lengths.find(j);
+		std::map<int, double>::iterator length_j = lengths.find(j);
 		if (length_j == lengths.end() || length_j->second == 0)
 		{
 			Size2f size = minAreaRect(input[j]).size;
 			double l = sqrt(size.width * size.width + size.height * size.height);
 			length += l;
 		}
-		map<int, vector<Point>>::iterator sample_j = static_sample.find(j);
+		std::map<int, std::vector<Point>>::iterator sample_j = static_sample.find(j);
 		if (sample_j == static_sample.end() || sample_j->second.empty())
 		{
-			pair<Point, Point> points = findStartEndPoint(input[j]);
-			vector<Point> samples;
+			std::pair<Point, Point> points = findStartEndPoint(input[j]);
+			std::vector<Point> samples;
 			samples.emplace_back(points.first);
 			samples.emplace_back(points.second);
 			static_sample.insert({j, samples});
 			sample_j = static_sample.find(j);
 		}
 
-		pair<Point, Point> mmPoint, mmPoint2;
+		std::pair<Point, Point> mmPoint, mmPoint2;
 		for (int k = 0; k < connectIndexs[j].size(); k++)
 		{
 			if (input[connectIndexs[j][k]].empty())
@@ -576,18 +567,18 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 			mmPoint2 = findLineMinAndMax(input[connectIndexs[j][k]]);
 			if (!isParallax(mmPoint, mmPoint2))
 			{
-				map<int, vector<Point>>::iterator sample_k = static_sample.find(connectIndexs[j][k]);
+				std::map<int, std::vector<Point>>::iterator sample_k = static_sample.find(connectIndexs[j][k]);
 				if (sample_k == static_sample.end() || sample_k->second.empty())
 				{
-					pair<Point, Point> points = findStartEndPoint(input[connectIndexs[j][k]]);
-					vector<Point> samples;
+					std::pair<Point, Point> points = findStartEndPoint(input[connectIndexs[j][k]]);
+					std::vector<Point> samples;
 					samples.emplace_back(points.first);
 					samples.emplace_back(points.second);
 					static_sample.insert({connectIndexs[j][k], samples});
 				}
 				sample_j->second.insert(sample_j->second.end(), sample_k->second.begin(), sample_k->second.end());
 				input[j].insert(input[j].end(), input[connectIndexs[j][k]].begin(), input[connectIndexs[j][k]].end());
-				map<int, double>::iterator length_k = lengths.find(connectIndexs[j][k]);
+				std::map<int, double>::iterator length_k = lengths.find(connectIndexs[j][k]);
 				if (length_k == lengths.end() || length_k->second == 0)
 				{
 					Size2f size = minAreaRect(input[connectIndexs[j][k]]).size;
@@ -606,7 +597,7 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 
 		lengths.insert({j, length});
 	}
-	vector<vector<Point>> output;
+	std::vector<std::vector<Point>> output;
 	lengths_out.reserve(input.size());
 	static_sample_out.reserve(input.size());
 	output.reserve(input.size());
@@ -622,10 +613,10 @@ vector<vector<Point>> connectCollineationLine(vector<vector<Point>> &input, vect
 	return output;
 }
 
-pair<Point, Point> findLineMinAndMax(vector<Point> contour)
+std::pair<Point, Point> findLineMinAndMax(std::vector<Point> contour)
 {
-	pair<Point, Point> pair;
-	float minX{0.0}, maxX{0.0}, minY{0.0}, maxY{0.0};
+	std::pair<Point, Point> pair;
+	int minX{0}, maxX{0}, minY{0}, maxY{0};
 	for (int i = 0; i < contour.size(); i++)
 	{
 		Point item = contour[i];
@@ -637,44 +628,32 @@ pair<Point, Point> findLineMinAndMax(vector<Point> contour)
 			maxY = item.y;
 		}
 
-		if (item.x < minX)
-		{
-			minX = item.x;
-		}
-		if (item.x > maxX)
-		{
-			maxX = item.x;
-		}
-		if (item.y < minY)
-		{
-			minY = item.y;
-		}
-		if (item.y > maxY)
-		{
-			maxY = item.y;
-		}
+		minX = min(minX, item.x);
+		maxX = max(maxX, item.x);
+		minY = min(minY, item.y);
+		maxY = max(maxY, item.y);
 	}
 	pair.first = Point(minX, maxX);
 	pair.second = Point(minY, maxY);
 	return pair;
 }
 
-pair<Point, Point> findStartEndPoint(vector<Point> contour)
+std::pair<Point, Point> findStartEndPoint(std::vector<Point> contour)
 {
 	if (contour.empty())
 	{
-		return pair<Point, Point>(Point(-99, -99), Point(-99, -99));
+		return std::pair<Point, Point>(Point(-99, -99), Point(-99, -99));
 	}
 	Vec4f line_para;
 	fitLine(contour, line_para, DIST_L2, 0, 1e-2, 1e-2);
 	return findStartEndPoint(contour, line_para);
 }
 
-pair<Point, Point> findStartEndPoint(vector<Point> contour, Vec4i fitline)
+std::pair<Point, Point> findStartEndPoint(std::vector<Point> contour, Vec4i fitline)
 {
 	if (contour.empty())
 	{
-		return pair<Point, Point>(Point(-99, -99), Point(-99, -99));
+		return std::pair<Point, Point>(Point(-99, -99), Point(-99, -99));
 	}
 	int max = 0, min = 0;
 	if (fitline[0] != 0)
@@ -686,7 +665,7 @@ pair<Point, Point> findStartEndPoint(vector<Point> contour, Vec4i fitline)
 		{
 			double b = fitline[3] - k * fitline[2];
 
-			vector<double> projPoints;
+			std::vector<double> projPoints;
 			projPoints.reserve(contour.size());
 
 			for (int i = 0; i < contour.size(); i++)
@@ -738,10 +717,10 @@ pair<Point, Point> findStartEndPoint(vector<Point> contour, Vec4i fitline)
 		}
 	}
 
-	pair<Point, Point> pair;
-	pair.first = contour[min];
-	pair.second = contour[max];
-	return pair;
+	std::pair<Point, Point> pr;
+	pr.first = contour[min];
+	pr.second = contour[max];
+	return pr;
 }
 
 double PointDist(Point p1, Point p2)
@@ -749,7 +728,7 @@ double PointDist(Point p1, Point p2)
 	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
-bool isParallax(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2)
+bool isParallax(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2)
 {
 	double distThrhold = 18;
 	double distThrholdRatio = 0.5;
@@ -786,7 +765,7 @@ bool isParallax(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2)
 	return false;
 }
 
-bool isExtend(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Point, Point> sepair1, pair<Point, Point> sepair2)
+bool isExtend(std::pair<Point, Point> mmpair1, std::pair<Point, Point> mmpair2, std::pair<Point, Point> sepair1, std::pair<Point, Point> sepair2)
 {
 	double distThrhold = 18;
 	double distThrholdRatio = 0.5;
@@ -837,7 +816,7 @@ bool isExtend(pair<Point, Point> mmpair1, pair<Point, Point> mmpair2, pair<Point
 	return false;
 }
 
-bool isClose(pair<Point, Point> pair1, pair<Point, Point> pair2)
+bool isClose(std::pair<Point, Point> pair1, std::pair<Point, Point> pair2)
 {
 	double distThrhold = 14; //
 	float distThrholdRadio = 0.5;
@@ -846,7 +825,7 @@ bool isClose(pair<Point, Point> pair1, pair<Point, Point> pair2)
 
 	Point jFirst = pair1.first, jSecond = pair1.second;
 	Point kFirst = pair2.first, kSecond = pair2.second;
-	vector<double> dists;
+	std::vector<double> dists;
 	dists.emplace_back(PointDist(jFirst, kFirst));
 	dists.emplace_back(PointDist(jFirst, kSecond));
 	dists.emplace_back(PointDist(jSecond, kFirst));
@@ -859,7 +838,7 @@ bool isClose(pair<Point, Point> pair1, pair<Point, Point> pair2)
 	return false;
 }
 
-double getLineWeight(vector<Point> line)
+double getLineWeight(std::vector<Point> line)
 {
 	double minWeight = 0.2;
 	RotatedRect rrect = minAreaRect(line);
@@ -869,7 +848,7 @@ double getLineWeight(vector<Point> line)
 	return weight;
 }
 
-vector<Vec4f> ImageData::findLine(Mat &gray) const
+std::vector<Vec4f> ImageData::findLine(cv::Mat &gray) const
 {
 
 	GaussianBlur(gray, gray, Size(15, 15), 1, 1);
@@ -878,16 +857,16 @@ vector<Vec4f> ImageData::findLine(Mat &gray) const
 	double min_size_grid = 1 * GRID_SIZE;
 	double min = max(min_size_grid, min_size_img);
 	Ptr<FastLineDetector> fld = createFastLineDetector(15, 1.414213538F, 50.0, 50.0, 3, true);
-	vector<Vec4f> lines_std;
+	std::vector<Vec4f> lines_std;
 	fld->detect(gray, lines_std);
 
-	Mat imageContours = Mat::zeros(gray.size(), CV_8UC3); // 输出图
+	cv::Mat imageContours = cv::Mat::zeros(gray.size(), CV_8UC3); // 输出图
 	fld->drawSegments(imageContours, lines_std);
 
 	return lines_std;
 }
 
-void transLines2Contours(vector<vector<Point>> &contours, vector<Vec4f> lines)
+void transLines2Contours(std::vector<std::vector<Point>> &contours, std::vector<Vec4f> lines)
 {
 	for (int i = 0; i < lines.size(); i++)
 	{
@@ -895,7 +874,7 @@ void transLines2Contours(vector<vector<Point>> &contours, vector<Vec4f> lines)
 		Point2f start(item[0], item[1]);
 		Point2f end(item[2], item[3]);
 
-		vector<Point> item_contours;
+		std::vector<Point> item_contours;
 
 		int maxCount = max(abs(start.x - end.x), abs(start.y - end.y));
 		float strideX = (end.x - start.x) / maxCount;
@@ -908,29 +887,29 @@ void transLines2Contours(vector<vector<Point>> &contours, vector<Vec4f> lines)
 	}
 }
 
-pair<double, double> transRectangular2Polar(Vec4f line, int image_width, int image_height)
+std::pair<double, double> transRectangular2Polar(Vec4f line, int image_width, int image_height)
 {
 	line[2] = line[2] - image_width / 2.0;
 	line[3] = image_height / 2.0 - line[3];
 
 	if (abs(line[0]) < 1e-5)
 	{
-		if (line[2] > 0) 
-			return pair<double, double>(line[2], 0);
+		if (line[2] > 0)
+			return std::pair<double, double>(line[2], 0);
 		else
-			return pair<double, double>(line[2], CV_PI);
+			return std::pair<double, double>(line[2], CV_PI);
 	}
 
 	if (abs(line[1]) < 1e-5)
 	{
-		if (line[3] > 0) 
-			return pair<double, double>(line[3], CV_PI / 2);
+		if (line[3] > 0)
+			return std::pair<double, double>(line[3], CV_PI / 2);
 		else
-			return pair<double, double>(line[3], 3 * CV_PI / 2);
+			return std::pair<double, double>(line[3], 3 * CV_PI / 2);
 	}
 
 	float k = line[1] / line[0];
-	float y_intercept = line[3] - k * line[2]; 
+	float y_intercept = line[3] - k * line[2];
 
 	float theta;
 
@@ -946,6 +925,6 @@ pair<double, double> transRectangular2Polar(Vec4f line, int image_width, int ima
 	float _cos = cos(theta);
 	float _sin = sin(theta);
 
-	float r = line[2] * _cos + line[3] * _sin; 
-	return pair<double, double>(r, theta);
+	float r = line[2] * _cos + line[3] * _sin;
+	return std::pair<double, double>(r, theta);
 }
