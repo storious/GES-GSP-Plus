@@ -10,9 +10,9 @@
 
 
 Mesh2D::Mesh2D(const int _cols, const int _rows) {
-	nw = _cols / GRID_SIZE + (_cols % GRID_SIZE != 0);
+	nw = _cols / GRID_SIZE + (_cols % GRID_SIZE != 0); //计算网格行数和列数
 	nh = _rows / GRID_SIZE + (_rows % GRID_SIZE != 0);
-	lw = _cols / (double)nw;
+	lw = _cols / (double)nw;//每个网格平均宽度
 	lh = _rows / (double)nh;
 }
 Mesh2D::~Mesh2D() {

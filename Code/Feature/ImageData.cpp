@@ -51,8 +51,8 @@ ImageData::ImageData(const string &_file_dir,
 	width_filter = _width_filter;
 	length_filter = _length_filter;
 
-	img = imread(*file_dir + file_name + file_extension);
-	rgba_img = imread(*file_dir + file_name + file_extension, IMREAD_UNCHANGED);
+	img = imread(*file_dir + file_name + file_extension); //强制3通道
+	rgba_img = imread(*file_dir + file_name + file_extension, IMREAD_UNCHANGED); //原本什么格式就是什么格式
 
 	float original_img_size = img.rows * img.cols;
 	if (original_img_size > DOWN_SAMPLE_IMAGE_SIZE)
@@ -161,6 +161,8 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 	resize(image, image, Size(imgRes.cols, imgRes.rows));
 	// 4.
 	thin(image, image, (double)imgRes.cols / 500);
+	// imshow("thin before corner", image);
+	// waitKey(1);
 
 	// 4.1 corner detection
 	std::vector<cv::Point2f> corners;
@@ -179,7 +181,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 							block_size,
 							use_harris);
 
-	// 4.2 Delete corner pixels
+	// 4.2 Delete corner pixels  delete pixels around corner points
 	Point2f itemPoint;
 	Rect roi;
 	roi.width = 8;
@@ -203,6 +205,15 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 	vector<Vec4i> hierarchy;
 
 	findContours(image, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE, Point());
+
+	// 新增：可视化所有轮廓彩色的那个
+	// Mat contourVis = Mat::zeros(image.size(), CV_8UC3);
+	// for (size_t i = 0; i < contours.size() ; ++i) {
+	// 	Scalar color(rand() % 256, rand() % 256, rand() % 256);
+	// 	drawContours(contourVis, contours, (int)i, color, 2);
+	// }
+	// //imwrite("contours_output.png", contourVis); // 保存到当前工作目录
+	//  imshow("Contours", contourVis); waitKey(0); // 如果需要窗口显示
 
 	// 5.1Add line data
 	vector<Vec4f> lines = findLine(gray);
@@ -243,7 +254,15 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 	// 6.1 Connect collinear lines.
 	vector<double> lineslength;
 	vector<vector<Point>> static_sample;
-	res = connectCollineationLine(res, lineslength, static_sample, image.cols, image.rows);
+	res = connectCollineationLine(res, lineslength, static_sample, image.cols, image.rows); //存储方式是一系列点
+
+	// // 可视化合并共线后的轮廓
+	// Mat collinearVis = Mat::zeros(image.size(), CV_8UC3);
+	// for (size_t i = 0; i < res.size(); ++i) {
+	// 	Scalar color(rand() % 256, rand() % 256, rand() % 256);
+	// 	drawContours(collinearVis, res, (int)i, color, 2);
+	// }
+	// imshow("collinear_contours_output.png", collinearVis); waitKey(0); // 保存到当前工作目录
 
 	// 7.Sampling points
 	Mat imageSamples = Mat::zeros(image.size(), CV_8UC3);
@@ -263,7 +282,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 	int contourSize, sampleNum, sampleDist;
 
 	int i = 0;
-	for (vector<vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i < lineslength.size(); ++iterator, ++i)
+	for (vector<vector<Point>>::iterator iterator = res.begin(); iterator != res.end() && i < lineslength.size(); ++iterator, ++i)//遍历每条曲线
 	{
 
 		// 1.Calculate curve length
@@ -302,9 +321,9 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		// 7.Add the sample point to the sample point data list
 		for (int i = 1; i <= sampleNum; i++)
 		{
-			int sampleIndex = sampleDist * i;
+			int sampleIndex = sampleDist * i; //看样子曲线的存储也是按照像素点为单位来的
 
-			if (sampleIndex >= (*iterator).size() - 1)
+			if (sampleIndex >= (*iterator).size() - 1) //越界处理
 			{
 				if (itemLine.size() == 2)
 				{

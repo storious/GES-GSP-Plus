@@ -23,17 +23,18 @@ int main(int argc, const char* argv[]) {
 
 	time_t start = clock();
 	TimeCalculator timer;
+	//cout<<"i=0"<<argv[0]<<endl; //显示的ges_stitching.exe绝对地址
 	for (int i = 1; i < argc; ++i) {
 		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
-		MultiImages multi_images(argv[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
+		MultiImages multi_images(argv[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH); //顺便把图片名字也存储再ImageData中了
 
 		/* 2D */
-		NISwGSP_Stitching niswgsp(multi_images);
+		NISwGSP_Stitching niswgsp(multi_images); //就是给NISwGSP和MeshOptimization里面给了MultiImage的对象可以调用
 		niswgsp.setWeightToAlignmentTerm(1);
 		niswgsp.setWeightToLocalSimilarityTerm(0.75);
 		niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_2D_METHOD);
 		niswgsp.setWeightToContentPreservingTerm(1.5);
-		Mat blend_linear;
+		Mat blend_linear; //Matrix（矩阵）opencv的
 		vector<vector<Point2> > original_vertices;
 
 		switch(RUN_TYPE) {

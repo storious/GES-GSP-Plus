@@ -7,6 +7,7 @@
 //
 
 #include "InputParser.h"
+#include <iostream>
 
 class StrTok {
 public:
@@ -35,6 +36,7 @@ InputParser::InputParser(const string& file_name) {
 	while (getline(file, line)) {
 		StrTok st(line, " {|}\n\r\t");
 		data[st.tokened[0]] = st.tokened[1];
+		cout<<st.tokened[0]<<":"<<st.tokened[1]<<endl;
 	}
 	file.close();
 }

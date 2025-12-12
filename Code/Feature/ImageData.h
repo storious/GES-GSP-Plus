@@ -59,7 +59,7 @@ public:
 	void clear();
 
 	Mat img, rgba_img, alpha_mask;
-	unique_ptr<Mesh2D> mesh_2d;
+	unique_ptr<Mesh2D> mesh_2d; //用完会自动释放指针
 
 private:
 	LINES_FILTER_FUNC* width_filter, * length_filter;

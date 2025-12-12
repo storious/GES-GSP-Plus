@@ -4,7 +4,7 @@
     {
       "name": "base",
       "hidden": true,
-      "generator": "Visual Studio 17 2022",
+      "generator": "Visual Studio 18 2026",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
@@ -36,12 +36,14 @@
     {
       "name": "vcpkg-debug",
       "configurePreset": "vcpkg-debug",
-      "displayName": "Debug Build"
+      "displayName": "Debug Build",
+      "configuration": "debug"
     },
     {
       "name": "vcpkg-release",
       "configurePreset": "vcpkg-release",
-      "displayName": "Release Build"
+      "displayName": "Release Build",
+      "configuration": "release"
     }
   ]
 }

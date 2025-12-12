@@ -5,7 +5,7 @@ set SCRIPT_DIR=%~dp0
 
 
 REM .exe path
-set EXE=%SCRIPT_DIR%/Code/build/Debug/ges_stitching.exe
+set EXE=%SCRIPT_DIR%/code/build/Debug/ges_stitching.exe
 
 REM RUN_FILE.txt path
 set FILE_LIST=%SCRIPT_DIR%RUN_FILE.txt

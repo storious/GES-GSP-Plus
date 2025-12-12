@@ -10,7 +10,7 @@
 
 namespace fs = std::filesystem; // alias
 
-vector<string> getImageFileFullNamesInDir(const string &dir_name)
+vector<string> getImageFileFullNamesInDir(const string &dir_name) // 获取当前文件夹所有图片名，不包括子文件
 {
 	vector<string> result;
 	const vector<string> image_formats = {
@@ -25,14 +25,14 @@ vector<string> getImageFileFullNamesInDir(const string &dir_name)
 	try
 	{
 		// C++17 style
-		for (const auto &entry : fs::directory_iterator(dir_name))
+		for (const auto &entry : fs::directory_iterator(dir_name)) //遍历文件中每个内容
 		{
 			// ensure not a subdirectory
 			if (entry.is_regular_file())
 			{
 				string file_ext = entry.path().extension().string();
 				// ignore lower/upper case
-				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(), ::tolower);
+				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(), ::tolower); //扩展名变成小写
 
 				for (const auto &ext : image_formats)
 				{
@@ -83,21 +83,24 @@ Parameter::Parameter(const string &_file_name)
 	/*** configure ***/
 	grid_size = GRID_SIZE;
 	down_sample_image_size = DOWN_SAMPLE_IMAGE_SIZE;
-
+	cout<<"[debug01] isFileExist"<<endl;
 	if (isFileExist(stitching_parse_file_name))
 	{
+		cout<<"[debug02]"<<endl;
 
 		const InputParser input_parser(stitching_parse_file_name);
 
 		global_homography_max_inliers_dist = input_parser.get<double>("*global_homography_max_inliers_dist", &GLOBAL_HOMOGRAPHY_MAX_INLIERS_DIST);
 		local_homogrpahy_max_inliers_dist = input_parser.get<double>("*local_homogrpahy_max_inliers_dist", &LOCAL_HOMOGRAPHY_MAX_INLIERS_DIST);
 		local_homography_min_features_count = input_parser.get<int>("*local_homography_min_features_count", &LOCAL_HOMOGRAPHY_MIN_FEATURES_COUNT);
+		cout<<"[debug03]"<<endl;
 
 		images_count = input_parser.get<int>("images_count");
 		center_image_index = input_parser.get<int>("center_image_index");
 		center_image_rotation_angle = input_parser.get<double>("center_image_rotation_angle");
 
 		/*** check ***/
+		cout<<"[debug04] duqu"<<endl;
 
 		assert(image_file_full_names.size() == images_count);
 		assert(center_image_index >= 0 && center_image_index < images_count);

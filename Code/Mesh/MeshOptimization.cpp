@@ -108,8 +108,8 @@ void MeshOptimization::reserveData_content(vector<Triplet<double> >& _triplets,
 	const bool content_preserving_term = content_preserving_weight;
 
 	int edge_count = (local_similarity_term || global_similarity_term) ? getEdgesCount() : 0;
-	int similarity_equation_count = (edge_count) ? edge_count * DIMENSION_2D : 0;
-	int edge_neighbor_vertices_count = (similarity_equation_count) ? getEdgeNeighborVerticesCount() : 0;
+	int similarity_equation_count = (edge_count) ? edge_count * DIMENSION_2D : 0;  //因为是2维的，所以有x轴和y轴的约束
+	int edge_neighbor_vertices_count = (similarity_equation_count) ? getEdgeNeighborVerticesCount() : 0;  
 
 	int content_preserving_equation_count = (content_preserving_weight) ? getContentPreservingTermEquationCount() : 0;
 
@@ -128,7 +128,8 @@ void MeshOptimization::reserveData_content(vector<Triplet<double> >& _triplets,
 	content_preserving_equation.first = equation;
 	content_preserving_equation.second = (content_preserving_term) ? content_preserving_equation_count : 0;
 
-	_triplets.reserve(alignment_equation.second * 8 +
+	//reserve是提前分配内存空间
+	_triplets.reserve(alignment_equation.second * 8 +  
 		(local_similarity_term) * (edge_neighbor_vertices_count * 8 + edge_count * 4) +
 		(global_similarity_term) * (edge_neighbor_vertices_count * 8) +
 		(content_preserving_term) * (content_preserving_equation_count * 20) +
@@ -451,7 +452,7 @@ int MeshOptimization::getEdgesCount() const {
 
 
 
-int MeshOptimization::getEdgeNeighborVerticesCount() const {
+int MeshOptimization::getEdgeNeighborVerticesCount() const {  //返回的是每个边的顶点的所有临界顶点的个数
 	int result = 0;
 	for (int i = 0; i < multi_images->images_data.size(); ++i) {
 
@@ -489,7 +490,7 @@ int MeshOptimization::getContentPreservingTermEquationCount() const {
 		}
 	}
 	//The constraint is x is a bunch of equations,y is a bunch of equations
-	return result * DIMENSION_2D;
+	return result * DIMENSION_2D; 
 }
 
 

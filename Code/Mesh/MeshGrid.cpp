@@ -15,7 +15,7 @@ MeshGrid::MeshGrid(const int _cols, const int _rows) : Mesh2D(_cols, _rows) {
 
 }
 
-const vector<Point2>& MeshGrid::getVertices() const {
+const vector<Point2>& MeshGrid::getVertices() const { //返回的是网格的顶点的
 	if (vertices.empty()) {
 		const int memory = (nh + 1) * (nw + 1);
 		vertices.reserve(memory);
@@ -29,7 +29,7 @@ const vector<Point2>& MeshGrid::getVertices() const {
 	return vertices;
 }
 
-const vector<Edge>& MeshGrid::getEdges() const {
+const vector<Edge>& MeshGrid::getEdges() const {  //返回的是网格的边（两个顶点）
 	if (edges.empty()) {
 		const vector<Point2i> nexts = { Point2i(1, 0), Point2i(0, 1) };
 		const int memory = DIMENSION_2D * nh * nw + nh + nw;
@@ -41,7 +41,7 @@ const vector<Edge>& MeshGrid::getEdges() const {
 					const Point2i p2 = p1 + nexts[n];
 					if (p2.x >= 0 && p2.y >= 0 && p2.x <= nw && p2.y <= nh) {
 						edges.emplace_back(p1.x + p1.y * (nw + 1),
-							p2.x + p2.y * (nw + 1));
+							p2.x + p2.y * (nw + 1)); //这里就是将2D的边的起点和终点的位置用1D的index表示
 					}
 				}
 			}
@@ -126,10 +126,10 @@ const vector<Indices>& MeshGrid::getPolygonsEdges() const {
 }
 
 
-const vector<Indices>& MeshGrid::getVertexStructures() const {
+const vector<Indices>& MeshGrid::getVertexStructures() const { //返回的是网格顶点和网格的上下左右4个点
 	if (vertex_structures.empty()) {
 		const vector<Point2i> nexts = {
-			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1)
+			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1) //上下左右
 		};
 		const int memory = (nh + 1) * (nw + 1);
 		vertex_structures.resize(memory);

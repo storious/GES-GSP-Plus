@@ -52,8 +52,8 @@ const int RUN_TYPE = TYPE::GES_GSP; // 0:GSP 1:GES-GSP
 const string TXT_NAME = "-STITCH-GRAPH.txt";
 
 /*** data setting ***/
-const int GRID_SIZE = 40;
-const int DOWN_SAMPLE_IMAGE_SIZE = 800 * 600;
+const int GRID_SIZE = 40;  //网格大小，大小的改变会影响整体的曲线的保真度和变形程度
+const int DOWN_SAMPLE_IMAGE_SIZE = 1920 * 1080;
 // Contour length/image shortest edge ratio
 const double CONTENT_LENGTH_THRESHOLD = 0.15;
 
@@ -108,7 +108,7 @@ const double LAMBDA_GAMMA = 10;
 /******************************/
 
 /*** rotation method setting ***/
-enum GLOBAL_ROTATION_METHODS
+enum GLOBAL_ROTATION_METHODS  //枚举自动定义了 后面两个是1和2
 {
 	GLOBAL_ROTATION_2D_METHOD = 0,
 	GLOBAL_ROTATION_3D_METHOD,
@@ -118,7 +118,7 @@ const string GLOBAL_ROTATION_METHODS_NAME[GLOBAL_ROTATION_METHODS_SIZE] = {
 	"[2D]", "[3D]"};
 
 /* blending method setting */
-enum BLENDING_METHODS
+enum BLENDING_METHODS //枚举自动定义了 后面两个是1和2
 {
 	BLEND_AVERAGE = 0,
 	BLEND_LINEAR,
@@ -129,7 +129,7 @@ const string BLENDING_METHODS_NAME[BLEND_METHODS_SIZE] = {
 
 /* type */
 typedef float FLOAT_TYPE;
-typedef Size_<FLOAT_TYPE> Size2;
+typedef Size_<FLOAT_TYPE> Size2; //opencv的模板类
 typedef Point_<FLOAT_TYPE> Point2;
 typedef Rect_<FLOAT_TYPE> Rect2;
 

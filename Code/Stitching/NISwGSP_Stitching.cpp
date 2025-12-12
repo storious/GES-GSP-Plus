@@ -62,12 +62,12 @@ Mat NISwGSP_Stitching::solve_content(const BLENDING_METHODS &_blend_method, vect
 {
 	const MultiImages &multi_images = getMultiImages();
 
-	vector<Triplet<double>> triplets;
+	vector<Triplet<double>> triplets;  //Eigen 的三元组
 	vector<pair<int, double>> b_vector;
 
-	reserveData_content(triplets, b_vector, DIMENSION_2D);
+	reserveData_content(triplets, b_vector, DIMENSION_2D); //2D就是2  这里计算Global true probablity
 
-	triplets.emplace_back(0, 0, STRONG_CONSTRAINT);
+  	triplets.emplace_back(0, 0, STRONG_CONSTRAINT);
 	triplets.emplace_back(1, 1, STRONG_CONSTRAINT);
 	b_vector.emplace_back(0, STRONG_CONSTRAINT);
 	b_vector.emplace_back(1, STRONG_CONSTRAINT);

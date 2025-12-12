@@ -11,7 +11,7 @@ template Eigen::Matrix<double, 3, 1> Eigen::MatrixBase<Eigen::Matrix<double, 3, 
 
 MultiImages::MultiImages(const string &_file_name,
 						 LINES_FILTER_FUNC *_width_filter,
-						 LINES_FILTER_FUNC *_length_filter) : parameter(_file_name)
+						 LINES_FILTER_FUNC *_length_filter) : parameter(_file_name) //构造函数  parameter是一个对象，后面的parameter就是filename赋值给parameter
 {
 
 	for (int i = 0; i < parameter.image_file_full_names.size(); ++i)
@@ -1907,7 +1907,7 @@ void MultiImages::drawRansac(const int img_index, const int img_index_second,
 
 const vector<vector<vector<InterpolateVertex>>> &MultiImages::getSamplesInterpolation() const
 {
-	if (content_mesh_interpolation.empty())
+	if (content_mesh_interpolation.empty()) //多张图只需要算一次，所以缓存一下
 	{
 		content_mesh_interpolation.resize(images_data.size());
 		const vector<vector<vector<Point>>> &content_sample_points = getContentSamplePoints();
@@ -1941,7 +1941,7 @@ const vector<vector<vector<pair<double, double>>>> &MultiImages::getTermUV() con
 
 const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
 {
-	if (content_sample_points.empty())
+	if (content_sample_points.empty()) //说明这个函数只会在第一次调用时真正执行一次，之后直接返回缓存的结果。
 	{
 		content_sample_points.resize(images_data.size());
 		for (int i = 0; i < images_data.size(); i++)

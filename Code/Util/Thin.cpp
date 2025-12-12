@@ -38,6 +38,7 @@ void thin(Mat srcImage, Mat& dst, double kernalSizeTimes) {
 		Size(2 * erosion_size + 1, 2 * erosion_size + 1),
 		Point(erosion_size, erosion_size));
 
+	//先膨胀后腐蚀，填充小空洞，连接断开的细节
 	dilate(imgHSVMask, imgHSVMask, erode_element);
 	erode(imgHSVMask, imgHSVMask, erode_element);
 
@@ -47,7 +48,9 @@ void thin(Mat srcImage, Mat& dst, double kernalSizeTimes) {
 	//4.
 	normalize(g_dstImage, g_midImage, 0, 255, NORM_MINMAX, CV_8U);
 	g_midImage.copyTo(dst);
-
+	
+	// imshow("thin", g_midImage);
+	// waitKey(1);
 
 }
 
