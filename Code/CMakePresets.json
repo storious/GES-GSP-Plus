@@ -2,8 +2,9 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "base",
-      "hidden": true,
+      "name": "vcpkg-default",
+      "displayName": "Default Config (Multi-Config)",
+      "description": "Default configuration using vcpkg and Visual Studio, supporting both Debug and Release.",
       "generator": "Visual Studio 18 2026",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
@@ -15,15 +16,15 @@
   "buildPresets": [
     {
       "name": "vcpkg-debug",
-      "configurePreset": "vcpkg-debug",
       "displayName": "Debug Build",
-      "configuration": "debug"
+      "configurePreset": "vcpkg-default",
+      "configuration": "Debug"
     },
     {
       "name": "vcpkg-release",
-      "configurePreset": "vcpkg-release",
       "displayName": "Release Build",
-      "configuration": "release"
+      "configurePreset": "vcpkg-default",
+      "configuration": "Release"
     }
   ]
 }

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\3b9f3dcbe29b6bfdea28ee6fdc4753f5\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{18D69BF3-E49A-3E3F-B436-C749C2D9DC02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

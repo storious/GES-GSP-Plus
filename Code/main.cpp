@@ -14,8 +14,9 @@ int main(int argc, const char *argv[])
 	std::cout << "[#Images : " << argc - 1 << "]" << endl;
 
 
-	time_t start = clock();
-	TimeCalculator timer;
+	auto start = std::chrono::high_resolution_clock::now();
+	//time_t start = clock();
+	// TimeCalculator timer;
 	//cout<<"i=0"<<argv[0]<<endl; //显示的ges_stitching.exe绝对地址
 	for (int i = 1; i < argc; ++i) {
 		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;

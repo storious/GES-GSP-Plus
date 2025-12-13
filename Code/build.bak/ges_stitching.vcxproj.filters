@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ColorMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ErrorController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ImageDebugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\FeatureController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\ImageData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\MultiImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\Mesh2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\MeshGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\MeshOptimization.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\APAP_Stitching.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\NISwGSP_Stitching.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\Parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Blending.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\EdgeDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\InputParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Statistics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Thin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\lsd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EF8195D9-E46A-3DDF-9504-55967C6D6B15}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

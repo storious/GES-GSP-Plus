@@ -1,0 +1,256 @@
+{
+	"globsDependent" : 
+	[
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/lsd.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/main.cpp"
+			]
+		},
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Debugger/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Debugger/ColorMap.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Debugger/ErrorController.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Debugger/ImageDebugger.cpp"
+			]
+		},
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Feature/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Feature/FeatureController.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Feature/ImageData.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Feature/MultiImage.cpp"
+			]
+		},
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Mesh/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Mesh/Mesh2D.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Mesh/MeshGrid.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Mesh/MeshOptimization.cpp"
+			]
+		},
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Stitching/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Stitching/APAP_Stitching.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Stitching/NISwGSP_Stitching.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Stitching/Parameter.cpp"
+			]
+		},
+		{
+			"expression" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/*.cpp",
+			"listDirectories" : true,
+			"paths" : 
+			[
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/Blending.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/EdgeDetection.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/InputParser.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/Statistics.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/Thin.cpp",
+				"D:/zyf/cursorWorkspace/GES-GSP-Plus/code/Util/Transform.cpp"
+			]
+		}
+	],
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/4.2.0/CMakeSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/vcpkg/current/scripts/buildsystems/vcpkg.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeDependentOption.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Windows-Initialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/4.2.0/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Windows.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/WindowsPaths.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Compiler/MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Compiler/MSVC.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Windows-MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Windows-MSVC.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/4.2.0/CMakeRCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeRCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Internal/CMakeCXXLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Internal/CMakeCommonLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Linker/MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Linker/MSVC.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Linker/Windows-MSVC-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/Platform/Linker/Windows-MSVC.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/vcpkg_installed/x64-windows/share/opencv/vcpkg-cmake-wrapper.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "D:/software/opencv4.5.0/opencv/sources/build/OpenCVConfig-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "D:/software/opencv4.5.0/opencv/sources/build/OpenCVConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "D:/scoop/apps/cmake/current/share/cmake-4.2/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "D:/software/opencv4.5.0/opencv/sources/build/OpenCVModules.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/vcpkg_installed/x64-windows/share/eigen3/Eigen3ConfigVersion.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/vcpkg_installed/x64-windows/share/eigen3/Eigen3Config.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/vcpkg_installed/x64-windows/share/eigen3/Eigen3Targets.cmake"
+		},
+		{
+			"path" : "vcpkg.json"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build",
+		"source" : "D:/zyf/cursorWorkspace/GES-GSP-Plus/code"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}

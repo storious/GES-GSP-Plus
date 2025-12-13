@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{828810A1-6A66-35AD-8EFD-CDD5D5AB743D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ges_stitching</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ges_stitching.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ges_stitching</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ges_stitching.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ges_stitching</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ges_stitching.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ges_stitching</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ges_stitching.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ges_stitching</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/software/opencv4.5.0/opencv/sources/build" /external:I "D:/software/opencv4.5.0/opencv/sources/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/core/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/flann/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/intensity_transform/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/ml/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/phase_unwrapping/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/photo/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/plot/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/quality/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/reg/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/surface_matching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xphoto/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/alphamat/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/dnn/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_superres/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/features2d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/fuzzy/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/hfs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/img_hash/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgcodecs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/line_descriptor/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/saliency/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/text/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/videoio/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/calib3d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/datasets/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/highgui/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/mcc/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rapid/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rgbd/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/shape/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/stitching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/structured_light/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/video/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/videostab/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ximgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xobjdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/aruco/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bgsegm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bioinspired/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ccalib/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dpm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/face/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/gapi/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/optflow/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/superres/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/tracking/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/stereo/include" /external:I "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/vcpkg_installed/x64-windows/include/eigen3" /FS</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"D:\Program Files\powerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file D:/scoop/apps/vcpkg/current/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Debug/ges_stitching.exe -installedDir D:/zyf/cursorWorkspace/GES-GSP-Plus/Code/build/vcpkg_installed/x64-windows/debug/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_dnn450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_stitching450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_highgui450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_ximgproc450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_videoio450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_imgcodecs450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_video450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_calib3d450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_features2d450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_imgproc450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_flann450d.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Debug\opencv_core450d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Debug/ges_stitching.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Debug/ges_stitching.pdb</ProgramDataBaseFile>
+      <ProgramDatabaseFile>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Debug/ges_stitching.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/software/opencv4.5.0/opencv/sources/build" /external:I "D:/software/opencv4.5.0/opencv/sources/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/core/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/flann/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/intensity_transform/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/ml/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/phase_unwrapping/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/photo/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/plot/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/quality/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/reg/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/surface_matching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xphoto/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/alphamat/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/dnn/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_superres/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/features2d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/fuzzy/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/hfs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/img_hash/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgcodecs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/line_descriptor/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/saliency/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/text/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/videoio/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/calib3d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/datasets/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/highgui/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/mcc/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rapid/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rgbd/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/shape/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/stitching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/structured_light/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/video/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/videostab/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ximgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xobjdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/aruco/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bgsegm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bioinspired/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ccalib/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dpm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/face/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/gapi/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/optflow/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/superres/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/tracking/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/stereo/include" /external:I "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/vcpkg_installed/x64-windows/include/eigen3"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"D:\Program Files\powerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file D:/scoop/apps/vcpkg/current/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Release/ges_stitching.exe -installedDir D:/zyf/cursorWorkspace/GES-GSP-Plus/Code/build/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_dnn450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_stitching450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_highgui450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_ximgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_videoio450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgcodecs450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_video450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_calib3d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_features2d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_flann450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_core450.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Release/ges_stitching.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/Release/ges_stitching.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/software/opencv4.5.0/opencv/sources/build" /external:I "D:/software/opencv4.5.0/opencv/sources/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/core/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/flann/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/intensity_transform/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/ml/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/phase_unwrapping/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/photo/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/plot/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/quality/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/reg/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/surface_matching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xphoto/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/alphamat/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/dnn/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_superres/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/features2d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/fuzzy/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/hfs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/img_hash/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgcodecs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/line_descriptor/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/saliency/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/text/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/videoio/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/calib3d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/datasets/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/highgui/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/mcc/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rapid/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rgbd/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/shape/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/stitching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/structured_light/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/video/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/videostab/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ximgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xobjdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/aruco/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bgsegm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bioinspired/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ccalib/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dpm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/face/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/gapi/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/optflow/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/superres/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/tracking/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/stereo/include" /external:I "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/vcpkg_installed/x64-windows/include/eigen3"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"D:\Program Files\powerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file D:/scoop/apps/vcpkg/current/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/MinSizeRel/ges_stitching.exe -installedDir D:/zyf/cursorWorkspace/GES-GSP-Plus/Code/build/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_dnn450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_stitching450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_highgui450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_ximgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_videoio450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgcodecs450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_video450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_calib3d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_features2d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_flann450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_core450.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/MinSizeRel/ges_stitching.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/MinSizeRel/ges_stitching.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "D:/software/opencv4.5.0/opencv/sources/build" /external:I "D:/software/opencv4.5.0/opencv/sources/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/core/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/flann/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/intensity_transform/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/ml/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/phase_unwrapping/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/photo/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/plot/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/quality/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/reg/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/surface_matching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xphoto/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/alphamat/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/dnn/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_superres/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/features2d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/fuzzy/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/hfs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/img_hash/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/imgcodecs/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/line_descriptor/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/saliency/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/text/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/videoio/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/calib3d/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/datasets/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/highgui/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/mcc/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rapid/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/rgbd/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/shape/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/stitching/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/structured_light/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/video/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/videostab/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ximgproc/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/xobjdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/aruco/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bgsegm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/bioinspired/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/ccalib/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dnn_objdetect/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/dpm/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/face/include" /external:I "D:/software/opencv4.5.0/opencv/sources/modules/gapi/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/optflow/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/superres/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/tracking/include" /external:I "D:/software/opencv4.5.0/opencv_contrib/modules/stereo/include" /external:I "D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/vcpkg_installed/x64-windows/include/eigen3"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\zyf\cursorWorkspace\GES-GSP-Plus\code;D:\software\opencv4.5.0\opencv\sources\build;D:\software\opencv4.5.0\opencv\sources\include;D:\software\opencv4.5.0\opencv\sources\modules\core\include;D:\software\opencv4.5.0\opencv\sources\modules\flann\include;D:\software\opencv4.5.0\opencv\sources\modules\imgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\intensity_transform\include;D:\software\opencv4.5.0\opencv\sources\modules\ml\include;D:\software\opencv4.5.0\opencv_contrib\modules\phase_unwrapping\include;D:\software\opencv4.5.0\opencv\sources\modules\photo\include;D:\software\opencv4.5.0\opencv_contrib\modules\plot\include;D:\software\opencv4.5.0\opencv_contrib\modules\quality\include;D:\software\opencv4.5.0\opencv_contrib\modules\reg\include;D:\software\opencv4.5.0\opencv_contrib\modules\surface_matching\include;D:\software\opencv4.5.0\opencv_contrib\modules\xphoto\include;D:\software\opencv4.5.0\opencv_contrib\modules\alphamat\include;D:\software\opencv4.5.0\opencv\sources\modules\dnn\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_superres\include;D:\software\opencv4.5.0\opencv\sources\modules\features2d\include;D:\software\opencv4.5.0\opencv_contrib\modules\fuzzy\include;D:\software\opencv4.5.0\opencv_contrib\modules\hfs\include;D:\software\opencv4.5.0\opencv_contrib\modules\img_hash\include;D:\software\opencv4.5.0\opencv\sources\modules\imgcodecs\include;D:\software\opencv4.5.0\opencv_contrib\modules\line_descriptor\include;D:\software\opencv4.5.0\opencv_contrib\modules\saliency\include;D:\software\opencv4.5.0\opencv_contrib\modules\text\include;D:\software\opencv4.5.0\opencv\sources\modules\videoio\include;D:\software\opencv4.5.0\opencv\sources\modules\calib3d\include;D:\software\opencv4.5.0\opencv_contrib\modules\datasets\include;D:\software\opencv4.5.0\opencv\sources\modules\highgui\include;D:\software\opencv4.5.0\opencv_contrib\modules\mcc\include;D:\software\opencv4.5.0\opencv\sources\modules\objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\rapid\include;D:\software\opencv4.5.0\opencv_contrib\modules\rgbd\include;D:\software\opencv4.5.0\opencv_contrib\modules\shape\include;D:\software\opencv4.5.0\opencv\sources\modules\stitching\include;D:\software\opencv4.5.0\opencv_contrib\modules\structured_light\include;D:\software\opencv4.5.0\opencv\sources\modules\video\include;D:\software\opencv4.5.0\opencv_contrib\modules\videostab\include;D:\software\opencv4.5.0\opencv_contrib\modules\ximgproc\include;D:\software\opencv4.5.0\opencv_contrib\modules\xobjdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\aruco\include;D:\software\opencv4.5.0\opencv_contrib\modules\bgsegm\include;D:\software\opencv4.5.0\opencv_contrib\modules\bioinspired\include;D:\software\opencv4.5.0\opencv_contrib\modules\ccalib\include;D:\software\opencv4.5.0\opencv_contrib\modules\dnn_objdetect\include;D:\software\opencv4.5.0\opencv_contrib\modules\dpm\include;D:\software\opencv4.5.0\opencv_contrib\modules\face\include;D:\software\opencv4.5.0\opencv\sources\modules\gapi\include;D:\software\opencv4.5.0\opencv_contrib\modules\optflow\include;D:\software\opencv4.5.0\opencv_contrib\modules\superres\include;D:\software\opencv4.5.0\opencv_contrib\modules\tracking\include;D:\software\opencv4.5.0\opencv_contrib\modules\stereo\include;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\include\eigen3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"D:\Program Files\powerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file D:/scoop/apps/vcpkg/current/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/RelWithDebInfo/ges_stitching.exe -installedDir D:/zyf/cursorWorkspace/GES-GSP-Plus/Code/build/vcpkg_installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_dnn450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_stitching450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_highgui450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_ximgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_videoio450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgcodecs450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_video450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_calib3d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_features2d450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_imgproc450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_flann450.lib;D:\software\opencv4.5.0\opencv\sources\build\lib\Release\opencv_core450.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/RelWithDebInfo/ges_stitching.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/RelWithDebInfo/ges_stitching.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/zyf/cursorWorkspace/GES-GSP-Plus/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\scoop\apps\cmake\current\bin\cmake.exe -SD:/zyf/cursorWorkspace/GES-GSP-Plus/code -BD:/zyf/cursorWorkspace/GES-GSP-Plus/code/build --check-stamp-file D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeDependentOption.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeRCInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageHandleStandardArgs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageMessage.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;D:\scoop\apps\vcpkg\current\scripts\buildsystems\vcpkg.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig-version.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVModules.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\build\vcpkg_installed\x64-windows\share\opencv\vcpkg-cmake-wrapper.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\vcpkg.json;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeCXXCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeRCCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeSystem.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\cmake.verify_globs;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Config.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3ConfigVersion.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Targets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/zyf/cursorWorkspace/GES-GSP-Plus/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\scoop\apps\cmake\current\bin\cmake.exe -SD:/zyf/cursorWorkspace/GES-GSP-Plus/code -BD:/zyf/cursorWorkspace/GES-GSP-Plus/code/build --check-stamp-file D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeDependentOption.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeRCInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageHandleStandardArgs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageMessage.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;D:\scoop\apps\vcpkg\current\scripts\buildsystems\vcpkg.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig-version.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVModules.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\build\vcpkg_installed\x64-windows\share\opencv\vcpkg-cmake-wrapper.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\vcpkg.json;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeCXXCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeRCCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeSystem.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\cmake.verify_globs;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Config.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3ConfigVersion.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Targets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/zyf/cursorWorkspace/GES-GSP-Plus/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\scoop\apps\cmake\current\bin\cmake.exe -SD:/zyf/cursorWorkspace/GES-GSP-Plus/code -BD:/zyf/cursorWorkspace/GES-GSP-Plus/code/build --check-stamp-file D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeDependentOption.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeRCInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageHandleStandardArgs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageMessage.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;D:\scoop\apps\vcpkg\current\scripts\buildsystems\vcpkg.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig-version.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVModules.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\build\vcpkg_installed\x64-windows\share\opencv\vcpkg-cmake-wrapper.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\vcpkg.json;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeCXXCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeRCCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeSystem.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\cmake.verify_globs;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Config.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3ConfigVersion.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Targets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/zyf/cursorWorkspace/GES-GSP-Plus/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\scoop\apps\cmake\current\bin\cmake.exe -SD:/zyf/cursorWorkspace/GES-GSP-Plus/code -BD:/zyf/cursorWorkspace/GES-GSP-Plus/code/build --check-stamp-file D:/zyf/cursorWorkspace/GES-GSP-Plus/code/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeDependentOption.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeRCInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Compiler\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageHandleStandardArgs.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\FindPackageMessage.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Linker\MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\Windows.cmake;D:\scoop\apps\cmake\current\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;D:\scoop\apps\vcpkg\current\scripts\buildsystems\vcpkg.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig-version.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVConfig.cmake;D:\software\opencv4.5.0\opencv\sources\build\OpenCVModules.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\build\vcpkg_installed\x64-windows\share\opencv\vcpkg-cmake-wrapper.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\Code\vcpkg.json;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeCXXCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeRCCompiler.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\4.2.0\CMakeSystem.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\cmake.verify_globs;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Config.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3ConfigVersion.cmake;D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\vcpkg_installed\x64-windows\share\eigen3\Eigen3Targets.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ColorMap.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ErrorController.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Debugger\ImageDebugger.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\FeatureController.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\ImageData.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Feature\MultiImage.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\Mesh2D.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\MeshGrid.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Mesh\MeshOptimization.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\APAP_Stitching.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\NISwGSP_Stitching.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Stitching\Parameter.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Blending.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\EdgeDetection.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\InputParser.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Statistics.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Thin.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\Util\Transform.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\lsd.cpp" />
+    <ClCompile Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\main.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\zyf\cursorWorkspace\GES-GSP-Plus\code\build\ZERO_CHECK.vcxproj">
+      <Project>{43CCF1D7-FFE1-34EE-93B5-CFCE97792EE7}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
