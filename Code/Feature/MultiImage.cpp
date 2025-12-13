@@ -1950,7 +1950,7 @@ const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
 			//	content_sample_points.push_back(vector<vector<Point>>(1,vector<Point>(1,Point(65535,65535))));
 			//	else
 			vector<double> weight;
-			content_sample_points[i] = images_data[i].getContentSamplesPoint(weight);
+			content_sample_points[i] = images_data[i].getContentSamplesPoint(weight); //返回的是线头尾和线的采样点，weight是带权重的线和采样点
 			content_line_weights.emplace_back(weight);
 		}
 	}

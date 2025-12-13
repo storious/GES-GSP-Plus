@@ -13,17 +13,11 @@ int main(int argc, const char *argv[])
 	std::cout << "nThreads = " << Eigen::nbThreads() << endl;
 	std::cout << "[#Images : " << argc - 1 << "]" << endl;
 
-<<<<<<< HEAD
 
 	time_t start = clock();
 	TimeCalculator timer;
 	//cout<<"i=0"<<argv[0]<<endl; //显示的ges_stitching.exe绝对地址
 	for (int i = 1; i < argc; ++i) {
-=======
-	auto start = std::chrono::high_resolution_clock::now();
-	for (int i = 1; i < argc; ++i)
-	{
->>>>>>> d25a0ea5943937e6262071f4573d3d469e630636
 		cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
 		MultiImages multi_images(argv[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH); //顺便把图片名字也存储再ImageData中了
 
@@ -33,13 +27,8 @@ int main(int argc, const char *argv[])
 		niswgsp.setWeightToLocalSimilarityTerm(0.75);
 		niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_2D_METHOD);
 		niswgsp.setWeightToContentPreservingTerm(1.5);
-<<<<<<< HEAD
 		Mat blend_linear; //Matrix（矩阵）opencv的
 		vector<vector<Point2> > original_vertices;
-=======
-		Mat blend_linear;
-		vector<vector<Point2>> original_vertices;
->>>>>>> d25a0ea5943937e6262071f4573d3d469e630636
 
 		switch (RUN_TYPE)
 		{
