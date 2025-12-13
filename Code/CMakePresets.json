@@ -2,32 +2,19 @@
   "version": 3,
   "configurePresets": [
     {
+<<<<<<< HEAD
       "name": "base",
       "hidden": true,
       "generator": "Visual Studio 18 2026",
+=======
+      "name": "vcpkg-default",
+      "displayName": "Default Config (Multi-Config)",
+      "description": "Default configuration using vcpkg and Visual Studio, supporting both Debug and Release.",
+      "generator": "Visual Studio 17 2022",
+>>>>>>> d25a0ea5943937e6262071f4573d3d469e630636
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
-      }
-    },
-    {
-      "name": "vcpkg-debug",
-      "inherits": "base",
-      "displayName": "Debug Config",
-      "description": "Debug build using vcpkg and Visual Studio",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
-      }
-    },
-    {
-      "name": "vcpkg-release",
-      "inherits": "base",
-      "displayName": "Release Config",
-      "description": "Release build using vcpkg and Visual Studio",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "x64-windows"
       }
     }
@@ -35,6 +22,7 @@
   "buildPresets": [
     {
       "name": "vcpkg-debug",
+<<<<<<< HEAD
       "configurePreset": "vcpkg-debug",
       "displayName": "Debug Build",
       "configuration": "debug"
@@ -44,6 +32,17 @@
       "configurePreset": "vcpkg-release",
       "displayName": "Release Build",
       "configuration": "release"
+=======
+      "displayName": "Debug Build",
+      "configurePreset": "vcpkg-default",
+      "configuration": "Debug"
+    },
+    {
+      "name": "vcpkg-release",
+      "displayName": "Release Build",
+      "configurePreset": "vcpkg-default",
+      "configuration": "Release"
+>>>>>>> d25a0ea5943937e6262071f4573d3d469e630636
     }
   ]
 }

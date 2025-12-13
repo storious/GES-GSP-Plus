@@ -12,8 +12,11 @@ Get up and running in minutes with our simple setup guide.
 Ensure you have the following tools installed on your Windows 11 machine:
 - **[CMake](https://cmake.org/)** (version >= 3.23)
 - **[Vcpkg](https://vcpkg.io)** or **[Conan](https://conan.io/)** (version >= 2.0)
-- **MSBuild** (from Visual Studio 2022)
-> **💡 Tip:** If you are using Visual Studio 2026, we strongly recommend using vcpkg, as Conan may encounter issues compiling OpenCV 4.12.0. (Using vcpkg with OpenCV 4.11.0 will not affect reproduction of results.)
+- **MSBuild** (from **Visual Studio 2022**)
+> **💡 Tip:** If you are using **Visual Studio 2026**, please note the following:
+> - You must use **vcpkg** instead of **Conan**.
+> - The latest supported OpenCV version is 4.11.0, which is sufficient for reproducing the results.
+> - Remember to edit [CMakePresets.json](.\Code\CMakePresets.json) and replace **Visual Studio 2022** with **Visual Studio 2026**.
 - **IDE**: [VSCode](https://code.visualstudio.com/) (Recommended)
 
 > **💡 Tip:** We highly recommend using [Scoop](https://scoop.sh/) to easily install CMake and Conan on Windows.
@@ -35,13 +38,12 @@ git clone https://github.com/storious/GES-GSP-Plus.git
 cd Code
 
 # 3. Configure the project using CMake presets
-cmake --preset vcpkg-debug
+cmake --preset vcpkg-default
 
 # 4. Build the project in Debug mode
 cmake --build --preset vcpkg-debug
 
 # For a Release build, use:
-# cmake --preset vcpkg-release
 # cmake --build --preset vcpkg-release
 
 # 5. Run the application
@@ -79,8 +81,7 @@ cd .. # Ensure you are in the project root directory
 ```
 ### 📜 Scripts
 For your convenience, we provide the following scripts:
-- **`RUN.EXE.bat`**: After building, simply edit `RUN_FILE.txt` to easily run different datasets.
-- **`debug.bat`**: Rebuilds and runs the application in one step. Ideal for quick debugging after code changes.
+- **`RUN.bat`**: simply edit `RUN_FILE.txt` to easily run different datasets. more detail run `RUN.bat -h`
 ---
 ## ✨ Key Features & Improvements
 - 🧹 **Simplified Workflow**: No more hunting for DLLs. All dependencies are managed and built by CMake for a hassle-free experience.

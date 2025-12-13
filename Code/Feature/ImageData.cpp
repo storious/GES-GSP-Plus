@@ -146,7 +146,7 @@ const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
 	return feature_descriptors;
 }
 
-const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &weights) const
+const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &weights) const //提取了线特征，还将线的采样点和权重返回
 {
 	Mat imgRes = img.clone();
 	Mat gray;
@@ -335,7 +335,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 				itemLine.emplace_back((*iterator)[sampleIndex]);
 			}
 		}
-		itemLine.insert(itemLine.end(), static_samples.begin(), static_samples.end());
+		itemLine.insert(itemLine.end(), static_samples.begin(), static_samples.end()); //就是再itemLine后面加上static_samples而已
 		samplesData.push_back(itemLine);
 		weights.emplace_back(getLineWeight(*iterator));
 

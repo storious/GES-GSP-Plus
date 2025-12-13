@@ -17,8 +17,8 @@
 
 - **[CMake](https://cmake.org/)** (版本 >= 3.23)
 - **[Vcpkg](https://vcpkg.io) or [Conan](https://conan.io/)** (版本 >= 2.0)
-- **MSBuild** (来自 Visual Studio 2022)
-> **💡 提示:** 如果你使用 Visual Studio 2026 那么请务必使用vcpkg (目前最新支持opencv4.11.0 不影响复现)
+- **MSBuild** (来自 **Visual Studio 2022**)
+> **💡 提示:** 如果你使用 **Visual Studio 2026** 那么请务必使用**vcpkg** (目前最新支持OpenCv4.11.0 不影响复现), 记得修改[CMakePresets.json](.\Code\CMakePresets.json),替换其中的 **Visual Studio 2022**
 - **IDE**: [VSCode](https://code.visualstudio.com/) (推荐)
 
 > **💡 提示:** 我们强烈推荐使用 [Scoop](https://scoop.sh/) 在 Windows 上轻松安装 CMake 和 Conan。
@@ -42,13 +42,12 @@ git clone https://github.com/storious/GES-GSP-Plus.git
 cd Code
 
 # 3. 使用 CMake 预设配置项目
-cmake --preset vcpkg-debug
+cmake --preset vcpkg-default
 
 # 4. 在 Debug 模式下构建项目
 cmake --build --preset vcpkg-debug
 
 # 如需 Release 构建，请使用: 
-# cmake --preset vcpkg-release
 # cmake --build --preset vcpkg-release
 
 # 7. 运行应用程序
@@ -89,8 +88,7 @@ cd .. # 确保你位于项目根目录
 ```
 ### 📜 脚本
 为了方便，你可以使用我们提供的脚本：
-- **`RUN.EXE.bat`**: 构建完成后，修改 `RUN_FILE.txt` 即可轻松运行不同的数据集。
-- **`debug.bat`**: 一步完成重新构建和运行。非常适合在修改代码后进行快速调试。
+- **`RUN.bat`**: 构建完成后，修改 `RUN_FILE.txt` 即可轻松运行不同的数据集。更多细节，使用 `RUN.bat -h`
 ---
 
 ## ✨ 核心特性与改进
