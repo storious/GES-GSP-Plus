@@ -70,7 +70,7 @@ ImageData::ImageData(const string &_file_dir,
 	}
 	vector<Mat> channels;
 
-	split(rgba_img, channels);
+	split(rgba_img, channels); //分离通道  channels[0] B  channels[1] G  channels[2] R  channels[3] A
 	alpha_mask = channels[3];
 
 	mesh_2d = make_unique<MeshGrid>(img.cols, img.rows);
@@ -128,7 +128,7 @@ const vector<LineData> &ImageData::getLines() const
 	return img_lines;
 }
 
-const vector<Point2> &ImageData::getFeaturePoints() const
+const vector<Point2> &ImageData::getFeaturePoints() const //返回特征点 描述子也算了feature_descriptors
 {
 	if (feature_points.empty())
 	{
@@ -137,7 +137,7 @@ const vector<Point2> &ImageData::getFeaturePoints() const
 	return feature_points;
 }
 
-const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
+const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const //返回的是描述子
 {
 	if (feature_descriptors.empty())
 	{
@@ -146,7 +146,7 @@ const vector<FeatureDescriptor> &ImageData::getFeatureDescriptors() const
 	return feature_descriptors;
 }
 
-const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &weights) const //提取了线特征，还将线的采样点和权重返回
+const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &weights) const //提取了线特征，还将线的采样点和权重返回,返回的是每条线的头尾和采样点以及每条线对应的static_samples 开始和结束
 {
 	Mat imgRes = img.clone();
 	Mat gray;
@@ -289,7 +289,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		contourLength = lineslength[i];
 		if (contourLength == 0)
 		{
-			Size2f size = minAreaRect(*iterator).size;
+			Size2f size = minAreaRect(*iterator).size; //返回的是宽和高，就是用矩形框住这条线
 			contourLength = sqrt(size.width * size.width + size.height * size.height);
 		}
 
@@ -301,7 +301,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 			// iterator = res.erase(iterator);
 			continue;
 		}
-		// 4.Curve point data is sorted and de-duplicated
+		// 4.曲线点数据排序并去重
 		sort((*iterator).begin(), (*iterator).end(), sortForPoint);
 		(*iterator).erase(unique((*iterator).begin(), (*iterator).end(), equalForPoint), (*iterator).end());
 
@@ -321,9 +321,9 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 		// 7.Add the sample point to the sample point data list
 		for (int i = 1; i <= sampleNum; i++)
 		{
-			int sampleIndex = sampleDist * i; //看样子曲线的存储也是按照像素点为单位来的
+			int sampleIndex = (sampleDist * i) - 1; //看样子曲线的存储也是按照像素点为单位来的
 
-			if (sampleIndex >= (*iterator).size() - 1) //越界处理
+			if (sampleIndex > (*iterator).size() - 1) //越界处理
 			{
 				if (itemLine.size() == 2)
 				{
@@ -336,7 +336,7 @@ const vector<vector<Point>> ImageData::getContentSamplesPoint(vector<double> &we
 			}
 		}
 		itemLine.insert(itemLine.end(), static_samples.begin(), static_samples.end()); //就是再itemLine后面加上static_samples而已
-		samplesData.push_back(itemLine);
+		samplesData.push_back(itemLine);//把itemLine采样点加到samplesData
 		weights.emplace_back(getLineWeight(*iterator));
 
 
@@ -883,7 +883,7 @@ double getLineWeight(vector<Point> line)
 	double minWeight = 0.2;
 	RotatedRect rrect = minAreaRect(line);
 	Rect rect = rrect.boundingRect();
-	double ratio = min((double)rect.width, (double)rect.height) / max((double)rect.width, (double)rect.height);
+	double ratio = min((double)rect.width, (double)rect.height) / max((double)rect.width, (double)rect.height); //线越宽或接近正方形 → 权重越大
 	double weight = exp(log(minWeight) * ratio) + (1 - minWeight) / 2;
 	return weight;
 }

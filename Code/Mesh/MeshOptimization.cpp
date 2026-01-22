@@ -80,7 +80,7 @@ void MeshOptimization::reserveData(vector<Triplet<double>> &_triplets,
 								   const int _start_index)
 {
 
-	int equation = _start_index;
+	int equation = _start_index;  
 	const bool alignment_term = alignment_weight;
 	const bool local_similarity_term = local_similarity_weight;
 	const bool global_similarity_term = (global_similarity_weight_beta || global_similarity_weight_gamma);
@@ -91,7 +91,7 @@ void MeshOptimization::reserveData(vector<Triplet<double>> &_triplets,
 
 	alignment_equation.first = equation;
 
-	alignment_equation.second = (alignment_term) ? getAlignmentTermEquationsCount() : 0;
+	alignment_equation.second = (alignment_term) ? getAlignmentTermEquationsCount() : 0;  //匹配点数量*2
 
 	equation += alignment_equation.second;
 
@@ -142,16 +142,16 @@ void MeshOptimization::reserveData_content(vector<Triplet<double>> &_triplets,
 	content_preserving_equation.second = (content_preserving_term) ? content_preserving_equation_count : 0;
 
 	//reserve是提前分配内存空间
-	_triplets.reserve(alignment_equation.second * 8 +  
-		(local_similarity_term) * (edge_neighbor_vertices_count * 8 + edge_count * 4) +
-		(global_similarity_term) * (edge_neighbor_vertices_count * 8) +
-		(content_preserving_term) * (content_preserving_equation_count * 20) +
+	_triplets.reserve(alignment_equation.second * 8 +    //4个点2维
+		(local_similarity_term) * (edge_neighbor_vertices_count * 8 + edge_count * 4) +   //term是01开关是否启动能量项  4点2维 2点2维
+		(global_similarity_term) * (edge_neighbor_vertices_count * 8) +  
+		(content_preserving_term) * (content_preserving_equation_count * 20) +    //20 = 4个点2维 每个点5个三角形
 		_start_index);
 	_b_vector.reserve((global_similarity_term)*edge_neighbor_vertices_count * 4 +
 					  _start_index);
 }
 
-void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) const
+void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) const  //已经在给对齐项施加权重了，权重包括对齐权重
 {
 	if (alignment_equation.second)
 	{
@@ -172,18 +172,18 @@ void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) 
 
 			double ransacDiffWeight = 1;
 
-			const vector<Indices> &polygons_indices_1 = multi_images->images_data[m1].mesh_2d->getPolygonsIndices();
+			const vector<Indices> &polygons_indices_1 = multi_images->images_data[m1].mesh_2d->getPolygonsIndices(); //将每个网格的4个顶点的index存放起来
 			const vector<Indices> &polygons_indices_2 = multi_images->images_data[m2].mesh_2d->getPolygonsIndices();
 
-			for (int j = 0; j < pairwise_matches[pm_index].matches.size(); ++j)
+			for (int j = 0; j < pairwise_matches[pm_index].matches.size(); ++j) //遍历每个图像的匹配点
 			{
-				const DMatch &D_Match = pairwise_matches[pm_index].matches[j];
+				const DMatch &D_Match = pairwise_matches[pm_index].matches[j]; //包含了变换后的人为匹配点索引和原始人为匹配点索引 以及距离
 				//
 				for (int dim = 0; dim < DIMENSION_2D; ++dim)
 				{
-					for (int k = 0; k < multi_images->images_data[m1].mesh_2d->getPolygonVerticesCount(); ++k)
+					for (int k = 0; k < multi_images->images_data[m1].mesh_2d->getPolygonVerticesCount(); ++k) //4个顶点
 					{
-						_triplets.emplace_back(equation + eq_count + dim,
+						_triplets.emplace_back(equation + eq_count + dim,                      //_triplets.emplace_back(row, col, value) （ ，网格顶点索引 ，该网格点权重）
 											   images_vertices_start_index[m1] + dim +
 												   DIMENSION_2D * (polygons_indices_1[mesh_interpolate_vertex_of_matching_pts[m1][D_Match.queryIdx].polygon].indices[k]),
 											   alignment_weight * ransacDiffWeight * mesh_interpolate_vertex_of_matching_pts[m1][D_Match.queryIdx].weights[k]);
@@ -204,7 +204,7 @@ void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double>> &_triplets) 
 }
 
 void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
-											 vector<pair<int, double>> &_b_vector) const
+											 vector<pair<int, double>> &_b_vector) const  //对每一条网格边，利用它周围的点，构造一个“这条边应该像相似变换”的线性约束，并塞进全局最小二乘系统。
 {
 	const bool local_similarity_term = local_similarity_equation.second;
 	const bool global_similarity_term = global_similarity_equation.second;
@@ -232,7 +232,9 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 				const Point2 &src = multi_images->images_data[i].mesh_2d->getVertices()[ind_e1];
 				const Point2 &dst = multi_images->images_data[i].mesh_2d->getVertices()[ind_e2];
 
-				set<int> point_ind_set;
+
+				//收集周围的点
+				set<int> point_ind_set;  //存的是当前边的两个点的的邻居点的索引
 				for (int e = 0; e < EDGE_VERTEX_SIZE; ++e)
 				{
 					for (int v = 0; v < v_neighbors[edges[j].indices[e]].indices.size(); ++v)
@@ -245,6 +247,7 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 					}
 				}
 
+				//构造 E 矩阵（关键）
 				Mat Et, E_Main(DIMENSION_2D, DIMENSION_2D, CV_64FC1), E((int)point_ind_set.size() * DIMENSION_2D, DIMENSION_2D, CV_64FC1);
 				set<int>::const_iterator it = point_ind_set.begin();
 				for (int p = 0; it != point_ind_set.end(); ++p, ++it)
@@ -255,6 +258,10 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 					E.at<double>(DIMENSION_2D * p + 1, 0) = e.y;
 					E.at<double>(DIMENSION_2D * p + 1, 1) = -e.x;
 				}
+
+				//这是这条边的自身
+				//G_W “用邻居点，最小二乘估计一个相似变换”
+				//L_W “这条主边在这个相似变换下，应该长什么样”
 				transpose(E, Et);
 				Point2 e_main = dst - src;
 				E_Main.at<double>(0, 0) = e_main.x;
@@ -262,6 +269,8 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 				E_Main.at<double>(1, 0) = e_main.y;
 				E_Main.at<double>(1, 1) = -e_main.x;
 
+
+				//算 G_W 和 L_W（灵魂）   
 				Mat G_W = (Et * E).inv(DECOMP_SVD) * Et;
 				Mat L_W = -E_Main * G_W;
 
@@ -280,6 +289,11 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 				{
 					_local_similarity_weight = 1;
 				}
+
+
+				//local: L_W * (v - src) + (dst - src) ≈ 0
+				//global: G_W * (v - src) ≈ [ s cosθ, s sinθ ]右边就是similarity
+
 				it = point_ind_set.begin();
 				for (int p = 0; it != point_ind_set.end(); ++p, ++it)
 				{
@@ -290,13 +304,13 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double>> &_triplets,
 							if (local_similarity_term)
 							{
 								_triplets.emplace_back(local_similarity_equation.first + eq_count + dim,
-													   images_vertices_start_index[i] + DIMENSION_2D * (*it) + xy,
+													   images_vertices_start_index[i] + DIMENSION_2D * (*it) + xy,  //第i张图的第*it个点的x或y坐标
 													   _local_similarity_weight *
-														   local_similarity_weight * L_W.at<double>(dim, DIMENSION_2D * p + xy));
+														   local_similarity_weight * L_W.at<double>(dim, DIMENSION_2D * p + xy)); //这个顶点，对这条边的相似性约束贡献多少
 								_triplets.emplace_back(local_similarity_equation.first + eq_count + dim,
 													   images_vertices_start_index[i] + DIMENSION_2D * ind_e1 + xy,
 													   _local_similarity_weight *
-														   -local_similarity_weight * L_W.at<double>(dim, DIMENSION_2D * p + xy));
+														   -local_similarity_weight * L_W.at<double>(dim, DIMENSION_2D * p + xy));  
 							}
 							if (global_similarity_term)
 							{
@@ -445,11 +459,11 @@ void MeshOptimization::prepareContentPreservingTerm(vector<Triplet<double>> &_tr
 	}
 }
 
-int MeshOptimization::getAlignmentTermEquationsCount() const
+int MeshOptimization::getAlignmentTermEquationsCount() const  //匹配点的数量（包括网格匹配点）×2
 {
 	int result = 0;
 
-	const vector<pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
+	const vector<pair<int, int>> &images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList(); //获取图像匹配关系（i，j）
 
 	const vector<detail::MatchesInfo> &pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
 
@@ -487,7 +501,7 @@ int MeshOptimization::getEdgesCount() const
 
 
 
-int MeshOptimization::getEdgeNeighborVerticesCount() const {  //返回的是每个边的顶点的所有临界顶点的个数
+int MeshOptimization::getEdgeNeighborVerticesCount() const {  //返回的是每个边的顶点的所有邻接顶点的个数-边的数量，边是网格斜边
 	int result = 0;
 	for (int i = 0; i < multi_images->images_data.size(); ++i)
 	{
@@ -500,7 +514,7 @@ int MeshOptimization::getEdgeNeighborVerticesCount() const {  //返回的是每�
 		{
 			for (int e = 0; e < EDGE_VERTEX_SIZE; ++e)
 			{
-				result += v_neighbors[edges[j].indices[e]].indices.size();
+				result += v_neighbors[edges[j].indices[e]].indices.size();   //将方格斜边的两个点的周围邻接点个数加起来
 			}
 		}
 
@@ -513,11 +527,11 @@ int MeshOptimization::getEdgeNeighborVerticesCount() const {  //返回的是每�
 /// Get the number of constraint equations.
 /// </summary>
 /// <returns></returns>
-int MeshOptimization::getContentPreservingTermEquationCount() const
+int MeshOptimization::getContentPreservingTermEquationCount() const  //每张图对应的每个点的采样点个数×2 维度
 {
 	int result = 0;
 	// Get grid vertex interpolation data type data of all sampling points.
-	const vector<vector<vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation();
+	const vector<vector<vector<InterpolateVertex>>> &content_interpolation = multi_images->getSamplesInterpolation(); //返回的是线和采样点，以及带权重的线的采样点
 	for (int i = 0; i < content_interpolation.size(); i++) // pic
 	{
 		for (int j = 0; j < content_interpolation[i].size(); j++) // lines
@@ -530,7 +544,7 @@ int MeshOptimization::getContentPreservingTermEquationCount() const
 	return result * DIMENSION_2D; 
 }
 
-vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triplet<double>> &_triplets,
+vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triplet<double>> &_triplets,                     //根据能量项（triplets + b），解一个最小二乘系统，这里已经做完了对齐能量项了，返回的坐标是优化后的坐标
 																   const vector<pair<int, double>> &_b_vector) const
 {
 
@@ -544,13 +558,13 @@ vector<vector<Point2>> MeshOptimization::getImageVerticesBySolving(vector<Triple
 		equations = global_similarity_equation.first + global_similarity_equation.second;
 	}
 
-	LeastSquaresConjugateGradient<SparseMatrix<double>> lscg;
-	SparseMatrix<double> A(equations, getVerticesCount());
+	LeastSquaresConjugateGradient<SparseMatrix<double>> lscg; //[Eigen] 最小二乘共轭梯度法（LSCG），min​∥Ax−b∥2 ATAx=ATb
+	SparseMatrix<double> A(equations, getVerticesCount());  //构造一个 最小二乘问题
 	VectorXd b = VectorXd::Zero(equations), x;
 
 #ifndef DP_NO_LOG
 	auto start = std::chrono::high_resolution_clock::now();
-	cout << "A = [" << equations << ", " << getVerticesCount() << "]" << endl;
+	cout << "对齐项: A = [" << equations << ", " << getVerticesCount() << "]" << endl;
 #endif
 	A.setFromTriplets(_triplets.begin(), _triplets.end());
 	for (int i = 0; i < _b_vector.size(); ++i)

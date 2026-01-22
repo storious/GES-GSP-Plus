@@ -8,17 +8,27 @@
 #define _USE_MATH_DEFINES
 #include "Transform.h"
 
+/*
+点云中心 → (0,0)
 
-Mat getConditionerFromPts(const vector<Point2>& pts) {
+x 方向方差 → 标准
 
-	Mat pts_ref(pts);
+y 方向方差 → 标准
 
-	Scalar mean_pts, std_pts;
+x、y 各用各的 scale*/
+Mat getConditionerFromPts(const vector<Point2>& pts) { //x y 分别缩放，保持统计意义上的稳定，返回的是变换矩阵，就是缩放加上位移。
+	Mat pts_ref(pts);   // N rows × 1 col × 2 channels 这里是让point2自动映射成矩阵，形成一个N x 2的矩阵  通道 0 → x，通道 1 → y
 
-	meanStdDev(pts_ref, mean_pts, std_pts);
+	Scalar mean_pts, std_pts; //多个通道，每个通道一个值
 
+	meanStdDev(pts_ref, mean_pts, std_pts); //计算标准差和均值
+	// 得到的东西：
+	// mean_pts.val[0] → x 的均值
+	// mean_pts.val[1] → y 的均值
+	// std_pts.val[0] → x 的标准差
+	// std_pts.val[1] → y 的标准差
 
-	std_pts = (std_pts.mul(std_pts) * pts_ref.rows / (double)(pts_ref.rows - 1));
+	std_pts = (std_pts.mul(std_pts) * pts_ref.rows / (double)(pts_ref.rows - 1));  //样本方差？
 
 	sqrt(std_pts, std_pts);
 
@@ -43,20 +53,32 @@ Mat getConditionerFromPts(const vector<Point2>& pts) {
 	return result;
 }
 
-Mat getNormalize2DPts(const vector<Point2>& pts, vector<Point2>& newpts) {
+/*
+我是从“几何形状”出发的
+点云中心 → (0,0)
 
-	Mat pts_ref(pts), npts;
-	Scalar mean_p = mean(pts_ref);
-	npts = pts_ref - mean_p;
-	Mat dist = npts.mul(npts);
+所有点到原点的 平均距离 = √2
 
-	dist = dist.reshape(1);
+x、y 用 同一个 scale
+*/
+Mat getNormalize2DPts(const vector<Point2>& pts, vector<Point2>& newpts) {   //把一堆点移到中间，再整体缩放到合适大小，让后面的矩阵计算不炸。就是归一化加上缩放 ，，返回的是变换矩阵，就是缩放加上位移，同时第二个形参是变换后的
 
-	sqrt(dist.col(0) + dist.col(1), dist);
+	Mat pts_ref(pts), npts;  //这里是让point2自动映射成矩阵，形成一个N x 2的矩阵
+	Scalar mean_p = mean(pts_ref); // 计算均值μx​，μy​
+	npts = pts_ref - mean_p;  //中心化处理，得到(xi​−μx​,yi​−μy​)
 
-	double scale = sqrt(2) / mean(dist).val[0];
+	//sqrt(x² + y²)
+	Mat dist = npts.mul(npts); //矩阵之间相乘，左成右的转置
+	dist = dist.reshape(1); //通道数改成1 还是N*2
+	sqrt(dist.col(0) + dist.col(1), dist);   //变成N*1的矩阵
 
+	double scale = sqrt(2) / mean(dist).val[0];// 根号2/dist的均值 缩放因子 ，val[0]表示第一个通道 
 
+	/*
+	s 0 -sux
+	0 s -suy
+	0 0  1
+	*/
 	Mat result(3, 3, CV_64FC1);
 	result.at<double>(0, 0) = scale;
 	result.at<double>(0, 1) = 0;
@@ -99,7 +121,7 @@ T normalizeAngle(T x) {
 
 template <typename T>
 Point_<T> applyTransform3x3(T x, T y, const Mat& matT) {
-	double denom = 1. / (matT.at<double>(2, 0) * x + matT.at<double>(2, 1) * y + matT.at<double>(2, 2));
+	double denom = 1. / (matT.at<double>(2, 0) * x + matT.at<double>(2, 1) * y + matT.at<double>(2, 2));  //就是齐次坐标变回去的那个分母
 	return Point_<T>((matT.at<double>(0, 0) * x + matT.at<double>(0, 1) * y + matT.at<double>(0, 2)) * denom,
 		(matT.at<double>(1, 0) * x + matT.at<double>(1, 1) * y + matT.at<double>(1, 2)) * denom);
 }
@@ -111,7 +133,7 @@ Point_<T> applyTransform2x3(T x, T y, const Mat& matT) {
 }
 
 template <typename T>
-Size_<T> normalizeVertices(vector<vector<Point_<T> > >& vertices) {
+Size_<T> normalizeVertices(vector<vector<Point_<T> > >& vertices) { //这是针对所有图像整体的，下面的是针对单个图像的；；遍历所有图像的变化后的点，返回这个最小外接矩形的尺寸，然后将所有点都平移到正坐标系中，就是说向左平移和向右平移
 	T min_x = FLT_MAX, max_x = -FLT_MAX;
 	T min_y = FLT_MAX, max_y = -FLT_MAX;
 
@@ -140,7 +162,9 @@ Rect_<T> getVerticesRects(const vector<Point_<T> >& vertices) {
 }
 
 template <typename T>
-vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > >& vertices) {
+vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > >& vertices)  //获取的是每幅图像的xy最小最大值和构造最小外接矩形返回（也就是最大值减去最小值得到矩阵大小），
+//图像与图像之间依旧是有相对关系在的，因为之前的normalizeVertices只是对统一的坐标系做了平移，并没有改变相对位置关系，所以这里的最小外接矩形也是有意义的，而且min_x min_y也是相对于整体坐标系的
+{  
 	vector<Rect_<T> > result;
 	result.reserve(vertices.size());
 	for (int i = 0; i < vertices.size(); ++i) {
@@ -167,11 +191,12 @@ T getSubpix(const Mat& img, const Point2f& pt) {
 
 
 template <typename T, size_t n>
-Vec<T, n> getSubpix(const Mat& img, const Point2f& pt) {
+Vec<T, n> getSubpix(const Mat& img, const Point2f& pt) //返回的是插值后pt这个点的值
+{
 	Mat patch;
 	cv::getRectSubPix(img, Size(1, 1), pt, patch);
 	return patch.at<Vec<T, n> >(0, 0);
-}
+}  
 
 template <typename T>
 Vec<T, 3> getEulerZXYRadians(const Mat_<T>& rot_matrix) {

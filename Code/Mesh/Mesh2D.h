@@ -88,14 +88,14 @@ public:
 	virtual const vector<int>& getBoundaryVertexIndices() const = 0; /* clockwise order */
 	virtual const vector<int>& getBoundaryEdgeIndices() const = 0;
 
-	virtual InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const = 0;
+	virtual InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const = 0;  //virtual InterpolateVertex Mesh2D::getInterpolateVertex
 	virtual InterpolateVertex getInterpolateVertex(const Point_<double>& _p) const = 0;
 	virtual InterpolateVertex getInterpolateVertex(const Point_<int>& _p) const = 0;
 
 	virtual const vector<Point2>& getPolygonsCenter() const;
 
 	template <typename T>
-    inline int getGridIndexOfPoint(const Point_<T>& _p) const {
+    inline int getGridIndexOfPoint(const Point_<T>& _p) const {  //将二维坐标转换成网格的index
         int x_idx = min(max(int(_p.x / lw), 0), nw - 1);
         int y_idx = min(max(int(_p.y / lh), 0), nh - 1);
         return y_idx * nw + x_idx;

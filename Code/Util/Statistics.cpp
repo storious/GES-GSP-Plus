@@ -59,9 +59,9 @@ void Statistics::getMedianWithCopyData(const vector<T>& _vec, double& _median) {
 template <typename T>
 void Statistics::getMedianWithoutCopyData(vector<T>& _vec, double& _median) {
 	size_t n = _vec.size() / 2;
-	std::nth_element(_vec.begin(), _vec.begin() + n, _vec.end());
+	std::nth_element(_vec.begin(), _vec.begin() + n, _vec.end());  //获取中位数
 	_median = _vec[n];
-	if ((_vec.size() & 1) == 0) {
+	if ((_vec.size() & 1) == 0) {  //元素个数为偶数，对于偶数个元素，中位数是中间两个数的平均值，所以要找到n-1位置的元素
 		std::nth_element(_vec.begin(), _vec.begin() + n - 1, _vec.end());
 		_median = (_median + _vec[n - 1]) * 0.5;
 	}

@@ -42,7 +42,7 @@ public:
 	const vector<vector<bool> >& getImagesMatchGraph() const;
 	const vector<pair<int, int> >& getImagesMatchGraphPairList() const;
 private:
-	mutable vector<vector<bool> >   images_match_graph_manually;
+	mutable vector<vector<bool> >   images_match_graph_manually; //就是读取到的图像匹配关系
 	mutable vector<vector<bool> >   images_match_graph_automatically; /* TODO */
 	mutable vector<pair<int, int> > images_match_graph_pair_list;
 };

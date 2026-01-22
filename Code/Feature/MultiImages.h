@@ -66,6 +66,11 @@ public:
 		LINES_FILTER_FUNC* _width_filter = &LINES_FILTER_NONE,
 		LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE);
 
+	MultiImages(const string& _file_name,
+	LINES_FILTER_FUNC* _width_filter = &LINES_FILTER_NONE,
+	LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE,
+	int have_mesh = 0);
+
 	const vector<detail::ImageFeatures>& getImagesFeaturesByMatchingPoints() const;
 	const vector<detail::MatchesInfo>& getPairwiseMatchesByMatchingPoints() const;
 	const vector<detail::CameraParams>& getCameraParams() const;
@@ -120,12 +125,13 @@ public:
 	void drawRansac(const int img_index, const int img_index_second,
 		const vector<pair<int, int> >& _initial_indices, const vector<char>& _mask) const;
 
-	vector<ImageData> images_data;
+	vector<ImageData> images_data; //只有文件名字 和图像列表
 	Parameter parameter;
-	mutable vector<vector<double > >            content_line_weights;
+	mutable vector<vector<double > >    content_line_weights;
 
 	double getRMSE(vector<vector<Point2> > _vertices) const;
 	pair<double, double> getWarpingResidual(vector<vector<Point2> > _vertices) const;
+	void saveHomography(const Mat& H, int idx) const;
 private:
 	/*** Debugger ***/
 	void writeImageOfFeaturePairs(const string& _name,
@@ -157,21 +163,21 @@ private:
 	vector<pair<int, int>> getTwoImgFeaturePairs(pair<int, int> _mask_pair_) const;
 
 
-	mutable vector<vector<vector<double>>> ransacDiff;
-	mutable vector<vector<double>> ransacAvgDiff;
-	mutable vector<vector<double>> ransacDiffWeight;
+	mutable vector<vector<vector<double>>> ransacDiff; //记录每一对图像在RANSAC过程中每个内点的重投影误差
+	mutable vector<vector<double>> ransacAvgDiff;  //存储的是每一对图像在RANSAC过程中内点的重投影误差的均值
+	mutable vector<vector<double>> ransacDiffWeight; //存储的是每一对图像的重投影误差权重，权重是根据均值计算出来的，均值越大权重越小 exp(-avg^2)也就是高斯函数，进一步调整最终权重 +1 - avgWeight
 	const string txtName = "./RansacDst//";
 
-	mutable vector<detail::ImageFeatures> images_features;
-	mutable vector<detail::MatchesInfo>   pairwise_matches;
+	mutable vector<detail::ImageFeatures> images_features; //每个 ImageFeatures 对象通常包含一张图片的特征点、描述子和相关元数据，常用于图像拼接等任务
+	mutable vector<detail::MatchesInfo>   pairwise_matches;// 每个 MatchesInfo 对象通常包含两张图片之间的匹配信息（如匹配点对、单应性矩阵、匹配置信度等），常用于图像拼接、特征匹配等任务。
 	mutable vector<detail::CameraParams>  camera_params;
-	mutable vector<vector<bool> > images_features_mask;
+	mutable vector<vector<bool> > images_features_mask;   //二维 第一维代表点来自哪个图片，第二维代表是图片的第几个特征点
 
 	mutable vector<vector<vector<pair<int, int> > > > feature_pairs;
 	mutable vector<vector<vector<Point2> > > feature_matches; /* [m1][m2][j], img1 j_th matches */
 
 	mutable vector<vector<vector<bool> > >   apap_overlap_mask;
-	mutable vector<vector<vector<Mat> > >    apap_homographies;
+	mutable vector<vector<vector<Mat> > >    apap_homographies;  //Mat可以存储图片
 	mutable vector<vector<vector<Point2> > > apap_matching_points;
 
 	mutable vector<vector<InterpolateVertex> > mesh_interpolate_vertex_of_feature_pts;
@@ -195,7 +201,7 @@ private:
 	mutable vector<vector<vector<InterpolateVertex> > > content_mesh_interpolation;
 	mutable vector < vector<vector<pair<double, double>> >> content_term_uv;
 
-
+	mutable vector<Mat> H_list;  //存放H [add]
 };
 double Point2dDis(Point2d p1, Point2d p2);
 int VerifyVertices(Point2d p1, int m1Tom2_p1_index, const vector<Indices>& m1_polygons_indice, const vector<Point2>& m1_vertices);

@@ -31,16 +31,38 @@ MultiImages::MultiImages(const string &_file_name,
 	}
 }
 
-void MultiImages::doFeatureMatching() const
+MultiImages::MultiImages(const string &_file_name,
+						 LINES_FILTER_FUNC *_width_filter,
+						 LINES_FILTER_FUNC *_length_filter,int have_mesh) : parameter(_file_name) //构造函数  parameter是一个对象，后面的parameter就是filename赋值给parameter
+{
+
+	for (int i = 0; i < parameter.image_file_full_names.size(); ++i)
+	{
+#ifndef DP_NO_LOG
+		images_data.emplace_back(parameter.file_dir,
+								 parameter.image_file_full_names[i],
+								 _width_filter,
+								 _length_filter,
+								 &parameter.debug_dir);
+#else
+		images_data.emplace_back(parameter.file_dir,
+								 parameter.image_file_full_names[i],
+								 _width_filter,
+								 _length_filter);
+#endif
+	}
+}
+
+void MultiImages::doFeatureMatching() const  //images_features[m1]是m1的网格点加上m2的网格点的仿射变换，做了APAP网格局部单应性(apap_homographies)以及特征点变换(apap_matching_points)，设置一些人工的匹配点(pairwise_matches)，更新图像的特征点(images_features)和哪些网格被用到了(apap_overlap_mask)，哪副图的像的哪些网格点被用作了特征点(images_features_mask)
 {
 
 	const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 
-	images_features.resize(images_data.size());
+	images_features.resize(images_data.size());  //都是网格点的
 
 	images_features_mask.resize(images_data.size());
 
-	for (int i = 0; i < images_data.size(); ++i)
+	for (int i = 0; i < images_data.size(); ++i)  //为每张图像的每个网格分配空间以及初始化
 	{
 
 		const vector<Point2> &vertices = images_data[i].mesh_2d->getVertices();
@@ -54,12 +76,10 @@ void MultiImages::doFeatureMatching() const
 	}
 
 	pairwise_matches.resize(images_data.size() * images_data.size());
-
-	apap_homographies.resize(images_data.size());
-
+	apap_homographies.resize(images_data.size()); //第一维调整为图像数量
 	apap_overlap_mask.resize(images_data.size());
-
 	apap_matching_points.resize(images_data.size());
+
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 		apap_homographies[i].resize(images_data.size());
@@ -69,43 +89,43 @@ void MultiImages::doFeatureMatching() const
 
 	const vector<vector<vector<Point2>>> &feature_matches = getFeatureMatches();
 
-	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
-	{
-
+	for (int i = 0; i < images_match_graph_pair_list.size(); ++i)  //在遍历每一对匹配图像
+	{  
 		const pair<int, int> &match_pair = images_match_graph_pair_list[i];
 
 		const int &m1 = match_pair.first, &m2 = match_pair.second;
 		if (feature_matches[m1][m2].size() < HOMOGRAPHY_MODEL_MIN_POINTS ||
 			feature_matches[m2][m1].size() < HOMOGRAPHY_MODEL_MIN_POINTS)
 		{
-			cout << "[INFO] Skipping APAP for pair (" << m1 << ", " << m2 << ") due to insufficient matches." << endl;
+			cout << "[INFO] Skipping APAP for pair (" << m1 << ", " << m2 << ") due to insufficient matches." << endl
+			;
 			continue;
 		}
 
-		APAP_Stitching::apap_project(feature_matches[m1][m2],
+		APAP_Stitching::apap_project(feature_matches[m1][m2],   //这里很有意思，是先用匹配点来算出H然后再根据网格点距离这些匹配点的距离算出权重，最后利用权重算出每个网格点的单应性矩阵
 									 feature_matches[m2][m1],
-									 images_data[m1].mesh_2d->getVertices(), apap_matching_points[m1][m2], apap_homographies[m1][m2]);
+									 images_data[m1].mesh_2d->getVertices(), apap_matching_points[m1][m2], apap_homographies[m1][m2]);  //[key] apap_homographies
 		APAP_Stitching::apap_project(feature_matches[m2][m1],
 									 feature_matches[m1][m2],
 									 images_data[m2].mesh_2d->getVertices(), apap_matching_points[m2][m1], apap_homographies[m2][m1]);
-		const int PAIR_SIZE = 2;
+		const int PAIR_SIZE = 2; 
 
-		const vector<Point2> *out_dst[PAIR_SIZE] = {&apap_matching_points[m1][m2], &apap_matching_points[m2][m1]};
+		const vector<Point2> *out_dst[PAIR_SIZE] = {&apap_matching_points[m1][m2], &apap_matching_points[m2][m1]};  //存放变换后的网格点
 
 		apap_overlap_mask[m1][m2].resize(apap_homographies[m1][m2].size(), false);
 		apap_overlap_mask[m2][m1].resize(apap_homographies[m2][m1].size(), false);
 
-		const int pm_index = m1 * (int)images_data.size() + m2;
+		const int pm_index = m1 * (int)images_data.size() + m2;  //就是图片索引对在pairwise_matches中的位置
 		const int m_index[PAIR_SIZE] = {m2, m1};
 
-		vector<DMatch> &D_matches = pairwise_matches[pm_index].matches;
+		vector<DMatch> &D_matches = pairwise_matches[pm_index].matches;   //，里面存的是人工设置的特征匹配点DMatch(int queryIdx, int trainIdx, float distance) 左边算m1 右边算m2的网格点
 
-		for (int j = 0; j < PAIR_SIZE; ++j)
+		for (int j = 0; j < PAIR_SIZE; ++j)  //这里是在遍历每个图像的网格点，人工将网格点和变换后的点对应起来作为新的匹配点
 		{
-			for (int k = 0; k < out_dst[j]->size(); ++k)
+			for (int k = 0; k < out_dst[j]->size(); ++k) //人为匹配关键点
 			{
 
-				if ((*out_dst[j])[k].x >= 0 && (*out_dst[j])[k].y >= 0 &&
+				if ((*out_dst[j])[k].x >= 0 && (*out_dst[j])[k].y >= 0 &&   //* 点在图像内，不能在边界外 */
 					(*out_dst[j])[k].x <= images_data[m_index[j]].img.cols &&
 					(*out_dst[j])[k].y <= images_data[m_index[j]].img.rows)
 				{
@@ -115,31 +135,31 @@ void MultiImages::doFeatureMatching() const
 
 						apap_overlap_mask[m2][m1][k] = true;
 
-						D_matches.emplace_back(images_features[m_index[j]].keypoints.size(), k, 0);
+						D_matches.emplace_back(images_features[m_index[j]].keypoints.size(), k, 0);    
 						images_features_mask[m2][k] = true;
 					}
 					else
 					{
-
 						apap_overlap_mask[m1][m2][k] = true;
-						D_matches.emplace_back(k, images_features[m_index[j]].keypoints.size(), 0);
+						D_matches.emplace_back(k, images_features[m_index[j]].keypoints.size(), 0);  //m2的网格点仿射变换到m1的第k个网格匹配点 m2的特征点数量（也就是说是再添加匹配点，因为标号是数量已经是之前检测出来的范围之外的了） 距离0
 						images_features_mask[m1][k] = true;
 					}
 
-					images_features[m_index[j]].keypoints.emplace_back((*out_dst[j])[k], 0);
+					images_features[m_index[j]].keypoints.emplace_back((*out_dst[j])[k], 0);  //添加变换后的点作为新的关键点（网格点，变换后）
 				}
 			}
 		}
-		pairwise_matches[pm_index].confidence = 2.; /*** need > 1.f ***/
+		//这里是在建立新的图像匹配信息
+		pairwise_matches[pm_index].confidence = 2.; /*** need > 1.f ***/  //confidence > 1.f → 才会被认为是 有效边
 		pairwise_matches[pm_index].src_img_idx = m1;
 		pairwise_matches[pm_index].dst_img_idx = m2;
 		pairwise_matches[pm_index].inliers_mask.resize(D_matches.size(), 1);
 		pairwise_matches[pm_index].num_inliers = (int)D_matches.size();
-		pairwise_matches[pm_index].H = apap_homographies[m1][m2].front(); /*** for OpenCV findMaxSpanningTree funtion ***/
+		pairwise_matches[pm_index].H = apap_homographies[m1][m2].front();  //front指的是用计算出来的第一个矩阵 /*** for OpenCV findMaxSpanningTree funtion ***/
 	}
 }
 
-const vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoints() const
+const vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoints() const  
 {
 
 	if (images_features.empty())
@@ -149,7 +169,7 @@ const vector<detail::ImageFeatures> &MultiImages::getImagesFeaturesByMatchingPoi
 	return images_features;
 }
 
-const vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoints() const
+const vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoints() const  //返回的是pairwise_matches，里面存放的是每一对图像的匹配信息，只有人工设置的匹配点，例如
 {
 	if (pairwise_matches.empty())
 	{
@@ -158,15 +178,16 @@ const vector<detail::MatchesInfo> &MultiImages::getPairwiseMatchesByMatchingPoin
 	return pairwise_matches;
 }
 
-const vector<detail::CameraParams> &MultiImages::getCameraParams() const
+const vector<detail::CameraParams> &MultiImages::getCameraParams() const  //主要是计算焦距和3D旋转矩阵处理波浪校正
 {
 	if (camera_params.empty())
 	{
 		camera_params.resize(images_data.size());
-		/*** Focal Length ***/
+		/*** Focal Length ***/ 
 		const vector<vector<vector<bool>>> &apap_overlap_mask = getAPAPOverlapMask();
 		const vector<vector<vector<Mat>>> &apap_homographies = getAPAPHomographies();
 
+		
 		vector<Mat> translation_matrix;
 		translation_matrix.reserve(images_data.size());
 		for (int i = 0; i < images_data.size(); ++i)
@@ -178,6 +199,8 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			T.at<double>(0, 1) = T.at<double>(1, 0) = T.at<double>(2, 0) = T.at<double>(2, 1) = 0;
 			translation_matrix.emplace_back(T);
 		}
+		
+		//通过单应性矩阵计算焦距
 		vector<vector<double>> image_focal_candidates;
 		image_focal_candidates.resize(images_data.size());
 		for (int i = 0; i < images_data.size(); ++i)
@@ -192,18 +215,19 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 						bool f0_ok, f1_ok;
 						Mat H = translation_matrix[j].inv() * apap_homographies[i][j][k] * translation_matrix[i];
 
-						detail::focalsFromHomography(H / H.at<double>(2, 2),
+						detail::focalsFromHomography(H / H.at<double>(2, 2),  //算出焦距
 													 f0, f1, f0_ok, f1_ok);
 						if (f0_ok && f1_ok)
 						{
-							image_focal_candidates[i].emplace_back(f0);
+							image_focal_candidates[i].emplace_back(f0);  //这里f0是x轴方向的焦距，f1是y轴方向的焦距
 							image_focal_candidates[j].emplace_back(f1);
 						}
 					}
 				}
 			}
 		}
-		for (int i = 0; i < camera_params.size(); ++i)
+
+		for (int i = 0; i < camera_params.size(); ++i)  //image size
 		{
 			if (image_focal_candidates[i].empty())
 			{
@@ -211,7 +235,7 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			}
 			else
 			{
-				Statistics::getMedianWithoutCopyData(image_focal_candidates[i], camera_params[i].focal);
+				Statistics::getMedianWithoutCopyData(image_focal_candidates[i], camera_params[i].focal);  //就是找到中位数放到focal里
 			}
 		}
 		/********************/
@@ -222,7 +246,8 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 		{
 			relative_3D_rotations[i].resize(images_data.size());
 		}
-		const vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints();
+
+		const vector<detail::ImageFeatures> &images_features = getImagesFeaturesByMatchingPoints(); //貌似这里只有keypoint
 		const vector<detail::MatchesInfo> &pairwise_matches = getPairwiseMatchesByMatchingPoints();
 		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
@@ -242,6 +267,8 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			MatrixXd A = MatrixXd::Zero(matches_info.num_inliers * DIMENSION_2D,
 										HOMOGRAPHY_VARIABLES_COUNT);
 
+
+			//就是单应性矩阵乘以点的齐次坐标等于变换后的点的齐次坐标
 			for (int j = 0; j < matches_info.num_inliers; ++j)
 			{
 				Point2d p1 = Point2d(images_features[m1].keypoints[matches_info.matches[j].queryIdx].pt) -
@@ -262,24 +289,31 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 				A(2 * j + 1, 7) = -p2.y * p1.y / focal2;
 				A(2 * j + 1, 8) = -p2.y * focal1 / focal2;
 			}
+			//求旋转矩阵的核心
+			//1. 对矩阵A进行SVD分解 → 2. 取最小奇异值对应的奇异向量 → 
+			//3. 重构矩阵 → 4. 用SVD分解投影到SO(3)空间 → 5. 得到正交旋转矩阵
 			JacobiSVD<MatrixXd, HouseholderQRPreconditioner> jacobi_svd(A, ComputeThinV);
 			MatrixXd V = jacobi_svd.matrixV();
+
+			//获取最小奇异值对应的奇异向量
 			Mat R(3, 3, CV_64FC1);
 			for (int j = 0; j < V.rows(); ++j)
 			{
 				R.at<double>(j / 3, j % 3) = V(j, V.rows() - 1);
 			}
+			//投影到SO(3)空间  这里是为了让上面求出来的矩阵变成一个正交矩阵
 			SVD svd(R, SVD::FULL_UV);
 			relative_3D_rotations[m1][m2] = svd.u * svd.vt;
 		}
 		queue<int> que;
 		vector<bool> labels(images_data.size(), false);
 		const int &center_index = parameter.center_image_index;
-		const vector<vector<bool>> &images_match_graph = parameter.getImagesMatchGraph();
+		const vector<vector<bool>> &images_match_graph = parameter.getImagesMatchGraph(); //图像匹配关系 配置文件里面的一个图可以和多个图匹配
 
 		que.push(center_index);
-		relative_3D_rotations[center_index][center_index] = Mat::eye(3, 3, CV_64FC1);
+		relative_3D_rotations[center_index][center_index] = Mat::eye(3, 3, CV_64FC1);  //单位矩阵
 
+		//以某一张图为基准，把所有其他图片的旋转角度都转换到这个统一的坐标系下。
 		while (que.empty() == false)
 		{
 			int now = que.front();
@@ -309,12 +343,12 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 		for (int i = 0; i < camera_params.size(); ++i)
 		{
 			camera_params[i].aspect = 1;
-			camera_params[i].ppx = translation_matrix[i].at<double>(0, 2);
+			camera_params[i].ppx = translation_matrix[i].at<double>(0, 2); //主点也就图像中间的点
 			camera_params[i].ppy = translation_matrix[i].at<double>(1, 2);
 			camera_params[i].t = Mat::zeros(3, 1, CV_64FC1);
 			if (!relative_3D_rotations[i][i].empty())
 			{
-				camera_params[i].R = relative_3D_rotations[i][i].inv();
+				camera_params[i].R = relative_3D_rotations[i][i].inv();  //因为前面算的是世界到相机，需要的是相机到世界  大概
 				camera_params[i].R.convertTo(camera_params[i].R, CV_32FC1);
 			}
 			else
@@ -323,12 +357,17 @@ const vector<detail::CameraParams> &MultiImages::getCameraParams() const
 			}
 		}
 
+		/*** Global Rotation ***/
+		//中心图不变，其它图相对于中心图进行调整
 		Mat center_rotation_inv = camera_params[parameter.center_image_index].R.inv();
 		for (int i = 0; i < camera_params.size(); ++i)
 		{
 			camera_params[i].R = center_rotation_inv * camera_params[i].R;
 		}
 		/* wave correction */
+		// 已经对齐好的相机旋转 再微调一次
+		// 👉 让整条全景图的地平线更直
+		// 👉 减少“像波浪一样上下起伏”的视觉畸变
 		if (WAVE_CORRECT != WAVE_X)
 		{
 			vector<Mat> rotations;
@@ -389,7 +428,7 @@ const vector<vector<vector<Point2>>> &MultiImages::getAPAPMatchingPoints() const
 	return apap_matching_points;
 }
 
-const vector<vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMatchingPoints() const
+const vector<vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMatchingPoints() const //每个图每个特征点点处于第几个网格点 和 该网格点4个点的权重.
 {
 	if (mesh_interpolate_vertex_of_matching_pts.empty())
 	{
@@ -400,18 +439,18 @@ const vector<vector<InterpolateVertex>> &MultiImages::getInterpolateVerticesOfMa
 		for (int i = 0; i < mesh_interpolate_vertex_of_matching_pts.size(); ++i)
 		{
 			// 第i张图
-			mesh_interpolate_vertex_of_matching_pts[i].reserve(images_features[i].keypoints.size());
+			mesh_interpolate_vertex_of_matching_pts[i].reserve(images_features[i].keypoints.size()); //第i张图的关键点数量
 			for (int j = 0; j < images_features[i].keypoints.size(); ++j)
 			{
-				// 算出 第i张图像的每个点处于第几个网格点 和 该网格点4个点的权重.
-				mesh_interpolate_vertex_of_matching_pts[i].emplace_back(images_data[i].mesh_2d->getInterpolateVertex(images_features[i].keypoints[j].pt));
+				// 算出 第i张图像的每个点处于第几个网格点 和 该网格点4个点的权重（根据距离特征点距离（包括人工的和非人工的））.
+				mesh_interpolate_vertex_of_matching_pts[i].emplace_back(images_data[i].mesh_2d->getInterpolateVertex(images_features[i].keypoints[j].pt)); //pt传进去的是坐标
 			}
 		}
 	}
 	return mesh_interpolate_vertex_of_matching_pts;
 }
 
-const vector<int> &MultiImages::getImagesVerticesStartIndex() const
+const vector<int> &MultiImages::getImagesVerticesStartIndex() const  //计算在一个“大数组”（存储了所有图像网格顶点）中，每一张图像的顶点数据是从哪个位置（索引）开始的。
 {
 	if (images_vertices_start_index.empty())
 	{
@@ -426,7 +465,7 @@ const vector<int> &MultiImages::getImagesVerticesStartIndex() const
 	return images_vertices_start_index;
 }
 
-const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS &_global_rotation_method) const
+const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS &_global_rotation_method) const  //返回的result有焦距比和旋转角度
 {
 	const vector<vector<SimilarityElements> *> &images_similarity_elements = {
 		&images_similarity_elements_2D, &images_similarity_elements_3D};
@@ -439,9 +478,10 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 		for (int i = 0; i < images_data.size(); ++i)
 		{
 			result.emplace_back(fabs(camera_params[parameter.center_image_index].focal / camera_params[i].focal),
-								-getEulerZXYRadians<float>(camera_params[i].R)[2]);
+								-getEulerZXYRadians<float>(camera_params[i].R)[2]);  //这里取到的是Y轴的旋转角度
 		}
 
+		// 先把旋转角度都减去中心图的旋转角度
 		double rotate_theta = parameter.center_image_rotation_angle;
 		for (int i = 0; i < images_data.size(); ++i)
 		{
@@ -454,7 +494,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 
 		switch (_global_rotation_method)
 		{
-		case GLOBAL_ROTATION_2D_METHOD:
+		case GLOBAL_ROTATION_2D_METHOD:   //算一个全局的2D旋转角度
 		{
 			class RotationNode
 			{
@@ -613,7 +653,7 @@ const vector<SimilarityElements> &MultiImages::getImagesSimilarityElements(const
 	return result;
 }
 
-const vector<vector<pair<double, double>>> &MultiImages::getImagesRelativeRotationRange() const
+const vector<vector<pair<double, double>>> &MultiImages::getImagesRelativeRotationRange() const  //计算了每对图像的每个网格和变化后的网格之间的局部旋转角度，然后推断出“图 m1 相对于图 m2 的旋转角度 θ₁₂ 的合法区间”
 {
 	if (images_relative_rotation_range.empty())
 	{
@@ -641,20 +681,28 @@ const vector<vector<pair<double, double>>> &MultiImages::getImagesRelativeRotati
 				make_pair(&images_data[m2].mesh_2d->getVertices(), &apap_matching_points[m2][m1])};
 			vector<double> positive, negative;
 			const vector<bool> sign_mapping = {false, true, true, false};
+
 			for (int j = 0; j < edges.size(); ++j)
 			{
 				for (int k = 0; k < edges[j]->size(); ++k)
 				{
-					const Edge &e = (*edges[j])[k];
+					const Edge &e = (*edges[j])[k];  //遍历j图的所有边
 					const auto &current_mask = apap_overlap_mask[pair_index[j].first][pair_index[j].second];
 					// 检查 mask 的尺寸是否足够访问 e.indices[0] 和 e.indices[1]
 					if (e.indices[0] < current_mask.size() && e.indices[1] < current_mask.size() &&
 						current_mask[e.indices[0]] && current_mask[e.indices[1]])
 					{
+						//这里是那个！local similarity
 						const Point2d a = (*vertices_pair[j].first)[e.indices[0]] - (*vertices_pair[j].first)[e.indices[1]];
 						const Point2d b = (*vertices_pair[j].second)[e.indices[0]] - (*vertices_pair[j].second)[e.indices[1]];
-						const double theta = acos(a.dot(b) / (norm(a) * norm(b)));
-						const double direction = a.x * b.y - a.y * b.x;
+						const double theta = acos(a.dot(b) / (norm(a) * norm(b)));  //计算夹角  arccos
+						const double direction = a.x * b.y - a.y * b.x;  //叉积  可以用来夹角旋转方向判断方向
+						// | direction | 含义                |
+						// | --------- | ----------------- |
+						// | `> 0`     | 从 a 到 b 是 **逆时针** |
+						// | `< 0`     | 从 a 到 b 是 **顺时针** |
+						// | `= 0`     | 共线                |
+
 						//(0,1)*2 + (0,1)
 						int map = ((direction > 0) << 1) + j;
 						if (sign_mapping[map])
@@ -671,9 +719,16 @@ const vector<vector<pair<double, double>>> &MultiImages::getImagesRelativeRotati
 			sort(positive.begin(), positive.end());
 			sort(negative.begin(), negative.end());
 
+
+			//从一堆局部边的旋转角度 θ 中，
+			// 推断“图 m1 相对于图 m2 的旋转角度 θ₁₂ 的合法区间”
+			// 而且要正确处理 2π 环绕问题
+
+			//就是说解决这么一个问题  例如 5° 和 355° 其实是很接近的  但是直接用数值比较就会出错，你看两个角度平均值是180°，这肯定是不对的，如果直接用355-5=350°，也不对
+			// 所以要判断这个区间是不是被2π切断了
 			if (positive.empty() == false && negative.empty() == false)
 			{
-				if (positive.back() - negative.front() < M_PI)
+				if (positive.back() - negative.front() < M_PI)  //角度区间是不是“被 2π 切断了”  什么意思
 				{
 					images_relative_rotation_range[m1][m2].first = negative.front() + 2 * M_PI;
 					images_relative_rotation_range[m1][m2].second = positive.back() + 2 * M_PI;
@@ -874,45 +929,42 @@ public:
 	double dis;
 	dijkstraNode(const int &_from,
 				 const int &_pos,
-				 const double &_dis) : from(_from), pos(_pos), dis(_dis)
+				 const double &_dis) : from(_from), pos(_pos), dis(_dis)  //成员初始化列表  等价于但好于from=_from;pos=_pos;dis=_dis;  因为这样不会调用默认构造函数再赋值
 	{
 	}
+	//为什么要写成「反着」的？ priority_queue<T> 默认是大顶堆，堆顶元素最大。而我们需要的是小顶堆，堆顶元素最小。所以这里要反着写。
 	bool operator<(const dijkstraNode &rhs) const
 	{
 		return dis > rhs.dis;
 	}
 };
 
-const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeight(const double _global_weight_gamma) const
+const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeight(const double _global_weight_gamma) const  //images_polygon_space_matching_pts_weight 如果是之前doFeature成功的那么第i副图的那个网格点被用到了就权重为0，否则根据和最近的被用到的网格点距离来设置权重（实际上不是最近被用到，反正代码很乱）
 {
 	if (_global_weight_gamma && images_polygon_space_matching_pts_weight.empty())
 	{
-
 		images_polygon_space_matching_pts_weight.resize(images_data.size());
-
-		const vector<vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();
-
-		const vector<vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints();
-
+		const vector<vector<bool>> &images_features_mask = getImagesFeaturesMaskByMatchingPoints();  //第几幅图的第几个网格点被拿去匹配了
+		const vector<vector<InterpolateVertex>> &mesh_interpolate_vertex_of_matching_pts = getInterpolateVerticesOfMatchingPoints(); //判断特征点属于哪个网格，且设置网格点权重
 		//
 		for (int i = 0; i < images_polygon_space_matching_pts_weight.size(); ++i)
 		{ // 图像个数,遍历每个图像
-
-			const int polygons_count = (int)images_data[i].mesh_2d->getPolygonsIndices().size();
-
+			const int polygons_count = (int)images_data[i].mesh_2d->getPolygonsIndices().size();  //每个图像的网格点数量
 			vector<bool> polygons_has_matching_pts(polygons_count, false);
 
-			for (int j = 0; j < images_features_mask[i].size(); ++j)
+			//是将哪些网格点被用到了记录下来，但有点问题mesh_interpolate_vertex_of_matching_pts是按特征点来的，而不是网格点来的
+			for (int j = 0; j < images_features_mask[i].size(); ++j) //网格点数量
 			{
-				if (images_features_mask[i][j])
+				if (images_features_mask[i][j])//就是第几个网格点被用到了 polygons_has_matching_pts【】 记录哪些网格点被用到了	
 				{
 					polygons_has_matching_pts[mesh_interpolate_vertex_of_matching_pts[i][j].polygon] = true;
 				}
 			}
 			images_polygon_space_matching_pts_weight[i].reserve(polygons_count);
 
-			priority_queue<dijkstraNode> que;
+			priority_queue<dijkstraNode> que;//最后里面存储的 匹配成功的网格点djikstraNode节点是j，j，0，匹配没成功的点是记录的是当前点和邻居节点的距离
 
+			//将参与到匹配的网格点放入que中 并且设置初始权重为0，其他网格点权重为FLT_MAX
 			for (int j = 0; j < polygons_has_matching_pts.size(); ++j)
 			{
 				if (polygons_has_matching_pts[j])
@@ -926,8 +978,10 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 					images_polygon_space_matching_pts_weight[i].emplace_back(FLT_MAX);
 				}
 			}
-			const vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
-			const vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();
+			const vector<Indices> &polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();  //获取当前网格的邻居网格索引
+			const vector<Point2> &polygons_center = images_data[i].mesh_2d->getPolygonsCenter();  //获取网格中心点
+
+			//然后根据 邻居点的中心点距离和当前点的中心点距离 对这些点的没参与匹配的邻居点 进行松弛操作
 			while (que.empty() == false)
 			{
 				const dijkstraNode now = que.top();
@@ -936,7 +990,7 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 				if (polygons_has_matching_pts[index] == false)
 				{
 					polygons_has_matching_pts[index] = true;
-					for (int j = 0; j < polygons_neighbors[index].indices.size(); ++j)
+					for (int j = 0; j < polygons_neighbors[index].indices.size(); ++j)  //遍历没处理过的邻居点
 					{
 						const int n = polygons_neighbors[index].indices[j];
 						if (polygons_has_matching_pts[n] == false)
@@ -951,7 +1005,7 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 					}
 				}
 			}
-
+			
 			const double normalize_inv = 1. / norm(Point2i(images_data[i].img.cols, images_data[i].img.rows));
 			for (int j = 0; j < images_polygon_space_matching_pts_weight[i].size(); ++j)
 			{
@@ -962,7 +1016,7 @@ const vector<vector<double>> &MultiImages::getImagesGridSpaceMatchingPointsWeigh
 	return images_polygon_space_matching_pts_weight;
 }
 
-void MultiImages::initialFeaturePairsSpace() const
+void MultiImages::initialFeaturePairsSpace() const  //feature_pairs分配空间（图片数量*图片数量）
 {
 	feature_pairs.resize(images_data.size());
 	for (int i = 0; i < images_data.size(); ++i)
@@ -971,7 +1025,7 @@ void MultiImages::initialFeaturePairsSpace() const
 	}
 }
 
-void MultiImages::initialRansacDiffPairs() const
+void MultiImages::initialRansacDiffPairs() const  //给ransacDiff、ransacAvgDiff、ransacDiffWeight分配空间 （图片数量*图片数量）
 {
 	ransacDiff.resize(images_data.size());
 	for (int i = 0; i < images_data.size(); ++i)
@@ -990,14 +1044,23 @@ void MultiImages::initialRansacDiffPairs() const
 	}
 }
 
-const vector<vector<vector<pair<int, int>>>> &MultiImages::getFeaturePairs() const
+void MultiImages::saveHomography(const Mat& H, int idx) const//[add]
+{
+    string filename = format("homography/H_%04d.yml", idx);
+    FileStorage fs(filename, FileStorage::WRITE);
+    fs << "H" << H;
+    fs.release();
+}
+
+const vector<vector<vector<pair<int, int>>>> &MultiImages::getFeaturePairs() const  //返回的是挑选过的特征点对索引
 {
 	if (feature_pairs.empty())
 	{
 		initialFeaturePairsSpace();
 		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
-		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
+		for (int i = 0; i < images_match_graph_pair_list.size(); ++i) //对每对匹配的图像，找到用匹配点的索引找到匹配点X，Y，然后用RANSAC
 		{
+			//匹配点索引转话成匹配点坐标
 			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const vector<pair<int, int>> &initial_indices = getInitialFeaturePairs(match_pair);
 			const vector<Point2> &m1_fpts = images_data[match_pair.first].getFeaturePoints();
@@ -1011,24 +1074,28 @@ const vector<vector<vector<pair<int, int>>>> &MultiImages::getFeaturePairs() con
 				X.emplace_back(m1_fpts[it.first]);
 				Y.emplace_back(m2_fpts[it.second]);
 			}
+
 			if (X.size() < HOMOGRAPHY_MODEL_MIN_POINTS || Y.size() < HOMOGRAPHY_MODEL_MIN_POINTS)
 			{
 				cout << "[INFO] Skipping image pair due to insufficient feature matches." << endl;
 				continue;
 			}
-			vector<pair<int, int>> &result = feature_pairs[match_pair.first][match_pair.second];
-			result = getFeaturePairsBySequentialRANSAC(match_pair, X, Y, initial_indices);
 
+			//匹配点之间的
+			vector<pair<int, int>> &result = feature_pairs[match_pair.first][match_pair.second];  //两个指针连一起了
+			result = getFeaturePairsBySequentialRANSAC(match_pair, X, Y, initial_indices);
+			saveHomography(H_list.back(), i);  //[add]
 			assert(result.empty() == false);
 		}
+
 		generateRansacDiffWeight(images_match_graph_pair_list);
 	}
-	return feature_pairs;
+	return feature_pairs;  
 }
 
-const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
-{
 
+const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const //返回的是挑选过的特征点对坐标 是一个三维的vector，feature_matches[m1][m2][j]表示的是i图像对j图像匹配的第j个特征点坐标
+{
 	if (feature_matches.empty())
 	{
 		const vector<vector<vector<pair<int, int>>>> &feature_pairs = getFeaturePairs();
@@ -1036,11 +1103,11 @@ const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
 		const vector<pair<int, int>> &images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
 
 		feature_matches.resize(images_data.size());
-		for (int i = 0; i < images_data.size(); ++i)
+		for (int i = 0; i < images_data.size(); ++i) //每个图都分配特征匹配空间
 		{
 			feature_matches[i].resize(images_data.size());
 		}
-		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)
+		for (int i = 0; i < images_match_graph_pair_list.size(); ++i)  //每一对匹配图像将索引转化成真实的特征点坐标
 		{
 			const pair<int, int> &match_pair = images_match_graph_pair_list[i];
 			const int &m1 = match_pair.first, &m2 = match_pair.second;
@@ -1058,36 +1125,38 @@ const vector<vector<vector<Point2>>> &MultiImages::getFeatureMatches() const
 	return feature_matches;
 }
 
-vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair<int, int> &_match_pair,
+vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair<int, int> &_match_pair, //最后返回的时精心挑选过的内点索引，；图像匹配对，特征点X，Y，特征点索引
 																	  const vector<Point2> &_X,
 																	  const vector<Point2> &_Y,
 																	  const vector<pair<int, int>> &_initial_indices) const
 {
 	initialRansacDiffPairs();
 
-	const int GLOBAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(GLOBAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
-	vector<char> final_mask(_initial_indices.size(), 0);
+	const int GLOBAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(GLOBAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));  //根据RANSAC理论，自动计算保证置信度下的最大迭代次数，log(1 - 置信度) / log(1 - (内点概率的N次方))
+	vector<char> final_mask(_initial_indices.size(), 0);  //用于标记哪些点是内点，会在下面findHomography中被更新
 
-	Mat H(3, 3, CV_64F);
+
+	Mat H(3, 3, CV_64F);  //创建3x3矩阵H，元素类型为64位浮点数
 	if (_X.size() >= HOMOGRAPHY_MODEL_MIN_POINTS && _Y.size() >= HOMOGRAPHY_MODEL_MIN_POINTS)
 	{
-		H = findHomography(_X, _Y, RANSAC, parameter.global_homography_max_inliers_dist, final_mask, GLOBAL_MAX_ITERATION);
+		H = findHomography(_X, _Y, RANSAC, parameter.global_homography_max_inliers_dist, final_mask, GLOBAL_MAX_ITERATION);  //[key] Homography
 		updataRansacDiff(_match_pair, _X, _Y, final_mask, H);
-	}
+		H_list.push_back(H);  //[add]
+	}  
 
 	vector<Point2> tmp_X = _X, tmp_Y = _Y;
 
-	vector<int> mask_indices(_initial_indices.size(), 0);
+	vector<int> mask_indices(_initial_indices.size(), 0);  //
 	for (int i = 0; i < mask_indices.size(); ++i)
 	{
 		mask_indices[i] = i;
 	}
 
 	while (tmp_X.size() >= HOMOGRAPHY_MODEL_MIN_POINTS &&
-		   parameter.local_homogrpahy_max_inliers_dist < parameter.global_homography_max_inliers_dist)
+		   parameter.local_homogrpahy_max_inliers_dist < parameter.global_homography_max_inliers_dist)   //这里是在进一步寻找重投影误差更小的内点，然后将点放入到final_mask中
 	{
 
-		const int LOCAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(LOCAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
+		const int LOCAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(LOCAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS)); //[fixMe] 数值都是固定的，可优化
 		vector<Point2> next_X, next_Y;
 		vector<char> mask(tmp_X.size(), 0);
 
@@ -1113,6 +1182,7 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 		}
 		if (inliers_count < parameter.local_homography_min_features_count)
 		{
+			std::cout << "[INFO] Not enough points for local_homography." << endl;
 			break;
 		}
 		for (int i = 0, shift = -1; i < mask.size(); ++i)
@@ -1129,11 +1199,11 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 			}
 		}
 
-#ifndef DP_NO_LOG
+	#ifndef DP_NO_LOG
 		cout << "Local true Probabiltiy = " << next_X.size() / (float)tmp_X.size() << endl;
-#endif
-		tmp_X = next_X;
-		tmp_Y = next_Y;
+	#endif
+			tmp_X = next_X;
+			tmp_Y = next_Y;
 	}
 
 	vector<pair<int, int>> result;
@@ -1151,7 +1221,7 @@ vector<pair<int, int>> MultiImages::getFeaturePairsBySequentialRANSAC(const pair
 	return result;
 }
 
-void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vector<Point2> srcPoints, const vector<Point2> dstPoints, const vector<char> final_mask, const Mat H) const
+void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vector<Point2> srcPoints, const vector<Point2> dstPoints, const vector<char> final_mask, const Mat H) const  //计算了一下内点和外点在使用全局单应性变化后与目标点之间的距离，将距离输入到ransacDiff，把结果输出到./RansacDst文件夹下的txt文件
 {
 	vector<double> *diffList = &ransacDiff[_index_pair.first][_index_pair.second];
 	ofstream mycout(txtName + to_string(_index_pair.first) + "_" + to_string(_index_pair.second) + ".txt", ios::app);
@@ -1183,8 +1253,8 @@ void MultiImages::updataRansacDiff(const pair<int, int> &_index_pair, const vect
 	mycout.close();
 }
 
-double MultiImages::generateRansacAvgDiff(const pair<int, int> &_index_pair) const
-{
+double MultiImages::generateRansacAvgDiff(const pair<int, int> &_index_pair) const  //计算内点的重投影误差的均值，然后写入到./RansacDst
+{     
 	vector<double> diffList = ransacDiff[_index_pair.first][_index_pair.second];
 	double sum = 0, avg;
 	for (int i = 0; i < diffList.size(); i++)
@@ -1193,17 +1263,16 @@ double MultiImages::generateRansacAvgDiff(const pair<int, int> &_index_pair) con
 	}
 	avg = sum / diffList.size();
 	ransacAvgDiff[_index_pair.first][_index_pair.second] = avg;
-
 #ifndef DP_NO_LOG
 	ofstream mycout(txtName + to_string(_index_pair.first) + "_" + to_string(_index_pair.second) + ".txt", ios::app);
-	mycout << "****************" << endl;
+	mycout << "********avg********" << endl;
 	mycout << avg << endl;
 	mycout.close();
 #endif
 	return avg;
 }
 
-void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) const
+void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) const  //计算利用图像之间的点的重投影误差均值计算权重，然后写入到./RansacDst
 {
 	vector<double> avgDiffs;
 	double sumWeight = 0;
@@ -1217,7 +1286,7 @@ void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) cons
 		mycoutAvg << match_pair.first << "--" << match_pair.second << "," << ransacAvgDiff[match_pair.first][match_pair.second] << endl;
 		mycoutAvg.close();
 #endif
-
+		//计算权重
 		double weightTemp = exp(-ransacAvgDiff[match_pair.first][match_pair.second] * ransacAvgDiff[match_pair.first][match_pair.second]);
 		sumWeight += weightTemp;
 		ransacDiffWeight[match_pair.first][match_pair.second] = weightTemp;
@@ -1228,6 +1297,7 @@ void MultiImages::generateRansacDiffWeight(vector<pair<int, int>> pairList) cons
 		mycoutWeightTemp.close();
 #endif
 	}
+	//计算权重，在之前的基础上进行调整
 	double avgWeight = sumWeight / pairList.size();
 	for (int i = 0; i < pairList.size(); ++i)
 	{
@@ -1260,9 +1330,9 @@ bool compareFeaturePair(const FeatureDistance &fd_1, const FeatureDistance &fd_2
 	return (fd_1.feature_index[0] == fd_2.feature_index[0]) ? (fd_1.feature_index[1] < fd_2.feature_index[1]) : (fd_1.feature_index[0] < fd_2.feature_index[0]);
 }
 
-vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> &_match_pair) const
+vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> &_match_pair) const //KNN+ratio test K-邻近和比率测试，返回匹配点匹配点index索引，距离算了但是没输出，没使用
 {
-	const int nearest_size = 2, pair_count = 1;
+	const int nearest_size = 2, pair_count = 1; //等于1说明只做单向匹配
 	const bool ratio_test = true, intersect = true;
 
 	assert(nearest_size > 0);
@@ -1274,23 +1344,23 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 	const int pair_match[PAIR_COUNT] = {_match_pair.first, _match_pair.second};
 
 	vector<FeatureDistance> feature_pairs[PAIR_COUNT];
-
-	for (int p = 0; p < pair_count; ++p)
+ 
+	for (int p = 0; p < pair_count; ++p)  //就是从A找B的特征点，还是从B找A的特征点
 	{
 		const int another_feature_size = feature_size[1 - p];
 
-		const int nearest_k = min(nearest_size, another_feature_size);
+		const int nearest_k = min(nearest_size, another_feature_size); //这里再设置最近邻个数
 		const vector<FeatureDescriptor> &feature_descriptors_1 = images_data[pair_match[p]].getFeatureDescriptors();
 		const vector<FeatureDescriptor> &feature_descriptors_2 = images_data[pair_match[!p]].getFeatureDescriptors();
 
-		for (int f1 = 0; f1 < feature_size[p]; ++f1)
+		for (int f1 = 0; f1 < feature_size[p]; ++f1) //遍历一个图像的每个特征点
 		{
-			set<FeatureDistance> feature_distance_set;
-			feature_distance_set.insert(FeatureDistance(FLT_MAX, p, -1, -1));
-			for (int f2 = 0; f2 < feature_size[!p]; ++f2)
+			set<FeatureDistance> feature_distance_set;  //这里是默认小到大排序，但是FeatureDistance里是大到小排序的，设置了规则
+			feature_distance_set.insert(FeatureDistance(FLT_MAX, p, -1, -1)); //用于维护离f1最近的k个特征点，还带有的排序的因为是set集合
+			for (int f2 = 0; f2 < feature_size[!p]; ++f2) //遍历另一张图对应的每个特征点
 			{
 				const double dist = FeatureDescriptor::getDistance(feature_descriptors_1[f1], feature_descriptors_2[f2], feature_distance_set.begin()->distance);
-				if (dist < feature_distance_set.begin()->distance)
+				if (dist < feature_distance_set.begin()->distance) //看似是大于号实际上是小于号，
 				{
 					if (feature_distance_set.size() == nearest_k)
 					{
@@ -1304,13 +1374,13 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 			{
 				const set<FeatureDistance>::const_iterator it2 = std::next(it, 1);
 				if (nearest_k == nearest_size &&
-					it2->distance * FEATURE_RATIO_TEST_THRESHOLD > it->distance)
+					it2->distance * FEATURE_RATIO_TEST_THRESHOLD > it->distance)  //指的是如果最邻近和次邻近距离差距小于1.5倍
 				{
-					continue;
+					continue; //进入下一个循环的
 				}
 				it = it2;
 			}
-			feature_pairs[p].insert(feature_pairs[p].end(), it, feature_distance_set.end());
+			feature_pairs[p].insert(feature_pairs[p].end(), it, feature_distance_set.end()); //是在结尾把从it到end的元素都插入进去
 		}
 	}
 	vector<FeatureDistance> feature_pairs_result;
@@ -1335,7 +1405,7 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 	}
 	else
 	{
-		feature_pairs_result = std::move(feature_pairs[0]);
+		feature_pairs_result = std::move(feature_pairs[0]); //就是把feature_pairs[0]的内容移动到feature_pairs_result中
 	}
 
 	vector<double> distances;
@@ -1345,9 +1415,9 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 		distances.emplace_back(feature_pairs_result[i].distance);
 	}
 	double mean, std;
-	Statistics::getMeanAndSTD(distances, mean, std);
+	Statistics::getMeanAndSTD(distances, mean, std); //计算均值和标准差
 
-	const double OUTLIER_THRESHOLD = (INLIER_TOLERANT_STD_DISTANCE * std) + mean;
+	const double OUTLIER_THRESHOLD = (INLIER_TOLERANT_STD_DISTANCE * std) + mean;  //计算离群点阈值
 	vector<pair<int, int>> initial_indices;
 	initial_indices.reserve(feature_pairs_result.size());
 	for (int i = 0; i < feature_pairs_result.size(); ++i)
@@ -1364,27 +1434,34 @@ vector<pair<int, int>> MultiImages::getInitialFeaturePairs(const pair<int, int> 
 Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 								const Size2 &_target_size,
 								const BLENDING_METHODS &_blend_method) const
+/*
+用前一步优化得到的顶点坐标 _vertices，
+把每张原始图像按 mesh 三角形进行仿射 warp，
+得到对齐后的 warped images，
+最后再按指定的 blending 方法把它们融合成一张最终图像。*/
 {
 	vector<Mat> warp_images;
 	return textureMapping(_vertices, _target_size, _blend_method, warp_images);
 }
 
-Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
+Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 								const Size2 &_target_size,
-								const BLENDING_METHODS &_blend_method,
+								const BLENDING_METHODS &_blend_method,  //平均融合or线性融合
 								vector<Mat> &_warp_images) const
+ // images_data 
+
 {
 
 	vector<Mat> weight_mask, new_weight_mask;
 	vector<Point2> origins;
-	vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);
+	vector<Rect_<FLOAT_TYPE>> rects = getVerticesRects<FLOAT_TYPE>(_vertices);  //获取xy方向的最小最大值，构造最小外接矩形返回（也就是最大值减去最小值得到矩阵大小）
 
 	switch (_blend_method)
 	{
 	case BLEND_AVERAGE:
-		break;
+		break; //防止执行下面的case
 	case BLEND_LINEAR:
-		weight_mask = getMatsLinearBlendWeight(getImages());
+		weight_mask = getMatsLinearBlendWeight(getImages());  //返回权重矩阵的，就是中间权重高周围低  ，，getImages()返回的是原始图像内容是Mat
 		break;
 	default:
 		printError("F(textureMapping) BLENDING METHOD");
@@ -1406,25 +1483,25 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 		const vector<Point2> &src_vertices = images_data[i].mesh_2d->getVertices();
-		const vector<Indices> &polygons_indices = images_data[i].mesh_2d->getPolygonsIndices();
-		const Point2 origin(rects[i].x, rects[i].y);
+		const vector<Indices> &polygons_indices = images_data[i].mesh_2d->getPolygonsIndices(); //每个网格的四个顶点
+		const Point2 origin(rects[i].x, rects[i].y); //最小值x，最小值y  相当于源点
 
 		const Point2 shift(0.5, 0.5);
 
-		vector<Mat> affine_transforms;
-		affine_transforms.reserve(polygons_indices.size() * (images_data[i].mesh_2d->getTriangulationIndices().size()));
+		vector<Mat> affine_transforms;   //仿射变换
+		affine_transforms.reserve(polygons_indices.size() * (images_data[i].mesh_2d->getTriangulationIndices().size()));  // 012  023
 		int mask_width = rects[i].width + shift.x;
 		int mask_height = rects[i].height + shift.y;
 
 		// 确保尺寸不为负数
 		mask_width = max(mask_width, 0);
 		mask_height = max(mask_height, 0);
-		Mat polygon_index_mask(mask_height, mask_width, CV_32SC1, Scalar::all(NO_GRID));
+		Mat polygon_index_mask(mask_height, mask_width, CV_32SC1, Scalar::all(NO_GRID));  //画布大小，填充的不是颜色而是ID  CV_32SC1 32SC1表示每个像素点是一个32位的整数  初始值都是-1 单通道
 		int label = 0;
-		for (int j = 0; j < polygons_indices.size(); ++j)
+		for (int j = 0; j < polygons_indices.size(); ++j)//对每个网格做
 		{
 			//[ [0,1,2],[0,2,3] ]
-			for (int k = 0; k < images_data[i].mesh_2d->getTriangulationIndices().size(); ++k)
+			for (int k = 0; k < images_data[i].mesh_2d->getTriangulationIndices().size(); ++k) //每个三角剖分
 			{
 				//[0,1,2]
 				const Indices &index = images_data[i].mesh_2d->getTriangulationIndices()[k];
@@ -1433,7 +1510,7 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 					(_vertices[i][polygons_indices[j].indices[index.indices[1]]] - origin) * SCALE,
 					(_vertices[i][polygons_indices[j].indices[index.indices[2]]] - origin) * SCALE,
 				};
-				fillConvexPoly(polygon_index_mask, contour, TRIANGLE_COUNT, label, LINE_AA, PRECISION);
+				fillConvexPoly(polygon_index_mask, contour, TRIANGLE_COUNT, label, LINE_AA, PRECISION);  //把一个凸多边形（通常是三角形）填充到一张 mask 图像中，用 label 作为填充值。就是说啊将三角形填充到mask图像中，填充值是label，这个label可以用作索引
 
 				Point2f src[] = {
 					_vertices[i][polygons_indices[j].indices[index.indices[0]]] - origin,
@@ -1443,14 +1520,14 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 					src_vertices[polygons_indices[j].indices[index.indices[0]]],
 					src_vertices[polygons_indices[j].indices[index.indices[1]]],
 					src_vertices[polygons_indices[j].indices[index.indices[2]]]};
-				affine_transforms.emplace_back(getAffineTransform(src, dst));
+				affine_transforms.emplace_back(getAffineTransform(src, dst));  //获取仿射变换矩阵  dst=A⋅src
 				++label;
 			}
 		}
-		Mat image = Mat::zeros(mask_height, mask_width, CV_8UC4);
-
+		
+		//对透明度 色彩 权重矩阵进行像素级遍历处理
+		Mat image = Mat::zeros(mask_height, mask_width, CV_8UC4);  
 		Mat w_mask = (_blend_method != BLEND_AVERAGE) ? Mat::zeros(image.size(), CV_32FC1) : Mat();
-
 		for (int y = 0; y < image.rows; ++y)
 		{
 			for (int x = 0; x < image.cols; ++x)
@@ -1458,29 +1535,32 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 				int polygon_index = polygon_index_mask.at<int>(y, x);
 				if (polygon_index != NO_GRID)
 				{
-					Point2 p_f = applyTransform2x3<FLOAT_TYPE>(x, y, affine_transforms[polygon_index]);
+					Point2 p_f = applyTransform2x3<FLOAT_TYPE>(x, y, affine_transforms[polygon_index]);  //那么这里做了运算之后 得到的p_f就是我原图没有任何变化的原像素点
 					if (p_f.x >= 0 && p_f.y >= 0 &&
 						p_f.x <= images_data[i].img.cols &&
 						p_f.y <= images_data[i].img.rows)
 					{
-						Vec<uchar, 1> alpha = getSubpix<uchar, 1>(images_data[i].alpha_mask, p_f);
-						Vec3b c = getSubpix<uchar, 3>(images_data[i].img, p_f);
 
-						image.at<Vec4b>(y, x) = Vec4b(c[0], c[1], c[2], alpha[0]);
+						//用浮点坐标 p_f，在源图和 alpha mask 中做“亚像素插值采样”，
+						//得到该位置的颜色和透明度。
+						Vec<uchar, 1> alpha = getSubpix<uchar, 1>(images_data[i].alpha_mask, p_f); //因为p_f是浮点数，所以要用亚像素插值采样
+						Vec3b c = getSubpix<uchar, 3>(images_data[i].img, p_f);  //3通道的颜色值 BGR
+
+						image.at<Vec4b>(y, x) = Vec4b(c[0], c[1], c[2], alpha[0]);  //RGBA
 						if (_blend_method != BLEND_AVERAGE)
 						{
-							w_mask.at<float>(y, x) = getSubpix<float>(weight_mask[i], p_f);
+							w_mask.at<float>(y, x) = getSubpix<float>(weight_mask[i], p_f);  //这是对权重矩阵做亚像素插值采样
 						}
 					}
 				}
 			}
 		}
 
-		_warp_images.emplace_back(image);
-		origins.emplace_back(rects[i].x, rects[i].y);
+		_warp_images.emplace_back(image);  //变换后的图像
+		origins.emplace_back(rects[i].x, rects[i].y); //
 		if (_blend_method != BLEND_AVERAGE)
 		{
-			new_weight_mask.emplace_back(w_mask);
+			new_weight_mask.emplace_back(w_mask);  //插值后的权重矩阵
 		}
 
 		if (image.empty())
@@ -1501,7 +1581,7 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,
 			break;
 		}
 	}
-
+	//之前是将每张图变换然后投射到画布上，下面是将这些变换后的图像融合成一张最终图像
 	return Blending(_warp_images, origins, _target_size, new_weight_mask, _blend_method == BLEND_AVERAGE);
 }
 
@@ -1911,7 +1991,7 @@ const vector<vector<vector<InterpolateVertex>>> &MultiImages::getSamplesInterpol
 	{
 		content_mesh_interpolation.resize(images_data.size());
 		const vector<vector<vector<Point>>> &content_sample_points = getContentSamplePoints();
-		for (int i = 0; i < content_sample_points.size(); ++i)
+		for (int i = 0; i < content_sample_points.size(); ++i)  //遍历每条边（包含头尾和采样点）
 		{
 			content_mesh_interpolation[i].resize(content_sample_points[i].size());
 			for (int j = 0; j < content_sample_points[i].size(); ++j)
@@ -1939,7 +2019,7 @@ const vector<vector<vector<pair<double, double>>>> &MultiImages::getTermUV() con
 	return content_term_uv;
 }
 
-const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const
+const vector<vector<vector<Point>>> &MultiImages::getContentSamplePoints() const //返回的是每张图每条线线头尾和线的采样点，weight是带权重的线和采样点
 {
 	if (content_sample_points.empty()) //说明这个函数只会在第一次调用时真正执行一次，之后直接返回缓存的结果。
 	{

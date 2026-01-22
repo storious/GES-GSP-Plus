@@ -11,7 +11,7 @@
 
 #include "../Mesh/MeshOptimization.h"
 
-class NISwGSP_Stitching : public MeshOptimization {
+class NISwGSP_Stitching : public MeshOptimization {  //继承 MeshOptimization 能使用public和protected
 public:
 	NISwGSP_Stitching(const MultiImages& _multi_images);
 

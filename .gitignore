@@ -19,8 +19,9 @@ vcpkg_installed
 CMakeCache.txt
 CMakeUserPresets.json
 # Build results
-input-data/0_results
-input-data/1_debugs
+input-data/
+#input-data/0_results
+#input-data/1_debugs
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

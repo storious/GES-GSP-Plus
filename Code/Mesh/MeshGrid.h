@@ -27,7 +27,7 @@ public:
 	const vector<int>& getBoundaryVertexIndices() const;
 	const vector<int>& getBoundaryEdgeIndices() const;
 
-	InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const;
+	InterpolateVertex getInterpolateVertex(const Point_<float>& _p) const;  ////返回的是插值顶点信息，包括所在网格index和4个顶点的权重
 	InterpolateVertex getInterpolateVertex(const Point_<double>& _p) const;
 	InterpolateVertex getInterpolateVertex(const Point_<int>& _p) const;
 

@@ -60,7 +60,7 @@ goto parse_loop
 
 :parse_done
 
-REM --- 3. Validate Build Arguments ---
+REM --- 3. Validate Build Ar./guments ---
 set IS_VALID_NAME=0
 for %%P in (%VALID_PRESETS%) do if /i "!PRESET_NAME!"=="%%P" set IS_VALID_NAME=1
 if !IS_VALID_NAME!==0 (

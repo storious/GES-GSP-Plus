@@ -20,7 +20,7 @@ template <typename T>
 T normalizeAngle(T x);
 
 template <typename T>
-Point_<T> applyTransform3x3(T x, T y, const Mat& matT);
+Point_<T> applyTransform3x3(T x, T y, const Mat& matT); // 点×单应性矩阵
 
 template <typename T>
 Point_<T> applyTransform2x3(T x, T y, const Mat& matT);
@@ -32,7 +32,7 @@ template <typename T>
 Rect_<T> getVerticesRects(const vector<Point_<T> >& vertices);
 
 template <typename T>
-vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > >& vertices);
+vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > >& vertices);  ////获取xy方向的最小最大值，构造最小外接矩形返回（也就是最大值减去最小值得到矩阵大小）
 
 template <typename T>
 T getSubpix(const Mat& img, const Point2f& pt);

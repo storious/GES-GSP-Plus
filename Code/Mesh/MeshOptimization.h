@@ -68,7 +68,7 @@ private:
 	double content_preserving_weight;
 
 	pair<int, int> alignment_equation; /* begin, count */
-	pair<int, int> local_similarity_equation;
+	pair<int, int> local_similarity_equation;  //初步估计first是起始方程编号 second是方程数量
 	pair<int, int> global_similarity_equation;
 	pair<int, int> content_preserving_equation;
 	enum GLOBAL_ROTATION_METHODS global_rotation_method;

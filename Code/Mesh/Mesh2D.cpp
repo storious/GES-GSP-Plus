@@ -9,7 +9,9 @@
 #include "./Mesh2D.h"
 
 
-Mesh2D::Mesh2D(const int _cols, const int _rows) {
+Mesh2D::
+
+Mesh2D(const int _cols, const int _rows) {
 	nw = _cols / GRID_SIZE + (_cols % GRID_SIZE != 0); //计算网格行数和列数
 	nh = _rows / GRID_SIZE + (_rows % GRID_SIZE != 0);
 	lw = _cols / (double)nw;//每个网格平均宽度
@@ -23,7 +25,7 @@ Mesh2D::~Mesh2D() {
 // template int Mesh2D::getGridIndexOfPoint<double>(const Point_<double>& _p) const;
 
 
-const vector<Point2>& Mesh2D::getPolygonsCenter() const {
+const vector<Point2>& Mesh2D::getPolygonsCenter() const {  //返回的是网格的中心点
 	if (polygons_center.empty()) {
 
 		const vector<Point2>& vertices = getVertices();

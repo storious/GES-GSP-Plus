@@ -43,8 +43,9 @@ enum TYPE
 	GSP = 0,
 	GES_GSP,
 };
-
-constexpr int RUN_TYPE = TYPE::GES_GSP; // 0:GSP 1:GES-GSP
+const int RUN_WAY= 0; // 0:getparameter  1:runblending
+int have_read_mesh=0; // 0:no  1:yes
+constexpr int RUN_TYPE = TYPE::GSP; // 0:GSP 1:GES-GSP
 
 const string TXT_NAME = "-STITCH-GRAPH.txt";
 

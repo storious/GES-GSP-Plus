@@ -15,7 +15,8 @@ MeshGrid::MeshGrid(const int _cols, const int _rows) : Mesh2D(_cols, _rows) {
 
 }
 
-const vector<Point2>& MeshGrid::getVertices() const { //返回的是网格的顶点的
+const vector<Point2>& MeshGrid::getVertices() const //返回的是网格的顶点的，貌似是将图像划分成网格而不是重叠区域
+{ 
 	if (vertices.empty()) {
 		const int memory = (nh + 1) * (nw + 1);
 		vertices.reserve(memory);
@@ -29,7 +30,8 @@ const vector<Point2>& MeshGrid::getVertices() const { //返回的是网格的顶
 	return vertices;
 }
 
-const vector<Edge>& MeshGrid::getEdges() const {  //返回的是网格的边（两个顶点）
+const vector<Edge>& MeshGrid::getEdges() const //返回的是网格的边（两个顶点的索引） 貌似就是方格的斜边
+{  
 	if (edges.empty()) {
 		const vector<Point2i> nexts = { Point2i(1, 0), Point2i(0, 1) };
 		const int memory = DIMENSION_2D * nh * nw + nh + nw;
@@ -51,7 +53,8 @@ const vector<Edge>& MeshGrid::getEdges() const {  //返回的是网格的边（�
 	return edges;
 }
 
-const vector<Indices>& MeshGrid::getPolygonsIndices() const {
+const vector<Indices>& MeshGrid::getPolygonsIndices() const //将每个网格的4个顶点的index存放起来
+{  
 	if (polygons_indices.empty()) {
 		const Point2i nexts[GRID_VERTEX_SIZE] = {
 			Point2i(0, 0), Point2i(1, 0), Point2i(1, 1), Point2i(0, 1)
@@ -76,7 +79,8 @@ const vector<Indices>& MeshGrid::getPolygonsIndices() const {
 }
 
 
-const vector<Indices>& MeshGrid::getPolygonsNeighbors() const {
+const vector<Indices>& MeshGrid::getPolygonsNeighbors() const //这个是返回网格的邻居索引
+{  
 	if (polygons_neighbors.empty()) {
 		const vector<Point2i> nexts = {
 			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1)
@@ -126,7 +130,8 @@ const vector<Indices>& MeshGrid::getPolygonsEdges() const {
 }
 
 
-const vector<Indices>& MeshGrid::getVertexStructures() const { //返回的是网格顶点和网格的上下左右4个点
+const vector<Indices>& MeshGrid::getVertexStructures() const //返回网格点的上下左右4个点（相邻的点） 索引
+{ 
 	if (vertex_structures.empty()) {
 		const vector<Point2i> nexts = {
 			Point2i(1, 0), Point2i(0, 1), Point2i(-1, 0), Point2i(0, -1) //上下左右
@@ -179,7 +184,8 @@ const vector<Indices>& MeshGrid::getEdgeStructures() const {
 	return edge_structures;
 }
 
-const vector<Indices>& MeshGrid::getTriangulationIndices() const {
+const vector<Indices>& MeshGrid::getTriangulationIndices() const //[(0,1,2),(0,2,3)]
+{
 	if (triangulation_indices.empty()) {
 		triangulation_indices.emplace_back(0, 1, 2);
 		triangulation_indices.emplace_back(0, 2, 3);
@@ -187,7 +193,8 @@ const vector<Indices>& MeshGrid::getTriangulationIndices() const {
 	return triangulation_indices;
 }
 
-const int& MeshGrid::getPolygonVerticesCount() const {
+const int& MeshGrid::getPolygonVerticesCount() const  //返回4
+{
 	return GRID_VERTEX_SIZE;
 }
 
@@ -238,13 +245,13 @@ template InterpolateVertex MeshGrid::getInterpolateVertexTemplate< float>(const 
 template InterpolateVertex MeshGrid::getInterpolateVertexTemplate<double>(const Point_<double>& _p) const;
 
 template <typename T>
-InterpolateVertex MeshGrid::getInterpolateVertexTemplate(const Point_<T>& _p) const {
-	const vector<Point2>& vertices = getVertices();
-	const vector<Indices>& grids = getPolygonsIndices();
-	const int grid_index = getGridIndexOfPoint(_p);
+InterpolateVertex MeshGrid::getInterpolateVertexTemplate(const Point_<T>& _p) const {  //返回的是插值顶点信息，包括所在网格index和4个顶点的权重
+	const vector<Point2>& vertices = getVertices();  //网格顶点坐标
+	const vector<Indices>& grids = getPolygonsIndices(); //每个网格的4个顶点index
+	const int grid_index = getGridIndexOfPoint(_p);  //求得得是当前点得坐标所在得网格index，用于去取grids中对应网格的4个顶点index
 	const Indices& g = grids[grid_index];
 
-	const vector<int> diagonal_indices = { 2, 3, 0, 1 }; /* 0 1    2 3
+	const vector<int> diagonal_indices = { 2, 3, 0, 1 }; /* 0 1    2 3    //这样排列主要是为了防止出现面积越大权重越大的情况出现，当前点的权重由对角线上的点决定
 															  ->
 														  3 2    1 0 */
 	assert(g.indices.size() == GRID_VERTEX_SIZE);
@@ -262,14 +269,15 @@ InterpolateVertex MeshGrid::getInterpolateVertexTemplate(const Point_<T>& _p) co
 
 	sum_inv = 1. / sum_inv;
 
-	for (int i = 0; i < GRID_VERTEX_SIZE; ++i) {
+	for (int i = 0; i < GRID_VERTEX_SIZE; ++i) {  //归一化权重
 		weights[i] = weights[i] * sum_inv;
 	}
 	return InterpolateVertex(grid_index, weights);
 }
 
 
-InterpolateVertex MeshGrid::getInterpolateVertex(const Point_<float>& _p) const {
+InterpolateVertex MeshGrid::getInterpolateVertex(const Point_<float>& _p) const //返回的是插值顶点信息，包括所在网格index和4个顶点的权重
+{
 	return getInterpolateVertexTemplate(_p);
 }
 
