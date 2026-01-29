@@ -17,7 +17,7 @@ MultiImages::MultiImages(const string &_file_name,
 	for (int i = 0; i < parameter.image_file_full_names.size(); ++i)
 	{
 #ifndef DP_NO_LOG
-		images_data.emplace_back(parameter.file_dir,
+		images_data.emplace_back(parameter.file_dir+"/",
 								 parameter.image_file_full_names[i],
 								 _width_filter,
 								 _length_filter,
@@ -31,15 +31,15 @@ MultiImages::MultiImages(const string &_file_name,
 	}
 }
 
-MultiImages::MultiImages(const string &_file_name,
+MultiImages::MultiImages(const string &_file_name,int have_mesh,
 						 LINES_FILTER_FUNC *_width_filter,
-						 LINES_FILTER_FUNC *_length_filter,int have_mesh) : parameter(_file_name) //构造函数  parameter是一个对象，后面的parameter就是filename赋值给parameter
-{
+						 LINES_FILTER_FUNC *_length_filter) : parameter(_file_name) //构造函数  parameter是一个对象，后面的parameter就是filename赋值给parameter
+{  
 
 	for (int i = 0; i < parameter.image_file_full_names.size(); ++i)
 	{
 #ifndef DP_NO_LOG
-		images_data.emplace_back(parameter.file_dir,
+		images_data.emplace_back(parameter.file_dir +"/",
 								 parameter.image_file_full_names[i],
 								 _width_filter,
 								 _length_filter,
@@ -1468,9 +1468,11 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 		;
 	}
 #ifndef DP_NO_LOG
-	for (int i = 0; i < rects.size(); ++i)
-	{
-		cout << images_data[i].file_name << " rect = " << rects[i] << endl;
+	if(have_read_mesh==0){
+		for (int i = 0; i < rects.size(); ++i)
+		{
+			cout << images_data[i].file_name << " rect = " << rects[i] << endl;
+		}
 	}
 #endif
 	_warp_images.reserve(_vertices.size());
@@ -1480,6 +1482,8 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 	const int NO_GRID = -1, TRIANGLE_COUNT = 3, PRECISION = 0;
 	const int SCALE = pow(2, PRECISION);
 
+	cv::TickMeter tm;
+	tm.start();
 	for (int i = 0; i < images_data.size(); ++i)
 	{
 		const vector<Point2> &src_vertices = images_data[i].mesh_2d->getVertices();
@@ -1525,10 +1529,13 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 			}
 		}
 		
+	
+
+
 		//对透明度 色彩 权重矩阵进行像素级遍历处理
 		Mat image = Mat::zeros(mask_height, mask_width, CV_8UC4);  
 		Mat w_mask = (_blend_method != BLEND_AVERAGE) ? Mat::zeros(image.size(), CV_32FC1) : Mat();
-		for (int y = 0; y < image.rows; ++y)
+		for (int y = 0; y < image.rows; ++y)  //耗时略久
 		{
 			for (int x = 0; x < image.cols; ++x)
 			{
@@ -1556,6 +1563,8 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 			}
 		}
 
+		
+
 		_warp_images.emplace_back(image);  //变换后的图像
 		origins.emplace_back(rects[i].x, rects[i].y); //
 		if (_blend_method != BLEND_AVERAGE)
@@ -1581,6 +1590,8 @@ Mat MultiImages::textureMapping(const vector<vector<Point2>> &_vertices,  //
 			break;
 		}
 	}
+	tm.stop();
+	cout<<"textureMapper for for  consumption of time :"<< tm.getTimeMilli()<<endl;
 	//之前是将每张图变换然后投射到画布上，下面是将这些变换后的图像融合成一张最终图像
 	return Blending(_warp_images, origins, _target_size, new_weight_mask, _blend_method == BLEND_AVERAGE);
 }

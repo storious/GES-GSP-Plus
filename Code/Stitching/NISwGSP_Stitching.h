@@ -27,7 +27,7 @@ public:
 	Mat solve(const BLENDING_METHODS& _blend_method, vector<vector<Point2> >& original_vertices);
 	Mat solve_content(const BLENDING_METHODS& _blend_method, vector<vector<Point2> >& original_vertices);
 
-	void writeImage(const Mat& _image, const string _blend_method_name) const;
+	void writeImage(const Mat& _image, int _image_index, const string _blend_method_name) const;
 	void assessment(const vector<vector<Point2> > original_vertices);
 	double getRMSE(vector<vector<Point2> > _vertices);
 	pair<double, double> getWarpingResidual(vector<vector<Point2> >_vertices);

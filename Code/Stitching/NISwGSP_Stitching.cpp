@@ -74,6 +74,7 @@ Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, vector<vecto
 	const MultiImages &multi_images = getMultiImages();	
 	vector<Triplet<double>> triplets;
 	vector<pair<int, double>> b_vector;
+
 	if(RUN_WAY==0){
 	reserveData(triplets, b_vector, DIMENSION_2D);
 
@@ -86,27 +87,14 @@ Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, vector<vecto
 	prepareSimilarityTerm(triplets, b_vector);
 
 	original_vertices = getImageVerticesBySolving(triplets, b_vector);  //得到的是变化后的每个图像的网格顶点坐标
-	}else if(RUN_WAY==1){
-		//[add]
+	}
+	else if(RUN_WAY==1){
 		namespace file_s=std::filesystem;
 		string filename="./"+multi_images.parameter.file_name+"/mesh/mesh_vertices.yml";
-		if(file_s::exists(filename)){
+		if(!original_vertices.empty() && !original_vertices[0].empty()){
+			std::cout << "数据检测通过，点数为: " << original_vertices[0].size() << std::endl;
 			//read
-			int num_images = 0;
-			int num_vertices = 0;
-			original_vertices.resize(multi_images.images_data.size());
-			FileStorage fs(filename, FileStorage::READ);
-			fs["num_images"] >> num_images;
-			fs["num_vertices_per_image"] >> num_vertices;
-			for (int i = 0; i < num_images; ++i)
-			{
-				original_vertices[i].resize(multi_images.images_data[i].mesh_2d->getVertices().size());
-				fs["image_" + to_string(i)] >> original_vertices[i];
-
-				// ===== 强校验（非常推荐）=====
-				CV_Assert(original_vertices[i].size() == num_vertices);
-			}
-			fs.release();
+			have_read_mesh=1;
 		}else{
 			reserveData(triplets, b_vector, DIMENSION_2D);   //这里涉及到后面一个一个函数		if (feature_matches[m1][m2].size() == 0) 越界 因为没有定义 找一下
 			triplets.emplace_back(0, 0, STRONG_CONSTRAINT);
@@ -117,21 +105,53 @@ Mat NISwGSP_Stitching::solve(const BLENDING_METHODS &_blend_method, vector<vecto
 			prepareAlignmentTerm(triplets);
 			prepareSimilarityTerm(triplets, b_vector);
 			original_vertices = getImageVerticesBySolving(triplets, b_vector);
-			createYamlFile("./"+multi_images.parameter.file_name+"/mesh","mesh_vertices.yml");
-			//write
-			//============== [add]
-			// ===== meta 信息（防止以后对不上）=====[add]
-			FileStorage fs(filename, FileStorage::WRITE);
-			fs << "num_images" << (int)original_vertices.size();
-			fs << "num_vertices_per_image" << (int)original_vertices[0].size();
+		// //[add]
+		// namespace file_s=std::filesystem;
+		// string filename="./"+multi_images.parameter.file_name+"/mesh/mesh_vertices.yml";
+		// if(file_s::exists(filename)){
+		// 	//read
+		// 	have_read_mesh=1;
 
-			// ===== 每张图的 mesh =====
-			for (int i = 0; i < original_vertices.size(); ++i)
-			{
-				fs << ("image_" + to_string(i)) << original_vertices[i];
-			}
-			fs.release();
-			//================
+		// 	int num_images = 0;
+		// 	int num_vertices = 0;
+		// 	original_vertices.resize(multi_images.images_data.size());
+		// 	FileStorage fs(filename, FileStorage::READ);
+		// 	fs["num_images"] >> num_images;
+		// 	fs["num_vertices_per_image"] >> num_vertices;
+		// 	for (int i = 0; i < num_images; ++i)
+		// 	{
+		// 		original_vertices[i].resize(multi_images.images_data[i].mesh_2d->getVertices().size());
+		// 		fs["image_" + to_string(i)] >> original_vertices[i];
+
+		// 		// ===== 强校验（非常推荐）=====
+		// 		CV_Assert(original_vertices[i].size() == num_vertices);
+		// 	}
+		// 	fs.release();
+		// }else{
+		// 	reserveData(triplets, b_vector, DIMENSION_2D);   //这里涉及到后面一个一个函数		if (feature_matches[m1][m2].size() == 0) 越界 因为没有定义 找一下
+		// 	triplets.emplace_back(0, 0, STRONG_CONSTRAINT);
+		// 	triplets.emplace_back(1, 1, STRONG_CONSTRAINT);
+		// 	b_vector.emplace_back(0, STRONG_CONSTRAINT);
+		// 	b_vector.emplace_back(1, STRONG_CONSTRAINT);
+
+		// 	prepareAlignmentTerm(triplets);
+		// 	prepareSimilarityTerm(triplets, b_vector);
+		// 	original_vertices = getImageVerticesBySolving(triplets, b_vector);
+		// 	createYamlFile("./"+multi_images.parameter.file_name+"/mesh","mesh_vertices.yml");
+		// 	//write
+		// 	//============== [add]
+		// 	// ===== meta 信息（防止以后对不上）=====[add]
+		// 	FileStorage fs(filename, FileStorage::WRITE);
+		// 	fs << "num_images" << (int)original_vertices.size();
+		// 	fs << "num_vertices_per_image" << (int)original_vertices[0].size();
+
+		// 	// ===== 每张图的 mesh =====
+		// 	for (int i = 0; i < original_vertices.size(); ++i)
+		// 	{
+		// 		fs << ("image_" + to_string(i)) << original_vertices[i];
+		// 	}
+		// 	fs.release();
+		// 	//================
 			
 		}
 	}
@@ -189,11 +209,11 @@ Mat NISwGSP_Stitching::solve_content(const BLENDING_METHODS &_blend_method, vect
 	return result;
 }
 
-void NISwGSP_Stitching::writeImage(const Mat &_image, const string _blend_method_name) const
+void NISwGSP_Stitching::writeImage(const Mat &_image, int _image_index, const string _blend_method_name) const
 {
 	const MultiImages &multi_images = getMultiImages();
 	const Parameter &parameter = multi_images.parameter;
-	string file_name = parameter.file_name;
+	//string file_name = parameter.file_name;
 
 	if (_image.empty())
 	{
@@ -202,14 +222,14 @@ void NISwGSP_Stitching::writeImage(const Mat &_image, const string _blend_method
 
 	if (RUN_TYPE == TYPE::GES_GSP)
 	{
-		imwrite(parameter.result_dir + file_name + "-" +
+		imwrite(parameter.result_dir + "/" + to_string(_image_index) + "-" +
 					"Ours_" +
 					".png",
 				_image);
 	}
 	else
 	{
-		imwrite(parameter.result_dir + file_name + "-" +
+		imwrite(parameter.result_dir + "/" + to_string(_image_index) + "-" +
 					"GSP_" +
 					".png",
 				_image);

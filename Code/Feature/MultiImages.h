@@ -66,10 +66,9 @@ public:
 		LINES_FILTER_FUNC* _width_filter = &LINES_FILTER_NONE,
 		LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE);
 
-	MultiImages(const string& _file_name,
+	MultiImages(const string& _file_name,int have_mesh,
 	LINES_FILTER_FUNC* _width_filter = &LINES_FILTER_NONE,
-	LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE,
-	int have_mesh = 0);
+	LINES_FILTER_FUNC* _length_filter = &LINES_FILTER_NONE);
 
 	const vector<detail::ImageFeatures>& getImagesFeaturesByMatchingPoints() const;
 	const vector<detail::MatchesInfo>& getPairwiseMatchesByMatchingPoints() const;

@@ -1,2 +1,1 @@
-new-04_outdoor
-new-03
+part1/case1

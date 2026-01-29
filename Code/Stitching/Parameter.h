@@ -14,12 +14,12 @@
 #include <filesystem>
 #include "../Configure.h"
 #include "../Util/InputParser.h"
-
+namespace fs = std::filesystem;
+using namespace std;
 
 class Parameter {
 public:
 	Parameter(const string& _file_name);
-
 	string file_name, file_dir;
 	string stitching_parse_file_name;
 

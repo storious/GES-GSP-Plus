@@ -43,6 +43,14 @@ Mat Blending(const vector<Mat>& images,
 	const vector<Mat>& weight_mask, //权重矩阵
 	const bool ignore_weight_mask) {
 
+	cv::TickMeter tm;
+tm.start();
+
+
+
+	
+
+
 	Mat result = Mat::zeros(round(max(target_size.height, 0.0f)), round(max(target_size.width, 0.0f)), CV_8UC4);  //round是四舍五入函数取整数 float转int
 
 	vector<Rect2> rects;
@@ -89,5 +97,8 @@ Mat Blending(const vector<Mat>& images,
 			}
 		}
 	}
+	
+tm.stop();
+std::cout << "Blending Time: " << tm.getTimeMilli() << " ms" << std::endl;
 	return result;
 }
