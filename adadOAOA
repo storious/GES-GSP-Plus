@@ -1,0 +1,76 @@
+[33mcommit 4d7ecdcd86c4d286a32c4f825806c161fd5355ae[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m, [m[1;31morigin/dev[m[33m)[m
+Author: zyf <1197560415@qq.com>
+Date:   Thu Jan 29 16:28:32 2026 +0800
+
+    实现了离线的缓存视频帧图片拼接，并合成视频输出
+
+[33mcommit 953ced37dd2480dbac0d6d8995fad31f8bec7af3[m
+Author: zyf <1197560415@qq.com>
+Date:   Thu Jan 22 17:58:29 2026 +0800
+
+    本次提交 将流程中所有代码都加上了注释；现在开始执行视频的拼接，防止代码奔溃提交备份
+
+[33mcommit f43f48ee64c33409b36195739cb7afb020ed83ff[m
+Author: zyf <1197560415@qq.com>
+Date:   Sat Dec 13 14:05:02 2025 +0800
+
+    RUN_EXE,CmakePreset modify
+
+[33mcommit 50e15f76b411984774b1bf2c49db86de7db39141[m
+Author: zyf <1197560415@qq.com>
+Date:   Sat Dec 13 11:28:50 2025 +0800
+
+    Resolve merge conflict and update CMake presets
+
+[33mcommit 99fa184bd0b6672ac0b58c19e2c37ea5ce76cf39[m
+Author: zyf <1197560415@qq.com>
+Date:   Sat Dec 13 11:18:26 2025 +0800
+
+    feat: RUN_EXE.bat can load dll to current shell
+
+[33mcommit bfa8d0efc99f933379febba57ded537d6a6b486c[m[33m ([m[1;32mmain[m[33m)[m
+Author: zyf <1197560415@qq.com>
+Date:   Fri Dec 12 21:42:23 2025 +0800
+
+    little  modify and add comment
+
+[33mcommit b5e79e4170886d9a59087a0bcd8623fd133e7879[m
+Author: storious <2227563488@qq.com>
+Date:   Wed Dec 3 18:53:39 2025 +0800
+
+    build & doc: add vcpkg compatible configuration and update the README document
+
+[33mcommit e0eaccb5ff0e636170497967215f7aeda98a8850[m
+Author: storious <2227563488@qq.com>
+Date:   Wed Dec 3 18:50:47 2025 +0800
+
+    perf: introducing the usage of C++17
+
+[33mcommit 08fc28c850e347588eecb7ffa0fc967e7c65de6c[m
+Author: storious <2227563488@qq.com>
+Date:   Tue Dec 2 20:07:23 2025 +0800
+
+    chore: adjust changelog layout
+
+[33mcommit ba19b112cb1d01f721133c6ced43af35c437f0e5[m
+Author: storious <2227563488@qq.com>
+Date:   Tue Dec 2 19:28:15 2025 +0800
+
+    doc: adjust the text style
+
+[33mcommit 249595de701202591c04d6e999ddb3677ce7fe3f[m
+Author: storious <2227563488@qq.com>
+Date:   Tue Dec 2 19:16:03 2025 +0800
+
+    chore: prepare for release v0.1.0
+
+[33mcommit a0279b361703a5c462fe1031697b5018a14cc9a9[m
+Author: storious <2227563488@qq.com>
+Date:   Tue Dec 2 19:04:10 2025 +0800
+
+    feat: GES-GSP-Plus - a modernized GES-GSP-Stitching
+    
+    - Modern CMake/Conan build system, no DLLs required.
+    - Updated dependencies (OpenCV 4.12, Eigen 3.4).
+    - Migrated SIFT from VLFeat to OpenCV.
+    - Added MIT license and automated changelog via git-cliff.
